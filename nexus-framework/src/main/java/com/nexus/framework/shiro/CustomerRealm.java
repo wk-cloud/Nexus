@@ -2,6 +2,7 @@ package com.nexus.framework.shiro;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.nexus.common.enums.AdminEnum;
+import com.nexus.common.enums.PermissionStateEnum;
 import com.nexus.common.utils.CollectionUtils;
 import com.nexus.common.utils.ObjectUtils;
 import com.nexus.common.utils.StringUtils;
@@ -97,7 +98,11 @@ public class CustomerRealm extends AuthorizingRealm {
                         return null;
                     }
                     List<Long> permissionIdList = rolePermissionList.stream().map(SysRolePermission::getPermissionId).collect(Collectors.toList());
-                    List<SysPermission> permissionList = sysPermissionService.listByIds(permissionIdList);
+                    LambdaQueryWrapper<SysPermission> permissionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+                    permissionLambdaQueryWrapper
+                            .eq(SysPermission::getState, PermissionStateEnum.NORMAL.getCode())
+                            .in(SysPermission::getId, permissionIdList);
+                    List<SysPermission> permissionList = sysPermissionService.list(permissionLambdaQueryWrapper);
                     permissionSet = permissionList.stream().map(SysPermission::getPerms)
                             .filter(StringUtils::isNotBlank).collect(Collectors.toSet());
                 }

@@ -34,7 +34,7 @@ public class LoginDto {
     /**
      * 登录类型
      */
-    @Schema(name = "密码")
+    @Schema(name = "登录类型")
     private Integer loginType;
 
     /**

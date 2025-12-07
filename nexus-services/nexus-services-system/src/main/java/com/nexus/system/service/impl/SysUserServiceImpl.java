@@ -8,6 +8,7 @@ import com.nexus.common.core.ip.IpHome;
 import com.nexus.common.core.page.PagingData;
 import com.nexus.common.core.query.QueryParams;
 import com.nexus.common.enums.AdminEnum;
+import com.nexus.common.enums.PermissionStateEnum;
 import com.nexus.common.exception.ServiceException;
 import com.nexus.common.utils.*;
 import com.nexus.system.domain.SysPermission;
@@ -208,7 +209,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             Map<Long, List<SysRolePermission>> rolePermissionGroup = sysRolePermissionService.list(rolePermissionLambdaQueryWrapper)
                     .stream().collect(Collectors.groupingBy(SysRolePermission::getRoleId));
             // 3.2. 查询所有的权限列表
-            List<SysPermission> permissionList = sysPermissionService.list();
+            LambdaQueryWrapper<SysPermission> permissionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            permissionLambdaQueryWrapper.eq(SysPermission::getState, PermissionStateEnum.NORMAL.getCode());
+            List<SysPermission> permissionList = sysPermissionService.list(permissionLambdaQueryWrapper);
             // 3.3. 封装权限信息
             roleList.forEach(role -> {
                 if(AdminEnum.SUPER_ADMIN.getLabel().equals(role.getLabel())){

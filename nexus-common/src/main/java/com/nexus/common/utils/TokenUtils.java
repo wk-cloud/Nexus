@@ -212,9 +212,9 @@ public class TokenUtils {
      *
      * @param token 令牌
      * @param key   关键词
-     * @return {@link Object}
+     * @return {@link String}
      */
-    public static Object getValueFromToken(String token, String key) {
+    public static String getValueFromToken(String token, String key) {
         return checkToken(token).getClaim(key).asString();
     }
 

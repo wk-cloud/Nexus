@@ -53,7 +53,7 @@ public class FileDownloadUtils {
             // 并发下载所有文件并返回临时路径的 CompletableFuture 列表
             List<CompletableFuture<Path>> downloadFutures = fileUrls.stream()
                     .map(url -> CompletableFuture.supplyAsync(() -> downloadFileToTemp(url), asyncTaskExecutor))
-                    .collect(Collectors.toList());
+                    .toList();
 
             // 合并所有 Future，并在完成后依次写入 zip 流
             CompletableFuture<Void> allDownloadsDone = CompletableFuture.allOf(
@@ -68,9 +68,15 @@ public class FileDownloadUtils {
 
                     try {
                         addToZip(zos, tempFile, targetFileName);
-                        Files.deleteIfExists(tempFile); // 删除临时文件
                     } catch (IOException e) {
                         throw new RuntimeException("无法将文件添加到 zip: " + targetFileName, e);
+                    } finally {
+                        try {
+                            // 删除临时文件
+                            Files.deleteIfExists(tempFile);
+                        } catch (IOException e) {
+                            log.error("删除临时文件出错: {}", e.getMessage());
+                        }
                     }
                 }
             }).exceptionally(ex -> {

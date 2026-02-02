@@ -14,10 +14,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum MessageTypeEnum {
 
-    MESSAGE_SYSTEM(0,"系统消息"),
-    MESSAGE_PRIVATE(1,"私聊消息"),
-    MESSAGE_GROUP(2,"群聊消息"),
-    MESSAGE_CLOSE(3,"断开链接");
+    MESSAGE_SYSTEM(1,"系统消息"),
+    MESSAGE_PRIVATE(2,"私聊消息"),
+    MESSAGE_GROUP(3,"群聊消息"),
+    MESSAGE_ONLINE(4,"用户上线通知"),
+    MESSAGE_OFFLINE(5,"用户正常下线通知"),
+    MESSAGE_FORCE_OFFLINE(6,"用户强制下线通知");
 
     private final Integer code;
     private final String info;

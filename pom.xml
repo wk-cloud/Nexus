@@ -69,7 +69,7 @@
         <commons-pool2.version>2.12.1</commons-pool2.version>
         <easyexcel.version>4.0.3</easyexcel.version>
         <ip2region.version>2.7.0</ip2region.version>
-        <hutool-all.version>5.8.39</hutool-all.version>
+        <hutool-all.version>5.8.35</hutool-all.version>
         <fastjson2.version>2.0.58</fastjson2.version>
         <thumbnailator.version>0.4.20</thumbnailator.version>
         <commons-io.version>2.20.0</commons-io.version>

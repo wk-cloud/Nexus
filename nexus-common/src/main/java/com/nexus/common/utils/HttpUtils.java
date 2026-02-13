@@ -1,6 +1,7 @@
 package com.nexus.common.utils;
 
 
+import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
 
 import java.util.HashMap;
@@ -15,13 +16,60 @@ import java.util.Map;
 public class HttpUtils extends HttpUtil {
 
     /**
+     * post请求
+     *
+     * @param url       请求url
+     * @param body  请求体
+     * @param headerMap 请求头
+     * @return {@link String }
+     */
+    public static String postWithHeader(String url, String body, Map<String, String> headerMap, boolean isOverride) {
+        return HttpRequest.post(url).body(body).headerMap(headerMap, isOverride).execute().body();
+    }
+
+    /**
+     * post请求
+     *
+     * @param url       请求url
+     * @param paramMap  请求参数
+     * @param headerMap 请求头
+     * @return {@link String }
+     */
+    public static String postWithHeader(String url, Map<String, Object> paramMap, Map<String, String> headerMap, boolean isOverride) {
+        return HttpRequest.post(url).form(paramMap).headerMap(headerMap, isOverride).execute().body();
+    }
+
+    /**
+     * get请求
+     *
+     * @param url       请求url
+     * @param paramMap  参数
+     * @param headerMap 请求头
+     * @return {@link String }
+     */
+    public static String getWithHeader(String url, Map<String, Object> paramMap, Map<String, String> headerMap, boolean isOverride) {
+        return HttpRequest.get(url).form(paramMap).headerMap(headerMap, isOverride).execute().body();
+    }
+
+    /**
+     * get请求
+     *
+     * @param url       请求url
+     * @param headerMap 请求头
+     * @return {@link String }
+     */
+    public static String getWithHeader(String url, Map<String, String> headerMap, boolean isOverride) {
+        return HttpRequest.get(url).headerMap(headerMap, isOverride).execute().body();
+    }
+
+    /**
      * 构建请求 url
      * 支持路径参数和查询参数
      * @param url      请求地址
      * @param paramMap 请求参数映射
      * @return {@link String }
      */
-    private static String buildUrl(String url, Map<String, Object> paramMap) {
+    public static String buildUrl(String url, Map<String, Object> paramMap) {
         if(url == null){
             return null;
         }

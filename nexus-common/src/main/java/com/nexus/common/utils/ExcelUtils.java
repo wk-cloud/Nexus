@@ -28,27 +28,20 @@ public class ExcelUtils extends ExcelUtil {
      * @param fileName  导出文件名
      * @param sheetName 工作表名称
      * @param clazz     数据对应实体类
-     * @throws IOException io异常
      */
     public static <T> void export(HttpServletResponse response, List<T> dataList, Class<T> clazz, String fileName, String sheetName) {
-        ServletOutputStream outputStream = null;
         try {
-            response = createResponse(response, fileName);
-            outputStream = response.getOutputStream();
+            createResponse(response, fileName);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        try (ServletOutputStream outputStream = response.getOutputStream()) {
             EasyExcel.write(outputStream, clazz)
                     .autoCloseStream(Boolean.FALSE)
                     .excelType(ExcelTypeEnum.XLSX)
                     .sheet(sheetName).doWrite(dataList);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (outputStream != null) {
-                try {
-                    outputStream.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
     }
 
@@ -57,10 +50,9 @@ public class ExcelUtils extends ExcelUtil {
      *
      * @param response 响应
      * @param fileName 文件名
-     * @return {@link HttpServletResponse}
      * @throws UnsupportedEncodingException 不支持编码异常
      */
-    private static HttpServletResponse createResponse(HttpServletResponse response, String fileName) throws UnsupportedEncodingException {
+    private static void createResponse(HttpServletResponse response, String fileName) throws UnsupportedEncodingException {
         if (StringUtils.isBlank(fileName)) {
             fileName = FileUtils.randomFileName("*.xlsx");
         }
@@ -75,7 +67,6 @@ public class ExcelUtils extends ExcelUtil {
         response.setHeader("Cache-Control", "no-cache");
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", 0);
-        return response;
     }
 
     /**

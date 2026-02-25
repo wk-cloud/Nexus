@@ -44,6 +44,8 @@ public class IpUtils {
             "X-Real-IP"
     };
 
+    private static final Searcher searcher = SpringUtils.getBean("ipSearcher");
+
     private IpUtils() {
     }
 
@@ -217,28 +219,9 @@ public class IpUtils {
      * @return {@link String}
      */
     public static IpHome getIpHome(String ip) {
-        // 1. 创建 ip 归属对象
         IpHome ipHome = new IpHome();
         ipHome.setIp(ip);
-        // 2、创建 searcher 对象
-        String dbPath = "ip2region.xdb";
-        Searcher searcher = null;
-        InputStream inputStream = null;
-        ByteArrayOutputStream baos = null;
-        // 1、查询
         try {
-            ClassPathResource resource = new ClassPathResource(dbPath);
-            inputStream = resource.getInputStream();
-            baos = new ByteArrayOutputStream();
-            // 将 ip2region.db 文件读取到字节数组输出流
-            byte[] buffer = new byte[1024 * 4];
-            int len;
-            while ((len = inputStream.read(buffer)) != -1) {
-                baos.write(buffer, 0, len);
-            }
-            // 字节输出流转化为字节数组
-            byte[] bytes = baos.toByteArray();
-            searcher = Searcher.newWithBuffer(bytes);
             String region = searcher.search(ip);
             if (StringUtils.isBlank(region)) {
                 return ipHome;
@@ -254,30 +237,7 @@ public class IpUtils {
             return ipHome;
         } catch (Exception e) {
             log.error("ip 查找失败({}): {}\n", ip, e.getMessage());
-        } finally {
-            if (ObjectUtils.isNotNull(inputStream)) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage());
-                }
-            }
-            if (ObjectUtils.isNotNull(baos)) {
-                try {
-                    baos.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage());
-                }
-            }
-            if (ObjectUtils.isNotNull(searcher)) {
-                // 3、关闭资源
-                try {
-                    searcher.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage());
-                }
-            }
+            return ipHome;
         }
-        return ipHome;
     }
 }

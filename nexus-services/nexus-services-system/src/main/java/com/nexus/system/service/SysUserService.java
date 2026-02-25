@@ -27,13 +27,6 @@ public interface SysUserService extends IServicePlus<SysUser, SysUserVo> {
     PagingData<SysUserVo> listUser(SysUserDto sysUserDto, QueryParams queryParams);
 
     /**
-     * 获取用户分布
-     *
-     * @return {@link Map}<{@link String},{@link Integer}>
-     */
-    Map<String, Integer> queryUserDistribution();
-
-    /**
      * 通过用户id获取电子邮件
      *
      * @param userId 用户id
@@ -42,7 +35,7 @@ public interface SysUserService extends IServicePlus<SysUser, SysUserVo> {
     String queryEmailByUserId(Long userId);
 
     /**
-     * 更新用户
+     * 修改用户信息
      *
      * @param sysUserDto 系统用户
      * @return {@link Integer}
@@ -50,10 +43,10 @@ public interface SysUserService extends IServicePlus<SysUser, SysUserVo> {
     Boolean updateUser(SysUserDto sysUserDto);
 
     /**
-     * 更新禁用状态
+     * 修改用户禁用状态
      *
      * @param userId  用户id
-     * @param disable 禁用
+     * @param disable 禁用状态
      * @return {@link Boolean}
      */
     Boolean updateDisableState(Long userId, Boolean disable);

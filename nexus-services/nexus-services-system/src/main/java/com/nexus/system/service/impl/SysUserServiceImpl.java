@@ -86,31 +86,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     /**
-     * 获取用户分布
-     *
-     * @return {@link Map}<{@link String}, {@link Integer}>
-     */
-    @Override
-    public Map<String, Integer> queryUserDistribution() {
-        LambdaQueryWrapper<SysUser> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        userLambdaQueryWrapper.select(SysUser::getLoginIp);
-        List<SysUser> userList = baseMapper.selectList(userLambdaQueryWrapper);
-        HashMap<String, Integer> map = new HashMap<>(CollectionUtils.getInitialCapacity(userList.size()));
-        for (SysUser user : userList) {
-            IpHome ipHome = IpUtils.getIpHome(user.getLoginIp());
-            String ipAddress = ipHome.getProvince();
-            if (map.containsKey(ipAddress)) {
-                Integer count = map.get(ipAddress);
-                count++;
-                map.put(ipAddress, count);
-            } else {
-                map.put(ipAddress, 1);
-            }
-        }
-        return map;
-    }
-
-    /**
      * 通过用户id获取电子邮件
      *
      * @param userId 用户id
@@ -128,22 +103,23 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     /**
-     * 更新用户
+     * 修改用户信息
      *
-     * @param userBackDto 用户 DTO
+     * @param sysUserDto 系统用户
      * @return {@link Boolean}
      */
     @Override
-    public Boolean updateUser(SysUserDto userBackDto) {
-        SysUser user = BeanUtils.toBean(userBackDto, SysUser.class);
-        sysUserRoleService.addRoleForUser(user.getId(), userBackDto.getRoleLabelList());
+    public Boolean updateUser(SysUserDto sysUserDto) {
+        SysUser user = BeanUtils.toBean(sysUserDto, SysUser.class);
+        sysUserRoleService.addRoleForUser(user.getId(), sysUserDto.getRoleLabelList());
         return super.updateById(user);
     }
 
     /**
-     * 更新禁用状态
+     * 修改用户禁用状态
      *
-     * @param userId 用户基本id
+     * @param userId 用户id
+     * @param disabled 禁用状态
      * @return {@link Boolean}
      */
     @Override

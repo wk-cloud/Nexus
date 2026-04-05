@@ -22,7 +22,7 @@ public class WordDataTreeNode {
     /**
      * 结束标识
      * */
-    private Boolean isEnd;
+    private Boolean isEnd = false;
 
     /**
      * 子节点集合

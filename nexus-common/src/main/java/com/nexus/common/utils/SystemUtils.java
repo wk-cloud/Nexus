@@ -54,4 +54,13 @@ public class SystemUtils extends org.apache.commons.lang3.SystemUtils {
         return System.getProperty("os.name");
     }
 
+    /**
+     * 获取系统环境变量
+     *
+     * @param envName 变量名
+     * @return {@link String }
+     */
+    public static String getEnv(String envName) {
+        return System.getenv(envName);
+    }
 }

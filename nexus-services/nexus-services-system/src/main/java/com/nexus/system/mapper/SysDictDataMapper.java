@@ -1,6 +1,6 @@
 package com.nexus.system.mapper;
 
-import com.nexus.common.core.mapper.BaseMapperPlus;
+import com.nexus.common.mybatisplus.core.mapper.BaseMapperPlus;
 import com.nexus.system.domain.SysDictData;
 import org.springframework.stereotype.Repository;
 

@@ -13,9 +13,25 @@
     <packaging>jar</packaging>
 
     <dependencies>
+        <!-- nexus-common-core 核心通用依赖 -->
         <dependency>
             <groupId>com.nexus</groupId>
-            <artifactId>nexus-framework</artifactId>
+            <artifactId>nexus-common-core</artifactId>
+        </dependency>
+        <!-- nexus-common-redis redis通用依赖 -->
+        <dependency>
+            <groupId>com.nexus</groupId>
+            <artifactId>nexus-common-redis</artifactId>
+        </dependency>
+        <!-- nexus-common-token token通用依赖 -->
+        <dependency>
+            <groupId>com.nexus</groupId>
+            <artifactId>nexus-common-token</artifactId>
+        </dependency>
+        <!-- nexus-services-system 系统服务模块 -->
+        <dependency>
+            <groupId>com.nexus</groupId>
+            <artifactId>nexus-services-system</artifactId>
         </dependency>
     </dependencies>
 

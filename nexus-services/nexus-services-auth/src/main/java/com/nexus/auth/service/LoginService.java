@@ -1,8 +1,8 @@
 package com.nexus.auth.service;
 
 
-import com.nexus.common.core.domain.dto.LoginDto;
 import com.nexus.common.core.domain.vo.LoginVo;
+import com.nexus.common.shiro.domain.LoginDto;
 
 /**
  * 登录服务

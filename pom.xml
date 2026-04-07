@@ -11,7 +11,6 @@
     <modules>
         <module>nexus-admin</module>
         <module>nexus-common</module>
-        <module>nexus-framework</module>
         <module>nexus-services</module>
     </modules>
     <packaging>pom</packaging>
@@ -85,14 +84,10 @@
             <!-- common 模块 -->
             <dependency>
                 <groupId>com.nexus</groupId>
-                <artifactId>nexus-common</artifactId>
+                <artifactId>nexus-common-bom</artifactId>
                 <version>${nexus-version}</version>
-            </dependency>
-            <!-- 核心框架模块 -->
-            <dependency>
-                <groupId>com.nexus</groupId>
-                <artifactId>nexus-framework</artifactId>
-                <version>${nexus-version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <!-- 系统服务模块 -->
             <dependency>
@@ -100,16 +95,10 @@
                 <artifactId>nexus-services-system</artifactId>
                 <version>${nexus-version}</version>
             </dependency>
-            <!-- 认证模块 -->
+            <!-- 系统认证模块 -->
             <dependency>
                 <groupId>com.nexus</groupId>
                 <artifactId>nexus-services-auth</artifactId>
-                <version>${nexus-version}</version>
-            </dependency>
-            <!-- websocket模块 -->
-            <dependency>
-                <groupId>com.nexus</groupId>
-                <artifactId>nexus-services-websocket</artifactId>
                 <version>${nexus-version}</version>
             </dependency>
 

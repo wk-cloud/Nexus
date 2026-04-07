@@ -3,13 +3,14 @@ package com.nexus.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.nexus.common.core.helper.LoginHelper;
-import com.nexus.common.core.page.PagingData;
-import com.nexus.common.core.query.QueryParams;
-import com.nexus.common.utils.BeanUtils;
-import com.nexus.common.utils.CollectionUtils;
-import com.nexus.common.utils.ObjectUtils;
-import com.nexus.common.utils.TokenUtils;
+import com.nexus.common.core.service.OnlineUserService;
+import com.nexus.common.core.utils.BeanUtils;
+import com.nexus.common.core.utils.CollectionUtils;
+import com.nexus.common.core.utils.ObjectUtils;
+import com.nexus.common.mybatisplus.core.page.PagingData;
+import com.nexus.common.mybatisplus.core.query.QueryParams;
+import com.nexus.common.shiro.helper.LoginHelper;
+import com.nexus.common.token.utils.TokenUtils;
 import com.nexus.system.domain.SysOnlineUser;
 import com.nexus.system.domain.dto.SysOnlineUserDto;
 import com.nexus.system.domain.dto.SysUserDto;
@@ -17,8 +18,6 @@ import com.nexus.system.domain.vo.SysOnlineUserVo;
 import com.nexus.system.domain.vo.SysUserVo;
 import com.nexus.system.mapper.SysOnlineUserMapper;
 import com.nexus.system.service.SysOnlineUserService;
-import com.nexus.system.service.SysRoleService;
-import com.nexus.system.service.SysUserRoleService;
 import com.nexus.system.service.SysUserService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +38,7 @@ import java.util.stream.Collectors;
 @Transactional(rollbackFor = Exception.class)
 @Slf4j
 @Service
-public class SysOnlineUserServiceImpl extends ServiceImpl<SysOnlineUserMapper, SysOnlineUser> implements SysOnlineUserService {
+public class SysOnlineUserServiceImpl extends ServiceImpl<SysOnlineUserMapper, SysOnlineUser> implements SysOnlineUserService, OnlineUserService {
 
     @Resource
     private SysOnlineUserMapper baseMapper;

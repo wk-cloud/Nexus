@@ -1,6 +1,6 @@
 package com.nexus.system.mapper;
 
-import com.nexus.common.core.mapper.BaseMapperPlus;
+import com.nexus.common.mybatisplus.core.mapper.BaseMapperPlus;
 import com.nexus.system.domain.SysLoginLog;
 import com.nexus.system.domain.vo.SysLoginLogVo;
 import org.springframework.stereotype.Repository;

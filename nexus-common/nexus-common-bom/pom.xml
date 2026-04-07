@@ -1,0 +1,105 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.nexus</groupId>
+    <artifactId>nexus-common-bom</artifactId>
+    <description>nexus-common-bom common依赖项</description>
+    <version>${nexus-version}</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <nexus-version>1.0.0</nexus-version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- nexus-common-core 通用核心依赖 -->
+            <dependency>
+                <groupId>com.nexus</groupId>
+                <artifactId>nexus-common-core</artifactId>
+                <version>${nexus-version}</version>
+            </dependency>
+            <!-- nexus-common-doc 通用接口文档依赖 -->
+            <dependency>
+                <groupId>com.nexus</groupId>
+                <artifactId>nexus-common-doc</artifactId>
+                <version>${nexus-version}</version>
+            </dependency>
+            <!-- nexus-common-easy-rules 通用easy-rules规则引擎依赖 -->
+            <dependency>
+                <groupId>com.nexus</groupId>
+                <artifactId>nexus-common-easy-rules</artifactId>
+                <version>${nexus-version}</version>
+            </dependency>
+            <!-- nexus-common-excel 通用excel依赖 -->
+            <dependency>
+                <groupId>com.nexus</groupId>
+                <artifactId>nexus-common-excel</artifactId>
+                <version>${nexus-version}</version>
+            </dependency>
+            <!-- nexus-common-log 通用日志依赖 -->
+            <dependency>
+                <groupId>com.nexus</groupId>
+                <artifactId>nexus-common-log</artifactId>
+                <version>${nexus-version}</version>
+            </dependency>
+            <!-- nexus-common-mail 通用邮件发送依赖 -->
+            <dependency>
+                <groupId>com.nexus</groupId>
+                <artifactId>nexus-common-mail</artifactId>
+                <version>${nexus-version}</version>
+            </dependency>
+            <!-- nexus-common-mybatis-plus 通用MyBatisPlus依赖 -->
+            <dependency>
+                <groupId>com.nexus</groupId>
+                <artifactId>nexus-common-mybatis-plus</artifactId>
+                <version>${nexus-version}</version>
+            </dependency>
+            <!-- nexus-common-netty 通用Netty依赖 -->
+            <dependency>
+                <groupId>com.nexus</groupId>
+                <artifactId>nexus-common-netty</artifactId>
+                <version>${nexus-version}</version>
+            </dependency>
+            <!-- nexus-common-oss 通用oss依赖 -->
+            <dependency>
+                <groupId>com.nexus</groupId>
+                <artifactId>nexus-common-oss</artifactId>
+                <version>${nexus-version}</version>
+            </dependency>
+            <!-- nexus-common-redis 通用redis依赖 -->
+            <dependency>
+                <groupId>com.nexus</groupId>
+                <artifactId>nexus-common-redis</artifactId>
+                <version>${nexus-version}</version>
+            </dependency>
+            <!-- nexus-common-sensitive-word 通用敏感词依赖 -->
+            <dependency>
+                <groupId>com.nexus</groupId>
+                <artifactId>nexus-common-sensitive-word</artifactId>
+                <version>${nexus-version}</version>
+            </dependency>
+            <!-- nexus-common-shiro 通用shiro依赖 -->
+            <dependency>
+                <groupId>com.nexus</groupId>
+                <artifactId>nexus-common-shiro</artifactId>
+                <version>${nexus-version}</version>
+            </dependency>
+            <!-- nexus-common-token 通用token依赖 -->
+            <dependency>
+                <groupId>com.nexus</groupId>
+                <artifactId>nexus-common-token</artifactId>
+                <version>${nexus-version}</version>
+            </dependency>
+            <!-- nexus-common-websocket 通用websocket依赖 -->
+            <dependency>
+                <groupId>com.nexus</groupId>
+                <artifactId>nexus-common-websocket</artifactId>
+                <version>${nexus-version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+</project>

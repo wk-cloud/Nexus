@@ -2,7 +2,7 @@ package com.nexus.system.domain;
 
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.nexus.common.core.base.BaseEntity;
+import com.nexus.common.mybatisplus.core.domain.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
  * @author wk
  * @date 2024/07/06
  */
-@TableName("t_online_user")
+@TableName("sys_online_user")
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor

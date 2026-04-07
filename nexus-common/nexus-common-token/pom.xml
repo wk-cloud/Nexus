@@ -1,0 +1,28 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.nexus</groupId>
+        <artifactId>nexus-common</artifactId>
+        <version>${nexus-version}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>nexus-common-token</artifactId>
+    <description>nexus-common-token token 通用依赖项</description>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <!-- nexus-common-redis redis依赖 -->
+        <dependency>
+            <groupId>com.nexus</groupId>
+            <artifactId>nexus-common-redis</artifactId>
+        </dependency>
+
+        <!-- JWT-->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+        </dependency>
+    </dependencies>
+</project>

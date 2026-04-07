@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.nexus</groupId>
+        <artifactId>nexus-common</artifactId>
+        <version>${nexus-version}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>nexus-common-easy-rules</artifactId>
+    <description>nexus-common-easy-rules easy-rules通用依赖项</description>
+    <packaging>jar</packaging>
+
+    <dependencies>
+
+        <!-- nexus-common-core 核心依赖 -->
+        <dependency>
+            <groupId>com.nexus</groupId>
+            <artifactId>nexus-common-core</artifactId>
+        </dependency>
+
+        <!-- easy-rules 规则引擎 -->
+        <dependency>
+            <groupId>org.jeasy</groupId>
+            <artifactId>easy-rules-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jeasy</groupId>
+            <artifactId>easy-rules-mvel</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mvel</groupId>
+                    <artifactId>mvel2</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- 适配jdk21 -->
+        <dependency>
+            <groupId>org.mvel</groupId>
+            <artifactId>mvel2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jeasy</groupId>
+            <artifactId>easy-rules-spel</artifactId>
+        </dependency>
+    </dependencies>
+</project>

@@ -1,12 +1,12 @@
 package com.nexus.web.system;
 
 
-import com.nexus.common.annotation.OperationLog;
-import com.nexus.common.core.page.PagingData;
-import com.nexus.common.core.query.QueryParams;
+import com.nexus.common.core.domain.view.Result;
+import com.nexus.common.core.enums.OperationTypeEnum;
 import com.nexus.common.core.validation.ValidGroup;
-import com.nexus.common.core.view.Result;
-import com.nexus.common.enums.OperationTypeEnum;
+import com.nexus.common.log.annotation.OperationLog;
+import com.nexus.common.mybatisplus.core.page.PagingData;
+import com.nexus.common.mybatisplus.core.query.QueryParams;
 import com.nexus.system.domain.dto.SysDictTypeDto;
 import com.nexus.system.domain.vo.SysDictTypeVo;
 import com.nexus.system.service.SysDictTypeBackService;

@@ -2,7 +2,7 @@ package com.nexus.system.domain;
 
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.nexus.common.core.base.BaseEntity;
+import com.nexus.common.mybatisplus.core.domain.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

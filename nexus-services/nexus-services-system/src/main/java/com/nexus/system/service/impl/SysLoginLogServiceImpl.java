@@ -4,11 +4,13 @@ package com.nexus.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.nexus.common.core.ip.IpHome;
-import com.nexus.common.core.page.PagingData;
-import com.nexus.common.core.query.QueryParams;
-import com.nexus.common.exception.ServiceException;
-import com.nexus.common.utils.*;
+import com.nexus.common.core.domain.event.LoginLogEvent;
+import com.nexus.common.core.exception.ServiceException;
+import com.nexus.common.core.domain.ip.IpHome;
+import com.nexus.common.core.utils.*;
+import com.nexus.common.excel.utils.ExcelUtils;
+import com.nexus.common.mybatisplus.core.page.PagingData;
+import com.nexus.common.mybatisplus.core.query.QueryParams;
 import com.nexus.system.domain.SysLoginLog;
 import com.nexus.system.domain.SysUser;
 import com.nexus.system.domain.dto.SysLoginLogDto;
@@ -19,6 +21,8 @@ import com.nexus.system.service.SysUserService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +46,16 @@ public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLo
     @Resource
     private SysUserService sysUserService;
 
+    /**
+     * 记录登录日志
+     *
+     * @param loginLogEvent 登录日志事件
+     */
+    @Async
+    @EventListener
+    public void recordLoginLog(LoginLogEvent loginLogEvent) {
+        baseMapper.insert(BeanUtils.toBean(loginLogEvent, SysLoginLog.class));
+    }
 
     /**
      * 导出列表

@@ -1,12 +1,12 @@
 package com.nexus.web.system;
 
 
-import com.nexus.common.annotation.Limit;
-import com.nexus.common.annotation.Pass;
-import com.nexus.common.core.helper.SensitiveWordHelper;
-import com.nexus.common.core.view.Result;
-import com.nexus.common.enums.LimitTypeEnum;
-import com.nexus.common.utils.StringUtils;
+import com.nexus.common.core.annotation.Pass;
+import com.nexus.common.core.domain.view.Result;
+import com.nexus.common.core.enums.LimitTypeEnum;
+import com.nexus.common.core.utils.StringUtils;
+import com.nexus.common.redis.annotation.Limit;
+import com.nexus.common.sensitive.helper.SensitiveWordHelper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;

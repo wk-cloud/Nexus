@@ -1,9 +1,9 @@
 package com.nexus.auth.stragegy;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.nexus.common.core.domain.dto.LoginDto;
 import com.nexus.common.core.domain.vo.LoginVo;
-import com.nexus.common.utils.ObjectUtils;
+import com.nexus.common.core.utils.ObjectUtils;
+import com.nexus.common.shiro.domain.LoginDto;
 import com.nexus.system.domain.SysOnlineUser;
 import com.nexus.system.domain.SysRole;
 import com.nexus.system.domain.SysUser;

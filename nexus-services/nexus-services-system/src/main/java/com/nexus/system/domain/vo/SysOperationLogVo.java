@@ -2,7 +2,7 @@ package com.nexus.system.domain.vo;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.nexus.common.core.ip.IpHome;
+import com.nexus.common.core.domain.ip.IpHome;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

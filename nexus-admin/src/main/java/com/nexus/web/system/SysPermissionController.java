@@ -1,12 +1,12 @@
 package com.nexus.web.system;
 
-import com.nexus.common.annotation.OperationLog;
+import com.nexus.common.core.domain.view.Result;
+import com.nexus.common.core.enums.OperationTypeEnum;
 import com.nexus.common.core.validation.ValidGroup;
-import com.nexus.common.core.view.Result;
-import com.nexus.common.enums.OperationTypeEnum;
-import com.nexus.system.domain.dto.SysPermissionDto;
-import com.nexus.system.domain.vo.SysPermissionVo;
-import com.nexus.system.service.SysPermissionService;
+import com.nexus.common.log.annotation.OperationLog;
+import com.nexus.system.domain.dto.SysMenuDto;
+import com.nexus.system.domain.vo.SysMenuVo;
+import com.nexus.system.service.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -28,7 +28,7 @@ import java.util.List;
 public class SysPermissionController {
 
     @Resource
-    private SysPermissionService sysPermissionService;
+    private SysMenuService sysMenuService;
 
     /**
      * 删除权限
@@ -41,7 +41,7 @@ public class SysPermissionController {
     @RequiresRoles("admin")
     @DeleteMapping("/delete/{permissionId}")
     public Result<Void> deletePermission(@PathVariable("permissionId") Long permissionId){
-        Boolean deleted = sysPermissionService.deletePermission(permissionId);
+        Boolean deleted = sysMenuService.deletePermission(permissionId);
         if(deleted){
             return Result.success();
         }
@@ -52,49 +52,49 @@ public class SysPermissionController {
      * 获取权限
      *
      * @param permissionId 权限id
-     * @return {@link Result }<{@link SysPermissionVo }>
+     * @return {@link Result }<{@link SysMenuVo }>
      */
     @Operation(description = "获取权限接口")
     @GetMapping("/{permissionId}")
-    public Result<SysPermissionVo> getPermission(@PathVariable("permissionId") Long permissionId){
-        return Result.success(sysPermissionService.getPermissionById(permissionId));
+    public Result<SysMenuVo> getPermission(@PathVariable("permissionId") Long permissionId){
+        return Result.success(sysMenuService.getPermissionById(permissionId));
     }
 
     /**
      * 获取所有权限列表
      *
-     * @return {@link Result }<{@link List }<{@link SysPermissionVo }>>
+     * @return {@link Result }<{@link List }<{@link SysMenuVo }>>
      */
     @Operation(description = "获取所有权限列表接口")
     @GetMapping("/list/all")
-    public Result<List<SysPermissionVo>> getPermissionList(){
-        return Result.success(sysPermissionService.queryVoList());
+    public Result<List<SysMenuVo>> getPermissionList(){
+        return Result.success(sysMenuService.queryVoList());
     }
 
     /**
      * 获取权限列表
      *
-     * @param sysPermissionDto 系统权限
-     * @return {@link Result }<{@link List }<{@link SysPermissionVo }>>
+     * @param sysMenuDto 系统权限
+     * @return {@link Result }<{@link List }<{@link SysMenuVo }>>
      */
     @Operation(description = "获取权限列表接口")
     @GetMapping("/list")
-    public Result<List<SysPermissionVo>> listPermission(SysPermissionDto sysPermissionDto){
-        return Result.success(sysPermissionService.listPermission(sysPermissionDto));
+    public Result<List<SysMenuVo>> listPermission(SysMenuDto sysMenuDto){
+        return Result.success(sysMenuService.listPermission(sysMenuDto));
     }
 
     /**
      * 修改权限
      *
-     * @param sysPermissionDto 系统权限
+     * @param sysMenuDto 系统权限
      * @return {@link Result }<{@link Void }>
      */
     @Operation(description = "修改权限接口")
     @OperationLog(operationDesc = "修改权限",operationType = OperationTypeEnum.UPDATE)
     @RequiresRoles("admin")
     @PutMapping("/update")
-    public Result<Void> updatePermission(@RequestBody @Validated(ValidGroup.Update.class) SysPermissionDto sysPermissionDto){
-        Boolean updated = sysPermissionService.updatePermission(sysPermissionDto);
+    public Result<Void> updatePermission(@RequestBody @Validated(ValidGroup.Update.class) SysMenuDto sysMenuDto){
+        Boolean updated = sysMenuService.updatePermission(sysMenuDto);
         if(updated){
             return Result.success();
         }
@@ -104,15 +104,15 @@ public class SysPermissionController {
     /**
      * 新增权限
      *
-     * @param sysPermissionDto 系统权限
+     * @param sysMenuDto 系统权限
      * @return {@link Result }
      */
     @Operation(description = "新增权限接口")
     @OperationLog(operationDesc = "新增权限",operationType = OperationTypeEnum.ADD)
     @RequiresRoles("admin")
     @PostMapping("/add")
-    public Result<Void> addPermission(@RequestBody @Validated(ValidGroup.Insert.class) SysPermissionDto sysPermissionDto){
-        Boolean added = sysPermissionService.addPermission(sysPermissionDto);
+    public Result<Void> addPermission(@RequestBody @Validated(ValidGroup.Insert.class) SysMenuDto sysMenuDto){
+        Boolean added = sysMenuService.addPermission(sysMenuDto);
         if(added){
             return Result.success();
         }

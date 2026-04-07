@@ -48,7 +48,7 @@ public class SysRoleVo implements Serializable {
     /**
      * 权限列表
      */
-    private List<SysPermissionVo> permissionList = new ArrayList<>();
+    private List<SysMenuVo> menuList = new ArrayList<>();
 
     /**
      * 创建时间

@@ -1,0 +1,35 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.nexus</groupId>
+        <artifactId>nexus-common</artifactId>
+        <version>${nexus-version}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>nexus-common-log</artifactId>
+    <description>nexus-common-log 系统日志通用依赖项</description>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <!-- nexus-common-core 核心依赖 -->
+        <dependency>
+            <groupId>com.nexus</groupId>
+            <artifactId>nexus-common-core</artifactId>
+        </dependency>
+
+        <!-- nexus-common-doc 文档依赖 -->
+        <dependency>
+            <groupId>com.nexus</groupId>
+            <artifactId>nexus-common-doc</artifactId>
+        </dependency>
+
+        <!-- nexus-common-token token依赖 -->
+        <dependency>
+            <groupId>com.nexus</groupId>
+            <artifactId>nexus-common-token</artifactId>
+        </dependency>
+
+    </dependencies>
+</project>

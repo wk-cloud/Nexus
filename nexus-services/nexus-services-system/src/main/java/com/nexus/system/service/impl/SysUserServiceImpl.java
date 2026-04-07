@@ -3,20 +3,22 @@ package com.nexus.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.nexus.common.core.helper.LoginHelper;
-import com.nexus.common.core.ip.IpHome;
-import com.nexus.common.core.page.PagingData;
-import com.nexus.common.core.query.QueryParams;
-import com.nexus.common.enums.AdminEnum;
-import com.nexus.common.enums.PermissionStateEnum;
-import com.nexus.common.exception.ServiceException;
-import com.nexus.common.utils.*;
-import com.nexus.system.domain.SysPermission;
-import com.nexus.system.domain.SysRolePermission;
+import com.nexus.common.core.enums.AdminEnum;
+import com.nexus.common.core.enums.PermissionStateEnum;
+import com.nexus.common.core.exception.ServiceException;
+import com.nexus.common.core.domain.ip.IpHome;
+import com.nexus.common.core.service.UserService;
+import com.nexus.common.core.utils.*;
+import com.nexus.common.mybatisplus.core.page.PagingData;
+import com.nexus.common.mybatisplus.core.query.QueryParams;
+import com.nexus.common.shiro.helper.LoginHelper;
+import com.nexus.common.token.utils.TokenUtils;
+import com.nexus.system.domain.SysMenu;
+import com.nexus.system.domain.SysRoleMenu;
 import com.nexus.system.domain.SysUser;
 import com.nexus.system.domain.SysUserRole;
 import com.nexus.system.domain.dto.SysUserDto;
-import com.nexus.system.domain.vo.SysPermissionVo;
+import com.nexus.system.domain.vo.SysMenuVo;
 import com.nexus.system.domain.vo.SysRoleVo;
 import com.nexus.system.domain.vo.SysUserVo;
 import com.nexus.system.mapper.SysUserMapper;
@@ -25,7 +27,6 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ import java.util.stream.Collectors;
  */
 @Transactional(rollbackFor = Exception.class)
 @Service
-public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
+public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService, UserService {
 
     @Resource
     private SysUserMapper baseMapper;
@@ -49,10 +50,23 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Resource
     private SysRoleService sysRoleService;
     @Resource
-    private SysRolePermissionService sysRolePermissionService;
+    private SysRoleMenuService sysRoleMenuService;
     @Resource
-    private SysPermissionService sysPermissionService;
+    private SysMenuService sysMenuService;
 
+    /**
+     * 根据用户id获取用户昵称
+     *
+     * @param userId 用户id
+     * @return {@link String }
+     */
+    @Override
+    public String getUserNickName(Long userId) {
+        LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.select(SysUser::getNickName, SysUser::getUsername).eq(SysUser::getId, userId);
+        SysUser user = baseMapper.selectOne(lambdaQueryWrapper);
+        return StringUtils.isBlank(user.getNickName()) ? user.getUsername() : user.getNickName();
+    }
 
     /**
      * 查询用户列表
@@ -176,31 +190,31 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         sysUserVo.setLoginIpHome(IpUtils.completeIpHome(sysUserVo.getLoginIp()));
         // 2. 查询用户角色信息列表
         List<SysRoleVo> roleList = sysUserRoleService.queryRoleListByUserId(userId);
-        // 3. 封装角色权限信息
+        // 3. 封装角色菜单信息
         if (CollectionUtils.isNotEmpty(roleList)) {
-            // 3.1. 查询角色和权限关联数据分组
+            // 3.1. 查询角色和菜单关联数据分组
             List<Long> roleIdList = roleList.stream().map(SysRoleVo::getId).collect(Collectors.toList());
-            LambdaQueryWrapper<SysRolePermission> rolePermissionLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            rolePermissionLambdaQueryWrapper.in(SysRolePermission::getRoleId, roleIdList);
-            Map<Long, List<SysRolePermission>> rolePermissionGroup = sysRolePermissionService.list(rolePermissionLambdaQueryWrapper)
-                    .stream().collect(Collectors.groupingBy(SysRolePermission::getRoleId));
-            // 3.2. 查询所有的权限列表
-            LambdaQueryWrapper<SysPermission> permissionLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            permissionLambdaQueryWrapper.eq(SysPermission::getState, PermissionStateEnum.NORMAL.getCode());
-            List<SysPermission> permissionList = sysPermissionService.list(permissionLambdaQueryWrapper);
-            // 3.3. 封装权限信息
+            LambdaQueryWrapper<SysRoleMenu> roleMenuLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            roleMenuLambdaQueryWrapper.in(SysRoleMenu::getRoleId, roleIdList);
+            Map<Long, List<SysRoleMenu>> roleMenuGroup = sysRoleMenuService.list(roleMenuLambdaQueryWrapper)
+                    .stream().collect(Collectors.groupingBy(SysRoleMenu::getRoleId));
+            // 3.2. 查询所有的菜单列表
+            LambdaQueryWrapper<SysMenu> menuLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            menuLambdaQueryWrapper.eq(SysMenu::getState, PermissionStateEnum.NORMAL.getCode());
+            List<SysMenu> menuList = sysMenuService.list(menuLambdaQueryWrapper);
+            // 3.3. 封装菜单信息
             roleList.forEach(role -> {
                 if(AdminEnum.SUPER_ADMIN.getLabel().equals(role.getLabel())){
-                    role.setPermissionList(TreeUtils.createTree(BeanUtils.copyToList(permissionList, SysPermissionVo.class)));
+                    role.setMenuList(TreeUtils.createTree(BeanUtils.copyToList(menuList, SysMenuVo.class)));
                 } else {
-                    List<Long> permissionIdList = rolePermissionGroup.get(role.getId())
+                    List<Long> menuIdList = roleMenuGroup.get(role.getId())
                             .stream()
-                            .map(SysRolePermission::getPermissionId)
+                            .map(SysRoleMenu::getMenuId)
                             .toList();
-                    List<SysPermission> currentPermissionList = permissionList.stream()
-                            .filter(permission -> permissionIdList.contains(permission.getId()))
+                    List<SysMenu> currentMenuList = menuList.stream()
+                            .filter(menu -> menuIdList.contains(menu.getId()))
                             .collect(Collectors.toList());
-                    role.setPermissionList(TreeUtils.createTree(BeanUtils.copyToList(currentPermissionList, SysPermissionVo.class)));
+                    role.setMenuList(TreeUtils.createTree(BeanUtils.copyToList(currentMenuList, SysMenuVo.class)));
                 }
             });
         }
@@ -248,7 +262,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         Map<String, String> userId = TokenUtils.getValueFromToken(token, List.of("userId"));
         SysUserVo sysUserVo = this.queryUserById(Long.parseLong(userId.get("userId")));
-        HashMap<String, Object> map = new HashMap<>(CollectionUtils.getInitialCapacity(2));
+        HashMap<String, Object> map = new HashMap<>(CollectionUtils.initialCapacity(2));
         List<String> roleLabelList = sysUserVo.getRoleList().stream().map(SysRoleVo::getLabel).toList();
         // 放入用户信息
         map.put("user", sysUserVo);

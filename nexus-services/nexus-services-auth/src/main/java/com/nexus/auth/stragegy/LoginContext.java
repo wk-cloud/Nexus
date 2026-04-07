@@ -1,9 +1,9 @@
 package com.nexus.auth.stragegy;
 
-import com.nexus.common.core.domain.dto.LoginDto;
 import com.nexus.common.core.domain.vo.LoginVo;
-import com.nexus.common.exception.ServiceException;
-import com.nexus.common.utils.ObjectUtils;
+import com.nexus.common.core.exception.ServiceException;
+import com.nexus.common.core.utils.ObjectUtils;
+import com.nexus.common.shiro.domain.LoginDto;
 
 import java.util.concurrent.ConcurrentMap;
 

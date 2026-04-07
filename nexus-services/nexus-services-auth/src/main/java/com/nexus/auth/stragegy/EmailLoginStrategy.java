@@ -1,14 +1,16 @@
 package com.nexus.auth.stragegy;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.nexus.common.core.base.LoginUser;
-import com.nexus.common.core.domain.dto.LoginDto;
 import com.nexus.common.core.domain.vo.LoginVo;
-import com.nexus.common.core.helper.LoginHelper;
-import com.nexus.common.enums.LoginTypeEnum;
-import com.nexus.common.enums.VerificationCodeTypeEnum;
-import com.nexus.common.exception.ServiceException;
-import com.nexus.common.utils.*;
+import com.nexus.common.core.enums.LoginTypeEnum;
+import com.nexus.common.core.enums.VerificationCodeTypeEnum;
+import com.nexus.common.core.exception.ServiceException;
+import com.nexus.common.core.utils.*;
+import com.nexus.common.redis.utils.RedisUtils;
+import com.nexus.common.shiro.domain.LoginDto;
+import com.nexus.common.shiro.domain.LoginUser;
+import com.nexus.common.shiro.helper.LoginHelper;
+import com.nexus.common.token.utils.TokenUtils;
 import com.nexus.system.domain.SysOnlineUser;
 import com.nexus.system.domain.SysUser;
 import com.nexus.system.mapper.SysUserMapper;
@@ -65,7 +67,7 @@ public class EmailLoginStrategy extends AbstractLoginStrategy {
         user.setLoginType(loginType);
         sysUserMapper.updateById(user);
         // 生成token
-        HashMap<String, String> payLoad = new HashMap<>(CollectionUtils.getInitialCapacity(3));
+        HashMap<String, String> payLoad = new HashMap<>(CollectionUtils.initialCapacity(3));
         payLoad.put("userId", Long.toString(user.getId()));
         String token = TokenUtils.createTokenForRedisSet(payLoad);
         // 暂存用户信息

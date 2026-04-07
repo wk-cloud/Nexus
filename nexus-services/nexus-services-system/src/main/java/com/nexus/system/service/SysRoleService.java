@@ -1,14 +1,15 @@
 package com.nexus.system.service;
 
-import com.nexus.common.core.mapper.IServicePlus;
-import com.nexus.common.core.page.PagingData;
-import com.nexus.common.core.query.QueryParams;
+import com.nexus.common.mybatisplus.core.mapper.IServicePlus;
+import com.nexus.common.mybatisplus.core.page.PagingData;
+import com.nexus.common.mybatisplus.core.query.QueryParams;
 import com.nexus.system.domain.SysRole;
 import com.nexus.system.domain.dto.SysRoleDto;
 import com.nexus.system.domain.vo.SysRoleVo;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 角色服务

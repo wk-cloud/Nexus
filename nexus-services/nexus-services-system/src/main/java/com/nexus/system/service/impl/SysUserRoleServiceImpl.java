@@ -2,9 +2,9 @@ package com.nexus.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.nexus.common.enums.AdminEnum;
-import com.nexus.common.exception.ServiceException;
-import com.nexus.common.utils.CollectionUtils;
+import com.nexus.common.core.enums.AdminEnum;
+import com.nexus.common.core.exception.ServiceException;
+import com.nexus.common.core.utils.CollectionUtils;
 import com.nexus.system.domain.SysRole;
 import com.nexus.system.domain.SysUser;
 import com.nexus.system.domain.SysUserRole;

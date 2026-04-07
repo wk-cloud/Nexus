@@ -1,6 +1,6 @@
 package com.nexus.system.service;
 
-import com.nexus.common.core.mapper.IServicePlus;
+import com.nexus.common.mybatisplus.core.mapper.IServicePlus;
 import com.nexus.system.domain.SysUserRole;
 import com.nexus.system.domain.vo.SysRoleVo;
 

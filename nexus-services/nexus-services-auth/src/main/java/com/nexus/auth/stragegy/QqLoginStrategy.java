@@ -1,14 +1,15 @@
 package com.nexus.auth.stragegy;
 
-import com.nexus.common.core.base.LoginUser;
-import com.nexus.common.core.domain.dto.LoginDto;
 import com.nexus.common.core.domain.vo.LoginVo;
-import com.nexus.common.core.helper.LoginHelper;
-import com.nexus.common.enums.LoginTypeEnum;
-import com.nexus.common.enums.RoleEnum;
-import com.nexus.common.exception.ServiceException;
-import com.nexus.common.utils.*;
-import com.nexus.framework.config.QQLoginConfig;
+import com.nexus.common.core.enums.LoginTypeEnum;
+import com.nexus.common.core.enums.RoleEnum;
+import com.nexus.common.core.exception.ServiceException;
+import com.nexus.common.core.utils.*;
+import com.nexus.common.shiro.domain.LoginDto;
+import com.nexus.common.shiro.domain.LoginUser;
+import com.nexus.common.shiro.helper.LoginHelper;
+import com.nexus.common.token.utils.TokenUtils;
+import com.nexus.auth.config.QQLoginConfig;
 import com.nexus.system.domain.SysOnlineUser;
 import com.nexus.system.domain.SysUser;
 import com.nexus.system.domain.SysUserRole;
@@ -58,7 +59,7 @@ public class QqLoginStrategy extends AbstractLoginStrategy{
     protected LoginVo loginProcessor(LoginDto loginDto) {
         SysUser user = this.qqLogin(loginDto, LoginHelper.getRequest());
         // 生成token
-        HashMap<String, String> payLoad = new HashMap<>(CollectionUtils.getInitialCapacity(2));
+        HashMap<String, String> payLoad = new HashMap<>(CollectionUtils.initialCapacity(2));
         payLoad.put("userId", Long.toString(user.getId()));
         String token = TokenUtils.createTokenForRedisSet(payLoad);
         // 保存在线信息

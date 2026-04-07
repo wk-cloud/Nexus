@@ -1,136 +1,104 @@
 package com.nexus.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.nexus.common.utils.BeanUtils;
-import com.nexus.common.utils.ObjectUtils;
-import com.nexus.common.utils.StringUtils;
-import com.nexus.common.utils.TreeUtils;
-import com.nexus.system.domain.SysPermission;
-import com.nexus.system.domain.dto.SysPermissionDto;
-import com.nexus.system.domain.vo.SysPermissionVo;
-import com.nexus.system.mapper.SysPermissionMapper;
-import com.nexus.system.service.SysPermissionService;
-import com.nexus.system.service.SysRolePermissionService;
+import com.nexus.common.core.enums.PermissionStateEnum;
+import com.nexus.common.core.service.PermissionService;
+import com.nexus.common.core.utils.CollectionUtils;
+import com.nexus.common.core.utils.StringUtils;
+import com.nexus.common.shiro.helper.LoginHelper;
+import com.nexus.system.domain.SysMenu;
+import com.nexus.system.domain.SysRole;
+import com.nexus.system.domain.SysRoleMenu;
+import com.nexus.system.domain.SysUserRole;
+import com.nexus.system.service.*;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
- * 权限服务impl
+ * SysPermissionServiceImpl
  *
  * @author wk
- * @date 2023/04/16
+ * @date 2026/4/7 16:51
  */
 @Transactional(rollbackFor = Exception.class)
+@Slf4j
 @Service
-public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, SysPermission> implements SysPermissionService {
+public class SysPermissionServiceImpl implements SysPermissionService, PermissionService {
 
     @Resource
-    private SysPermissionMapper baseMapper;
+    private SysMenuService sysMenuService;
     @Resource
-    private SysRolePermissionService rolePermissionService;
+    private SysRoleService sysRoleService;
+    @Resource
+    private SysRoleMenuService roleMenuService;
+    @Resource
+    private SysUserRoleService userRoleService;
 
     /**
-     * @param permissionId 权限id
-     * @return {@link SysPermissionVo}
+     * 获取角色权限
+     * @param userId 用户id
+     * @return {@link Set }<{@link String }>
      */
     @Override
-    public SysPermissionVo getPermissionById(Long permissionId) {
-        return baseMapper.queryVoById(permissionId);
-    }
-
-    /**
-     * 删除权限
-     *
-     * @param permissionId 权限id
-     * @return {@link Boolean}
-     */
-    @Override
-    public Boolean deletePermission(Long permissionId) {
-        // 1. 创建 list集合，用户封装所有删除菜单id值
-        List<Long> idList = new ArrayList<>();
-        // 2. 向 idList 集合设置删除菜单id
-        this.queryPermissionChildrenById(permissionId, idList);
-        // 把当前 id 封装到 idList里面
-        idList.add(permissionId);
-        // 删除角色和权限关系
-        rolePermissionService.deleteByPermissionIdList(idList);
-        return this.removeBatchByIds(idList);
-    }
-
-    /**
-     * 通过子菜单id查询子菜单
-     *
-     * @param permissionId 权限id
-     * @param idList       id列表
-     */
-    private void queryPermissionChildrenById(Long permissionId, List<Long> idList) {
-        // 查询菜单里面子菜单id
-        LambdaQueryWrapper<SysPermission> permissionLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        permissionLambdaQueryWrapper.eq(SysPermission::getParentId, permissionId).select(SysPermission::getId);
-        List<SysPermission> childrenIdList = baseMapper.selectList(permissionLambdaQueryWrapper);
-        // 把childrenIdList中的菜单id值获取出来，封装到idList中，做递归查询
-        childrenIdList.forEach(item -> {
-            // 封装到 idList 里面
-            idList.add(item.getId());
-            // 递归查询
-            this.queryPermissionChildrenById(item.getId(), idList);
-        });
-    }
-
-    /**
-     * 更新权限
-     *
-     * @param sysPermissionDto 系统权限
-     * @return {@link Integer}
-     */
-    @Override
-    public Boolean updatePermission(SysPermissionDto sysPermissionDto) {
-        return this.updateById( BeanUtils.toBean(sysPermissionDto, SysPermission.class));
-    }
-
-    /**
-     * 添加权限
-     *
-     * @param sysPermissionDto 系统权限
-     * @return {@link Integer}
-     */
-    @Override
-    public Boolean addPermission(SysPermissionDto sysPermissionDto) {
-        return this.save(BeanUtils.toBean(sysPermissionDto, SysPermission.class));
-    }
-
-    /**
-     * 查询权限列表
-     *
-     * @param sysPermissionDto 系统权限
-     * @return {@link List}<{@link SysPermissionVo}>
-     */
-    @Override
-    public List<SysPermissionVo> listPermission(SysPermissionDto sysPermissionDto) {
-        LambdaQueryWrapper<SysPermission> lambdaQueryWrapper = this.buildLambdaQueryWrapper(sysPermissionDto);
-        return baseMapper.queryVoList(lambdaQueryWrapper);
-    }
-
-    /**
-     * 构建 Lambda 查询包装器
-     *
-     * @param sysPermissionDto 系统权限
-     * @return {@link LambdaQueryWrapper}<{@link SysPermission}>
-     */
-    private LambdaQueryWrapper<SysPermission> buildLambdaQueryWrapper(SysPermissionDto sysPermissionDto) {
-        LambdaQueryWrapper<SysPermission> permissionLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        if (ObjectUtils.isNotNull(sysPermissionDto)) {
-            permissionLambdaQueryWrapper.eq(ObjectUtils.isNotNull(sysPermissionDto.getId()), SysPermission::getId, sysPermissionDto.getId());
-            permissionLambdaQueryWrapper.like(StringUtils.isNotBlank(sysPermissionDto.getName()), SysPermission::getName, sysPermissionDto.getName());
-            permissionLambdaQueryWrapper.like(StringUtils.isNotBlank(sysPermissionDto.getTitle()), SysPermission::getTitle, sysPermissionDto.getTitle());
-            permissionLambdaQueryWrapper.eq(ObjectUtils.isNotNull(sysPermissionDto.getState()), SysPermission::getState, sysPermissionDto.getState());
+    public Set<String> getRolePermission(Long userId) {
+        Set<Long> roleIds = getRoleIds(userId);
+        if(CollectionUtils.isEmpty(roleIds)) {
+            return new HashSet<>();
         }
-        return permissionLambdaQueryWrapper;
+        LambdaQueryWrapper<SysRole> roleLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        roleLambdaQueryWrapper.select(SysRole::getLabel).in(SysRole::getId, roleIds).eq(SysRole::getState, PermissionStateEnum.NORMAL.getCode());
+        return sysRoleService.list(roleLambdaQueryWrapper).stream().map(SysRole::getLabel).filter(StringUtils::isNotBlank).collect(Collectors.toSet());
+    }
+
+    /**
+     * 获取菜单权限
+     *
+     * @param userId 用户id
+     * @return {@link Set }<{@link String }>
+     */
+    @Override
+    public Set<String> getMenuPermission(Long userId) {
+        if(LoginHelper.isSuperAdmin()) {
+            LambdaQueryWrapper<SysMenu> menuLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            menuLambdaQueryWrapper.select(SysMenu::getPerms);
+            return sysMenuService.list(menuLambdaQueryWrapper).stream().map(SysMenu::getPerms).collect(Collectors.toSet());
+        }
+        Set<Long> roleIds = getRoleIds(userId);
+        if(CollectionUtils.isEmpty(roleIds)) {
+            return new HashSet<>();
+        }
+        LambdaQueryWrapper<SysRoleMenu> roleMenuLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        roleMenuLambdaQueryWrapper.select(SysRoleMenu::getMenuId).in(SysRoleMenu::getRoleId, roleIds);
+        List<SysRoleMenu> roleMenuList = roleMenuService.list(roleMenuLambdaQueryWrapper);
+        if(CollectionUtils.isEmpty(roleMenuList)) {
+            return new HashSet<>();
+        }
+        Set<Long> menuIds = roleMenuList.stream().map(SysRoleMenu::getMenuId).collect(Collectors.toSet());
+        LambdaQueryWrapper<SysMenu> menuLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        menuLambdaQueryWrapper.select(SysMenu::getPerms).in(SysMenu::getId, menuIds).eq(SysMenu::getState, PermissionStateEnum.NORMAL.getCode());
+        return sysMenuService.list(menuLambdaQueryWrapper).stream().map(SysMenu::getPerms).filter(StringUtils::isNotBlank).collect(Collectors.toSet());
+    }
+
+    /**
+     * 获取角色id集合
+     *
+     * @param userId 用户id
+     * @return {@link Set }<{@link Long }>
+     */
+    private Set<Long> getRoleIds(Long userId) {
+        LambdaQueryWrapper<SysUserRole> userRoleLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        userRoleLambdaQueryWrapper.select(SysUserRole::getRoleId).eq(SysUserRole::getUserId, userId);
+        List<SysUserRole> userRoleList = userRoleService.list(userRoleLambdaQueryWrapper);
+        if(CollectionUtils.isEmpty(userRoleList)) {
+            return new HashSet<>();
+        }
+        return userRoleList.stream().map(SysUserRole::getRoleId).collect(Collectors.toSet());
     }
 }

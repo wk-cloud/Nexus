@@ -1,7 +1,7 @@
 package com.nexus.auth.stragegy;
 
-import com.nexus.common.core.domain.dto.LoginDto;
 import com.nexus.common.core.domain.vo.LoginVo;
+import com.nexus.common.shiro.domain.LoginDto;
 
 /**
  * 登录策略

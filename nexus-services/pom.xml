@@ -15,8 +15,6 @@
     <modules>
         <module>nexus-services-system</module>
         <module>nexus-services-auth</module>
-        <module>nexus-services-websocket</module>
-        <module>nexus-services-netty</module>
     </modules>
 
 </project>

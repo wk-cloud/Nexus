@@ -1,9 +1,9 @@
 package com.nexus.system.service;
 
 
-import com.nexus.common.core.mapper.IServicePlus;
-import com.nexus.common.core.page.PagingData;
-import com.nexus.common.core.query.QueryParams;
+import com.nexus.common.mybatisplus.core.mapper.IServicePlus;
+import com.nexus.common.mybatisplus.core.page.PagingData;
+import com.nexus.common.mybatisplus.core.query.QueryParams;
 import com.nexus.system.domain.SysOnlineUser;
 import com.nexus.system.domain.dto.SysOnlineUserDto;
 import com.nexus.system.domain.vo.SysOnlineUserVo;

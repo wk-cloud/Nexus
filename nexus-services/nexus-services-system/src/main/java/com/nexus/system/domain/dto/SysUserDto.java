@@ -1,7 +1,7 @@
 package com.nexus.system.domain.dto;
 
-import com.nexus.common.core.ip.IpHome;
 import com.nexus.common.core.validation.ValidGroup;
+import com.nexus.common.core.domain.ip.IpHome;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

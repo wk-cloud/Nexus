@@ -1,8 +1,8 @@
 package com.nexus.system.service;
 
-import com.nexus.common.core.mapper.IServicePlus;
-import com.nexus.common.core.page.PagingData;
-import com.nexus.common.core.query.QueryParams;
+import com.nexus.common.mybatisplus.core.mapper.IServicePlus;
+import com.nexus.common.mybatisplus.core.page.PagingData;
+import com.nexus.common.mybatisplus.core.query.QueryParams;
 import com.nexus.system.domain.SysUser;
 import com.nexus.system.domain.dto.SysUserDto;
 import com.nexus.system.domain.vo.SysUserVo;
@@ -92,5 +92,4 @@ public interface SysUserService extends IServicePlus<SysUser, SysUserVo> {
      * @return boolean
      */
     Boolean checkEmailUnique(SysUserDto sysUserDto);
-
 }

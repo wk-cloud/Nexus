@@ -1,9 +1,8 @@
 package com.nexus.system.service;
 
-
-import com.nexus.common.core.mapper.IServicePlus;
-import com.nexus.common.core.page.PagingData;
-import com.nexus.common.core.query.QueryParams;
+import com.nexus.common.mybatisplus.core.mapper.IServicePlus;
+import com.nexus.common.mybatisplus.core.page.PagingData;
+import com.nexus.common.mybatisplus.core.query.QueryParams;
 import com.nexus.system.domain.SysDictType;
 import com.nexus.system.domain.dto.SysDictTypeDto;
 import com.nexus.system.domain.vo.SysDictTypeVo;

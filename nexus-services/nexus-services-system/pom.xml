@@ -13,9 +13,59 @@
     <description>系统服务模块</description>
 
     <dependencies>
+        <!-- nexus-common-core 通用核心依赖  -->
         <dependency>
             <groupId>com.nexus</groupId>
-            <artifactId>nexus-common</artifactId>
+            <artifactId>nexus-common-core</artifactId>
+        </dependency>
+
+        <!-- nexus-common-core shiro通用依赖  -->
+        <dependency>
+            <groupId>com.nexus</groupId>
+            <artifactId>nexus-common-shiro</artifactId>
+        </dependency>
+
+
+        <!-- nexus-common-mybatis-plus MybatisPlus通用依赖  -->
+        <dependency>
+            <groupId>com.nexus</groupId>
+            <artifactId>nexus-common-mybatis-plus</artifactId>
+        </dependency>
+
+        <!-- nexus-common-excel Excel通用依赖  -->
+        <dependency>
+            <groupId>com.nexus</groupId>
+            <artifactId>nexus-common-excel</artifactId>
+        </dependency>
+
+        <!-- nexus-common-token token通用依赖  -->
+        <dependency>
+            <groupId>com.nexus</groupId>
+            <artifactId>nexus-common-token</artifactId>
+        </dependency>
+
+        <!-- nexus-common-log 日志通用依赖  -->
+        <dependency>
+            <groupId>com.nexus</groupId>
+            <artifactId>nexus-common-log</artifactId>
+        </dependency>
+
+        <!-- nexus-common-mail 邮件发送通用依赖  -->
+        <dependency>
+            <groupId>com.nexus</groupId>
+            <artifactId>nexus-common-mail</artifactId>
+        </dependency>
+
+        <!-- nexus-common-doc 接口文档通用依赖  -->
+        <dependency>
+            <groupId>com.nexus</groupId>
+            <artifactId>nexus-common-doc</artifactId>
+        </dependency>
+
+        <!-- nexus-common-sensitive-word 敏感词通用依赖  -->
+        <dependency>
+            <groupId>com.nexus</groupId>
+            <artifactId>nexus-common-sensitive-word</artifactId>
         </dependency>
     </dependencies>
 </project>

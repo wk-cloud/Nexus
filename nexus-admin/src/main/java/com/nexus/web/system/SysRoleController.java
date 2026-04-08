@@ -39,7 +39,7 @@ public class SysRoleController {
      *
      * @return {@link Result }<{@link List }<{@link SysRoleVo }>>
      */
-    @Operation(description = "获取所有角色列表接口")
+    @Operation(summary = "获取所有角色列表接口")
     @GetMapping("/list/all")
     public Result<List<SysRoleVo>> getRoleListAll() {
         return Result.success(sysRoleService.queryRoleListAll());
@@ -51,7 +51,7 @@ public class SysRoleController {
      * @param ids 角色id列表
      * @return {@link Result }<{@link Void }>
      */
-    @Operation(description = "删除角色接口")
+    @Operation(summary = "删除角色接口")
     @OperationLog(operationDesc = "删除角色",operationType = OperationTypeEnum.DELETE)
     @RequiresRoles("admin")
     @DeleteMapping("/delete/{ids}")
@@ -69,7 +69,7 @@ public class SysRoleController {
      * @param roleId 角色id
      * @return {@link Result }<{@link SysRoleVo }>
      */
-    @Operation(description = "获取角色接口")
+    @Operation(summary = "获取角色接口")
     @GetMapping("/{roleId}")
     public Result<SysRoleVo> getRole(@PathVariable("roleId") Long roleId) {
         return Result.success(sysRoleService.queryRoleById(roleId));
@@ -82,7 +82,7 @@ public class SysRoleController {
      * @param queryParams 查询参数
      * @return {@link Result }<{@link PagingData }<{@link SysRoleVo }>>
      */
-    @Operation(description = "获取角色分页列表接口")
+    @Operation(summary = "获取角色分页列表接口")
     @GetMapping("/list")
     public Result<PagingData<SysRoleVo>> listRole(SysRoleDto sysRoleDto, QueryParams queryParams) {
         return Result.success(sysRoleService.listRole(sysRoleDto, queryParams));
@@ -94,7 +94,7 @@ public class SysRoleController {
      * @param sysRoleDto 系统角色
      * @return {@link Result }<{@link Void }>
      */
-    @Operation(description = "修改角色信息接口")
+    @Operation(summary = "修改角色信息接口")
     @OperationLog(operationDesc = "修改角色",operationType = OperationTypeEnum.UPDATE)
     @RequiresRoles("admin")
     @PutMapping("/update")
@@ -106,7 +106,7 @@ public class SysRoleController {
         return Result.fail("角色修改失败");
     }
 
-    @Operation(description = "新增角色接口")
+    @Operation(summary = "新增角色接口")
     @OperationLog(operationDesc = "新增角色",operationType = OperationTypeEnum.ADD)
     @RequiresRoles("admin")
     @PostMapping("/add")

@@ -1,5 +1,6 @@
 package com.nexus.system.domain.vo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,18 +42,23 @@ public class SysRoleVo implements Serializable {
     private Integer state;
 
     /**
-     * 菜单权限父子是否关联
+     * 菜单菜单父子是否关联
      */
     private Boolean menuCheckStrictly;
-
-    /**
-     * 权限列表
-     */
-    private List<SysMenuVo> menuList = new ArrayList<>();
 
     /**
      * 创建时间
      */
     private LocalDateTime createTime;
+
+    /**
+     * 菜单列表
+     */
+    private List<SysMenuVo> menuList = new ArrayList<>();
+
+    /**
+     * 菜单树列表
+     */
+    private List<SysMenuVo> menuTreeList = new ArrayList<>();
 
 }

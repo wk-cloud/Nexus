@@ -8,7 +8,7 @@ import com.nexus.system.domain.vo.SysMenuVo;
 import java.util.List;
 
 /**
- * 权限服务
+ * 菜单服务
  *
  * @author wk
  * @date 2023/04/16
@@ -16,41 +16,41 @@ import java.util.List;
 public interface SysMenuService extends IServicePlus<SysMenu, SysMenuVo> {
 
     /**
-     * 根据id，获取权限
-     * @param permissionId 权限id
+     * 根据id，获取菜单
+     * @param menuId 菜单id
      * @return {@link SysMenuVo}
      */
-    SysMenuVo getPermissionById(Long permissionId);
+    SysMenuVo getMenuById(Long menuId);
 
     /**
-     * 删除权限
+     * 删除菜单
      *
-     * @param permissionId 权限id
+     * @param menuId 菜单id
      * @return {@link Boolean}
      */
-    Boolean deletePermission(Long permissionId);
+    Boolean deleteMenu(Long menuId);
 
     /**
-     * 更新权限
+     * 更新菜单
      *
-     * @param sysMenuDto 系统权限
+     * @param sysMenuDto 系统菜单
      * @return {@link Boolean}
      */
-    Boolean updatePermission(SysMenuDto sysMenuDto);
+    Boolean updateMenu(SysMenuDto sysMenuDto);
 
     /**
-     * 添加权限
+     * 添加菜单
      *
-     * @param sysMenuDto 系统权限
+     * @param sysMenuDto 系统菜单
      * @return {@link Boolean}
      */
-    Boolean addPermission(SysMenuDto sysMenuDto);
+    Boolean addMenu(SysMenuDto sysMenuDto);
 
     /**
-     * 查询权限列表
+     * 查询菜单列表
      *
-     * @param sysMenuDto 系统权限
+     * @param sysMenuDto 系统菜单
      * @return {@link List}<{@link SysMenuVo}>
      */
-    List<SysMenuVo> listPermission(SysMenuDto sysMenuDto);
+    List<SysMenuVo> listMenu(SysMenuDto sysMenuDto);
 }

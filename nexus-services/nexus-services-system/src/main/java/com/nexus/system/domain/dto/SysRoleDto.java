@@ -42,9 +42,9 @@ public class SysRoleDto implements Serializable {
     @Schema(name = "菜单权限父子是否关联")
     private Boolean menuCheckStrictly;
 
-    ;@Schema(name = "菜单集合")
+    @Schema(name = "menuList", title = "菜单列表")
     private List<SysMenuDto> menuList;
 
-    @Schema(name = "菜单id集合")
+    @Schema(name = "菜单id列表")
     private List<Long> menuIdList;
 }

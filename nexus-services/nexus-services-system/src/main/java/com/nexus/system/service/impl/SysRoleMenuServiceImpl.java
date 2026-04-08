@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.nexus.common.core.enums.AdminEnum;
+import com.nexus.common.core.enums.PermissionStateEnum;
 import com.nexus.common.core.utils.BeanUtils;
 import com.nexus.common.core.utils.CollectionUtils;
 import com.nexus.common.core.utils.TreeUtils;
@@ -20,10 +21,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -40,12 +38,6 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
 
     @Resource
     private SysRoleMenuMapper baseMapper;
-    @Resource
-    @Lazy
-    private SysRoleService sysRoleService;
-    @Resource
-    @Lazy
-    private SysMenuService sysMenuService;
 
     /**
      * 通过角色id删除
@@ -57,7 +49,7 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
     public Boolean deleteByRoleId(Long roleId) {
         LambdaQueryWrapper<SysRoleMenu> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(SysRoleMenu::getRoleId, roleId);
-        return this.remove(lambdaQueryWrapper);
+        return baseMapper.delete(lambdaQueryWrapper) > 0;
     }
 
     /**
@@ -70,7 +62,7 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
     public Boolean deleteByMenuIdList(List<Long> menuIdList) {
         LambdaQueryWrapper<SysRoleMenu> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.in(SysRoleMenu::getMenuId,menuIdList);
-        return this.remove(lambdaQueryWrapper);
+        return baseMapper.delete(lambdaQueryWrapper) > 0;
     }
 
     /**
@@ -83,57 +75,24 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
     public Boolean deleteByRoleIdList(Collection<Long> roleIds) {
         LambdaQueryWrapper<SysRoleMenu> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.in(SysRoleMenu::getRoleId,roleIds);
-        return this.remove(lambdaQueryWrapper);
+        return baseMapper.delete(lambdaQueryWrapper) > 0;
     }
 
     /**
      * 保存角色和菜单关系
      *
-     * @param roleId           角色id
+     * @param roleId      角色id
      * @param menuIdList 菜单id列表
      * @return {@link Boolean}
      */
     @Override
     public Boolean saveRoleAndMenuRelation(Long roleId, List<Long> menuIdList) {
-        // 1. 创建 list 集合，用于封装添加数据
-        ArrayList<SysRoleMenu> roleMenuList = new ArrayList<>(menuIdList.size());
-        // 2. 遍历所有的菜单数组
-        menuIdList.forEach(menuId -> {
-            SysRoleMenu roleMenu = new SysRoleMenu();
-            roleMenu.setRoleId(roleId);
-            roleMenu.setMenuId(menuId);
-            roleMenuList.add(roleMenu);
-        });
-        return this.saveBatch(roleMenuList);
-    }
-
-    /**
-     * 根据角色id，获取角色对应的菜单列表，返回的是一个树形结构
-     *
-     * @param roleId 角色id
-     * @return {@link List}<{@link SysMenuVo}>
-     */
-    @Override
-    public List<SysMenuVo> getMenuTreeByRoleId(Long roleId) {
-        String roleLabel = sysRoleService.queryRoleLabelById(roleId);
-        if (AdminEnum.SUPER_ADMIN.getLabel().equals(roleLabel)) {
-            return TreeUtils.createTree(sysMenuService.queryVoList());
-        }
-        LambdaQueryWrapper<SysRoleMenu> roleMenuLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        roleMenuLambdaQueryWrapper.eq(SysRoleMenu::getRoleId, roleId);
-        List<SysRoleMenu> roleMenuList = baseMapper.selectList(roleMenuLambdaQueryWrapper);
-        if(CollectionUtils.isEmpty(roleMenuList)){
-            return Collections.emptyList();
-        }
-        // 查询所有的菜单列表
-        List<SysMenu> menuList = sysMenuService.list();
-        if(CollectionUtils.isEmpty(menuList)){
-            return Collections.emptyList();
-        }
-        List<SysMenu> filteredMenuList = menuList
-                .stream()
-                .filter(menu -> roleMenuList.stream().anyMatch(roleMenu -> roleMenu.getMenuId().equals(menu.getId())))
-                .collect(Collectors.toList());
-        return TreeUtils.createTree(BeanUtils.copyToList(filteredMenuList, SysMenuVo.class));
+        List<SysRoleMenu> sysRoleMenuList = menuIdList.stream().map(menuId -> {
+            SysRoleMenu sysRoleMenu = new SysRoleMenu();
+            sysRoleMenu.setRoleId(roleId);
+            sysRoleMenu.setMenuId(menuId);
+            return sysRoleMenu;
+        }).collect(Collectors.toList());
+        return super.saveBatch(sysRoleMenuList);
     }
 }

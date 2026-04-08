@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 用户DTO
@@ -87,10 +88,7 @@ public class SysUserDto implements Serializable {
     @Schema(name = "禁用用户")
     private Boolean disabled;
 
-    @Schema(name = "角色列表")
-    private List<SysRoleDto> roleList;
-
-    @Schema(name = "角色标签列表")
-    private List<String> roleLabelList;
+    @Schema(name = "角色权限(角色标签)列表")
+    private Set<String> rolePermissions;
 
 }

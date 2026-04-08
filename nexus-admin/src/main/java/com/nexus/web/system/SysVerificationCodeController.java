@@ -37,7 +37,7 @@ public class SysVerificationCodeController {
      */
     @Pass
     @Limit(limitType = LimitTypeEnum.IP)
-    @Operation(description = "发送邮箱验证码接口")
+    @Operation(summary = "发送邮箱验证码接口")
     @GetMapping("/verificationCode")
     public Result<Void> sendEmailVerificationCode(VerificationCodeDto verificationCodeDto) {
         verificationCodeService.sendEmailVerificationCode(verificationCodeDto);
@@ -51,7 +51,7 @@ public class SysVerificationCodeController {
      */
     @Pass
     @Limit(limitType = LimitTypeEnum.IP)
-    @Operation(description = "生成图形验证码接口")
+    @Operation(summary = "生成图形验证码接口")
     @GetMapping("/captcha")
     public Result<String> generateImageCaptcha() {
         return Result.<String>success().add(verificationCodeService.generateImageCaptcha());
@@ -64,7 +64,7 @@ public class SysVerificationCodeController {
      */
     @Pass
     @Limit(limitType = LimitTypeEnum.IP)
-    @Operation(description = "生成滑块验证码接口")
+    @Operation(summary = "生成滑块验证码接口")
     @PostMapping("/sliderCaptcha")
     public CaptchaResponse<ImageCaptchaVO> generateSliderCaptcha() {
         return verificationCodeService.generateSliderCaptcha();
@@ -78,7 +78,7 @@ public class SysVerificationCodeController {
      */
     @Pass
     @Limit(limitType = LimitTypeEnum.IP)
-    @Operation(description = "验证滑块验证码接口")
+    @Operation(summary = "验证滑块验证码接口")
     @PostMapping("/verifySliderCaptcha")
     public Result<Boolean> verifySliderCaptcha(@RequestBody JSONObject verifyData) {
         return Result.success(verificationCodeService.verifySliderCaptcha(verifyData));

@@ -67,8 +67,8 @@ public class SysPermissionServiceImpl implements SysPermissionService, Permissio
     public Set<String> getMenuPermission(Long userId) {
         if(LoginHelper.isSuperAdmin()) {
             LambdaQueryWrapper<SysMenu> menuLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            menuLambdaQueryWrapper.select(SysMenu::getPerms);
-            return sysMenuService.list(menuLambdaQueryWrapper).stream().map(SysMenu::getPerms).collect(Collectors.toSet());
+            menuLambdaQueryWrapper.select(SysMenu::getPerms).eq(SysMenu::getState, PermissionStateEnum.NORMAL.getCode());;
+            return sysMenuService.list(menuLambdaQueryWrapper).stream().map(SysMenu::getPerms).filter(StringUtils::isNotBlank).collect(Collectors.toSet());
         }
         Set<Long> roleIds = getRoleIds(userId);
         if(CollectionUtils.isEmpty(roleIds)) {

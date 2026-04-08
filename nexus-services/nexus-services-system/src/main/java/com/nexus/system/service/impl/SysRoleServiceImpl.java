@@ -3,14 +3,14 @@ package com.nexus.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.nexus.common.core.enums.AdminEnum;
+import com.nexus.common.core.enums.PermissionStateEnum;
 import com.nexus.common.core.enums.RoleEnum;
 import com.nexus.common.core.exception.ServiceException;
-import com.nexus.common.core.utils.BeanUtils;
-import com.nexus.common.core.utils.CollectionUtils;
-import com.nexus.common.core.utils.ObjectUtils;
-import com.nexus.common.core.utils.StringUtils;
+import com.nexus.common.core.utils.*;
 import com.nexus.common.mybatisplus.core.page.PagingData;
 import com.nexus.common.mybatisplus.core.query.QueryParams;
+import com.nexus.system.domain.SysMenu;
 import com.nexus.system.domain.SysRole;
 import com.nexus.system.domain.SysRoleMenu;
 import com.nexus.system.domain.SysUserRole;
@@ -95,7 +95,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         LambdaQueryWrapper<SysRole> roleLambdaQueryWrapper = new LambdaQueryWrapper<>();
         roleLambdaQueryWrapper.eq(SysRole::getId, roleId).select(SysRole::getLabel);
         SysRole role = baseMapper.selectOne(roleLambdaQueryWrapper);
-        return ObjectUtils.isNotNull(role) ? role.getLabel() : StringUtils.emptyStr();
+        return ObjectUtils.isNotNull(role) ? role.getLabel() : null;
     }
 
     /**
@@ -106,10 +106,31 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      */
     @Override
     public SysRoleVo queryRoleById(Long roleId) {
-        SysRoleVo roleBackVo = baseMapper.queryVoById(roleId);
-        List<SysMenuVo> menuList = roleMenuService.getMenuTreeByRoleId(roleId);
-        roleBackVo.setMenuList(menuList);
-        return roleBackVo;
+        SysRoleVo roleVo = baseMapper.queryVoById(roleId, SysRoleVo.class);
+        if(ObjectUtils.isNull(roleVo)) {
+            return null;
+        }
+        if (AdminEnum.SUPER_ADMIN.getLabel().equals(roleVo.getLabel())) {
+            roleVo.setMenuTreeList(TreeUtils.createTree(sysMenuService.queryVoList()));
+            return roleVo;
+        }
+        LambdaQueryWrapper<SysRoleMenu> roleMenuLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        roleMenuLambdaQueryWrapper.eq(SysRoleMenu::getRoleId, roleId);
+        List<SysRoleMenu> roleMenuList = roleMenuService.list(roleMenuLambdaQueryWrapper);
+        if(CollectionUtils.isEmpty(roleMenuList)){
+            return roleVo;
+        }
+        Set<Long> menuIds = roleMenuList.stream().map(SysRoleMenu::getMenuId).collect(Collectors.toSet());
+        // 查询菜单列表
+        LambdaQueryWrapper<SysMenu> menuLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        menuLambdaQueryWrapper.in(SysMenu::getId, menuIds).eq(SysMenu::getState, PermissionStateEnum.NORMAL.getCode());
+        List<SysMenu> menuList = sysMenuService.list(menuLambdaQueryWrapper);
+        if(CollectionUtils.isEmpty(menuList)){
+            return roleVo;
+        }
+        List<SysMenuVo> menuVoList = BeanUtils.copyToList(menuList, SysMenuVo.class);
+        roleVo.setMenuTreeList(TreeUtils.createTree(menuVoList));
+        return roleVo;
     }
 
     /**

@@ -50,7 +50,7 @@ public class TreeUtils {
     private static <T extends TreeEntity<T>> List<T> getTreeChildren(T rootTree, List<T> dataList) {
         return dataList
                 .stream()
-                .filter(permission -> permission.getParentId().equals(rootTree.getId()))
+                .filter(tree -> tree.getParentId().equals(rootTree.getId()))
                 .peek(item -> {
                     item.setLevel(rootTree.getLevel() + 1);
                     item.setChildren(getTreeChildren(item, dataList));

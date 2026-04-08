@@ -3,6 +3,7 @@ package com.nexus.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.nexus.common.core.enums.AdminEnum;
+import com.nexus.common.core.enums.PermissionStateEnum;
 import com.nexus.common.core.exception.ServiceException;
 import com.nexus.common.core.utils.CollectionUtils;
 import com.nexus.system.domain.SysRole;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -75,10 +77,10 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
      * 为用户添加角色
      *
      * @param userId        用户id
-     * @param roleLabelList 角色标签列表
+     * @param roleLabels 角色标签列表
      */
     @Override
-    public void addRoleForUser(Long userId, List<String> roleLabelList) {
+    public void addRoleForUser(Long userId, Set<String> roleLabels) {
         // 1.获取一下用户信息，判断是否是超级管理员
         String email = sysUserService.queryEmailByUserId(userId);
         if (AdminEnum.SUPER_ADMIN.getEmail().equals(email)) {
@@ -88,14 +90,14 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
         this.deleteByUserId(userId);
 
         // 3. 如果没有传入角色标签，则直接返回
-        if (CollectionUtils.isEmpty(roleLabelList)) {
+        if (CollectionUtils.isEmpty(roleLabels)) {
             return;
         }
         // 4. 保存用户和角色关系
         LambdaQueryWrapper<SysRole> roleLambdaQueryWrapper = new LambdaQueryWrapper<>();
         roleLambdaQueryWrapper.select(SysRole::getId, SysRole::getLabel);
         List<SysRole> roleList = sysRoleService.list(roleLambdaQueryWrapper);
-        roleList = roleList.stream().filter(role -> roleLabelList.contains(role.getLabel())).toList();
+        roleList = roleList.stream().filter(role -> roleLabels.contains(role.getLabel())).toList();
         if (CollectionUtils.isEmpty(roleList)) {
             return;
         }
@@ -105,7 +107,7 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
             sysUserRole.setRoleId(role.getId());
             return sysUserRole;
         }).toList();
-        this.saveBatch(sysUserRoleList);
+        baseMapper.insert(sysUserRoleList);
     }
 
     /**
@@ -122,7 +124,9 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
         if (CollectionUtils.isEmpty(userRoleList)) {
             return Collections.emptyList();
         }
-        List<Long> roleIdList = userRoleList.stream().map(SysUserRole::getRoleId).toList();
-        return sysRoleService.queryVoListByIds(roleIdList);
+        Set<Long> roleIds = userRoleList.stream().map(SysUserRole::getRoleId).collect(Collectors.toSet());
+        LambdaQueryWrapper<SysRole> roleLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        roleLambdaQueryWrapper.in(SysRole::getId,roleIds).eq(SysRole::getState, PermissionStateEnum.NORMAL.getCode());
+        return sysRoleService.queryVoList(roleLambdaQueryWrapper);
     }
 }

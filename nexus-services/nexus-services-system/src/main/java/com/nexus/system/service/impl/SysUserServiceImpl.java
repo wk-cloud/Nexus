@@ -27,9 +27,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -82,18 +80,26 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         PagingData<SysUserVo> pagingData = PagingData.build(sysUserVoPage);
         List<SysUserVo> sysUserVoList = pagingData.getDataList();
         if (CollectionUtils.isNotEmpty(sysUserVoList)) {
-            // 查询所有的用户和角色关联信息
-            List<SysUserRole> userRoleList = sysUserRoleService.list();
-            // 查询所有的角色信息
-            List<SysRoleVo> roleList = sysRoleService.queryRoleListAll();
-            for (SysUserVo sysUserVo : sysUserVoList) {
-                IpHome ipHome = IpUtils.completeIpHome(sysUserVo.getLoginIp());
-                sysUserVo.setLoginIpHome(ipHome);
-                List<SysUserRole> userRoles = userRoleList.stream().filter(item -> item.getUserId().equals(sysUserVo.getId())).toList();
-                List<SysRoleVo> sysRoleVoList = roleList.stream()
-                        .filter(item -> userRoles.stream().anyMatch(userRole -> userRole.getRoleId().equals(item.getId())))
-                        .collect(Collectors.toList());
-                sysUserVo.setRoleList(sysRoleVoList);
+            Set<Long> userIds = sysUserVoList.stream().map(SysUserVo::getId).collect(Collectors.toSet());
+            // 查询用户和角色关联信息
+            LambdaQueryWrapper<SysUserRole> userRoleLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            userRoleLambdaQueryWrapper.in(SysUserRole::getUserId, userIds);
+            List<SysUserRole> sysUserRoleList = sysUserRoleService.list(userRoleLambdaQueryWrapper);
+            if (CollectionUtils.isNotEmpty(sysUserRoleList)) {
+                Map<Long, Set<Long>> userRoleIdMap = sysUserRoleList.stream().collect(Collectors.groupingBy(SysUserRole::getUserId,
+                        Collectors.mapping(SysUserRole::getRoleId, Collectors.toSet())));
+                Set<Long> roleIds = sysUserRoleList.stream().map(SysUserRole::getRoleId).collect(Collectors.toSet());
+                List<SysRoleVo> roleList = BeanUtils.copyToList(sysRoleService.listByIds(roleIds), SysRoleVo.class);
+                for (SysUserVo sysUserVo : sysUserVoList) {
+                    IpHome ipHome = IpUtils.completeIpHome(sysUserVo.getLoginIp());
+                    sysUserVo.setLoginIpHome(ipHome);
+                    Set<Long> currentRoleIds = userRoleIdMap.getOrDefault(sysUserVo.getId(), new HashSet<>());
+                    Set<String> rolePermissionList = roleList.stream()
+                            .filter(item -> currentRoleIds.contains(item.getId()))
+                            .map(SysRoleVo::getLabel)
+                            .collect(Collectors.toSet());
+                    sysUserVo.setRolePermissions(rolePermissionList);
+                }
             }
         }
         return pagingData;
@@ -125,7 +131,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public Boolean updateUser(SysUserDto sysUserDto) {
         SysUser user = BeanUtils.toBean(sysUserDto, SysUser.class);
-        sysUserRoleService.addRoleForUser(user.getId(), sysUserDto.getRoleLabelList());
+        sysUserRoleService.addRoleForUser(user.getId(), sysUserDto.getRolePermissions());
         return super.updateById(user);
     }
 
@@ -187,38 +193,54 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .eq(SysUser::getId, userId);
         // 1. 查询用户信息
         SysUserVo sysUserVo = baseMapper.queryVoOne(userLambdaQueryWrapper, SysUserVo.class);
-        sysUserVo.setLoginIpHome(IpUtils.completeIpHome(sysUserVo.getLoginIp()));
-        // 2. 查询用户角色信息列表
-        List<SysRoleVo> roleList = sysUserRoleService.queryRoleListByUserId(userId);
-        // 3. 封装角色菜单信息
-        if (CollectionUtils.isNotEmpty(roleList)) {
-            // 3.1. 查询角色和菜单关联数据分组
-            List<Long> roleIdList = roleList.stream().map(SysRoleVo::getId).collect(Collectors.toList());
-            LambdaQueryWrapper<SysRoleMenu> roleMenuLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            roleMenuLambdaQueryWrapper.in(SysRoleMenu::getRoleId, roleIdList);
-            Map<Long, List<SysRoleMenu>> roleMenuGroup = sysRoleMenuService.list(roleMenuLambdaQueryWrapper)
-                    .stream().collect(Collectors.groupingBy(SysRoleMenu::getRoleId));
-            // 3.2. 查询所有的菜单列表
-            LambdaQueryWrapper<SysMenu> menuLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            menuLambdaQueryWrapper.eq(SysMenu::getState, PermissionStateEnum.NORMAL.getCode());
-            List<SysMenu> menuList = sysMenuService.list(menuLambdaQueryWrapper);
-            // 3.3. 封装菜单信息
-            roleList.forEach(role -> {
-                if(AdminEnum.SUPER_ADMIN.getLabel().equals(role.getLabel())){
-                    role.setMenuList(TreeUtils.createTree(BeanUtils.copyToList(menuList, SysMenuVo.class)));
-                } else {
-                    List<Long> menuIdList = roleMenuGroup.get(role.getId())
-                            .stream()
-                            .map(SysRoleMenu::getMenuId)
-                            .toList();
-                    List<SysMenu> currentMenuList = menuList.stream()
-                            .filter(menu -> menuIdList.contains(menu.getId()))
-                            .collect(Collectors.toList());
-                    role.setMenuList(TreeUtils.createTree(BeanUtils.copyToList(currentMenuList, SysMenuVo.class)));
-                }
-            });
+        if (ObjectUtils.isNotNull(sysUserVo)) {
+            sysUserVo.setLoginIpHome(IpUtils.completeIpHome(sysUserVo.getLoginIp()));
+            // 2. 查询用户角色信息列表
+            List<SysRoleVo> roleList = sysUserRoleService.queryRoleListByUserId(userId);
+            // 3. 封装角色菜单信息
+            if (CollectionUtils.isNotEmpty(roleList)) {
+                // 3.1. 查询角色和菜单关联数据分组
+                List<Long> roleIdList = roleList.stream().map(SysRoleVo::getId).collect(Collectors.toList());
+                LambdaQueryWrapper<SysRoleMenu> roleMenuLambdaQueryWrapper = new LambdaQueryWrapper<>();
+                roleMenuLambdaQueryWrapper.in(SysRoleMenu::getRoleId, roleIdList);
+                Map<Long, Set<Long>> roleMenuIdMap = sysRoleMenuService.list(roleMenuLambdaQueryWrapper)
+                        .stream().collect(Collectors.groupingBy(SysRoleMenu::getRoleId, Collectors.mapping(SysRoleMenu::getMenuId, Collectors.toSet())));
+                // 3.2. 查询状态是正常的菜单列表
+                LambdaQueryWrapper<SysMenu> menuLambdaQueryWrapper = new LambdaQueryWrapper<>();
+                menuLambdaQueryWrapper.eq(SysMenu::getState, PermissionStateEnum.NORMAL.getCode());
+                List<SysMenu> menuList = sysMenuService.list(menuLambdaQueryWrapper);
+                // 3.3. 给角色封装对应关联的菜单信息
+                roleList.forEach(role -> {
+                    if (AdminEnum.SUPER_ADMIN.getLabel().equals(role.getLabel())) {
+                        List<SysMenuVo> menuVoList = BeanUtils.copyToList(menuList, SysMenuVo.class);
+                        role.setMenuList(menuVoList);
+                    } else {
+                        Set<Long> menuIds = roleMenuIdMap.getOrDefault(role.getId(), new HashSet<>());
+                        List<SysMenu> currentSysMenuList = menuList.stream()
+                                .filter(menu -> menuIds.contains(menu.getId()))
+                                .collect(Collectors.toList());
+                        List<SysMenuVo> menuVoList = BeanUtils.copyToList(currentSysMenuList, SysMenuVo.class);
+                        role.setMenuList(menuVoList);
+                    }
+                });
+                // 3.4. 提取去重后的菜单信息
+                List<SysMenuVo> distinctMenuList = roleList.stream()
+                        .map(SysRoleVo::getMenuList)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.collectingAndThen(
+                                Collectors.toMap(SysMenuVo::getId, menu -> menu, (existing, replacement) -> existing),
+                                map -> new ArrayList<>(map.values()))
+                        );
+                distinctMenuList.sort(Comparator.comparing(SysMenuVo::getCreateTime));
+                sysUserVo.setMenuList(TreeUtils.createTree(distinctMenuList));
+                Set<String> rolePermissions = roleList.stream().map(SysRoleVo::getLabel).filter(StringUtils::isNotBlank)
+                        .collect(Collectors.toSet());
+                Set<String> menuPermissions = distinctMenuList.stream().map(SysMenuVo::getPerms).filter(StringUtils::isNotBlank)
+                        .collect(Collectors.toSet());
+                sysUserVo.setRolePermissions(rolePermissions);
+                sysUserVo.setMenuPermissions(menuPermissions);
+            }
         }
-        sysUserVo.setRoleList(roleList);
         return sysUserVo;
     }
 
@@ -253,21 +275,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * 按令牌查询用户信息
      *
      * @param token 令 牌
-     * @return {@link Map}<{@link String}, {@link Object}>
+     * @return {@link SysUserVo }
      */
     @Override
-    public Map<String, Object> queryUserInfoByToken(String token) {
+    public SysUserVo queryUserInfoByToken(String token) {
         if (StringUtils.isBlank(token)) {
             throw new ServiceException("用户信息获取失败，令牌为空");
         }
-        Map<String, String> userId = TokenUtils.getValueFromToken(token, List.of("userId"));
-        SysUserVo sysUserVo = this.queryUserById(Long.parseLong(userId.get("userId")));
-        HashMap<String, Object> map = new HashMap<>(CollectionUtils.initialCapacity(2));
-        List<String> roleLabelList = sysUserVo.getRoleList().stream().map(SysRoleVo::getLabel).toList();
-        // 放入用户信息
-        map.put("user", sysUserVo);
-        map.put("roleLabelList", roleLabelList);
-        return map;
+        Map<String, String> userId = TokenUtils.getValueFromToken(token, Collections.singletonList("userId"));
+        return this.queryUserById(Long.parseLong(userId.get("userId")));
     }
 
     /**

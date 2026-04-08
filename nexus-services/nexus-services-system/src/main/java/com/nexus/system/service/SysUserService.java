@@ -81,9 +81,9 @@ public interface SysUserService extends IServicePlus<SysUser, SysUserVo> {
      * 按令牌查询用户信息
      *
      * @param token 令 牌
-     * @return {@link Map}<{@link String}, {@link Object}>
+     * @return {@link SysUserVo }
      */
-    Map<String, Object> queryUserInfoByToken(String token);
+    SysUserVo queryUserInfoByToken(String token);
 
     /**
      * 检查邮箱唯一性

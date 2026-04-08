@@ -6,6 +6,7 @@ import com.nexus.system.domain.vo.SysRoleVo;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 用户和角色关联服务
@@ -35,9 +36,9 @@ public interface SysUserRoleService extends IServicePlus<SysUserRole,SysUserRole
      * 为用户添加角色
      *
      * @param UserId 等待添加角色的用户id
-     * @param roleNameList   角色名字列表
+     * @param roleLabels 角色标签列表
      */
-    void addRoleForUser(Long UserId,List<String> roleNameList);
+    void addRoleForUser(Long UserId, Set<String> roleLabels);
 
     /**
      * 获取角色列表

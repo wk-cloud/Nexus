@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 在线用户VO
@@ -76,5 +78,20 @@ public class SysOnlineUserVo implements Serializable {
      * 角色列表
      */
     private List<SysRoleVo> roleList = new ArrayList<>();
+
+    /**
+     * 菜单信息列表
+     */
+    private List<SysMenuVo> menuList = new ArrayList<>();
+
+    /**
+     * 菜单权限(菜单权限标签)列表
+     */
+    private Set<String> menuPermissions = new HashSet<>();
+
+    /**
+     * 角色权限(角色标签)列表
+     */
+    private Set<String> rolePermissions = new HashSet<>();
 
 }

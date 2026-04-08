@@ -35,7 +35,7 @@ public class SysSensitiveWordController {
      */
     @Pass
     @Limit(limitType = LimitTypeEnum.IP)
-    @Operation(description = "替换敏感词接口")
+    @Operation(summary = "替换敏感词接口")
     @GetMapping("/replace")
     public Result<String> replace(@RequestParam(required = false) String text, @RequestParam(required = false) String replaceStr) {
         String replaced = StringUtils.isBlank(replaceStr) ? SensitiveWordHelper.replace(text) : SensitiveWordHelper.replace(text, replaceStr);
@@ -50,7 +50,7 @@ public class SysSensitiveWordController {
      */
     @Pass
     @Limit(limitType = LimitTypeEnum.IP)
-    @Operation(description = "判断是否包含敏感词接口")
+    @Operation(summary = "判断是否包含敏感词接口")
     @GetMapping("/contains")
     public Result<Boolean> contains(@RequestParam(required = false) String text) {
         return Result.success(SensitiveWordHelper.contains(text));
@@ -64,7 +64,7 @@ public class SysSensitiveWordController {
      */
     @Pass
     @Limit(limitType = LimitTypeEnum.IP)
-    @Operation(description = "返回匹配到的第一个敏感词接口")
+    @Operation(summary = "返回匹配到的第一个敏感词接口")
     @GetMapping("/findFirst")
     public Result<String> findFirst(@RequestParam(required = false) String text) {
         return Result.<String>success().add(SensitiveWordHelper.findFirst(text));
@@ -78,7 +78,7 @@ public class SysSensitiveWordController {
      */
     @Pass
     @Limit(limitType = LimitTypeEnum.IP)
-    @Operation(description = "返回匹配到的所有敏感词接口")
+    @Operation(summary = "返回匹配到的所有敏感词接口")
     @GetMapping("/findAll")
     public Result<Set<String>> findAll(@RequestParam(required = false) String text) {
         return Result.success(SensitiveWordHelper.findAll(text));

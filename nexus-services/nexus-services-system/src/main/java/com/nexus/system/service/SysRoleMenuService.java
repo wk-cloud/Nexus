@@ -47,12 +47,4 @@ public interface SysRoleMenuService extends IServicePlus<SysRoleMenu, SysRoleMen
      * @return {@link Boolean}
      */
     Boolean saveRoleAndMenuRelation(Long roleId, List<Long> menuIdList);
-
-    /**
-     * 通过角色id，获取菜单树列表
-     *
-     * @param roleId 角色id
-     * @return {@link List}<{@link SysMenuVo}>
-     */
-    List<SysMenuVo> getMenuTreeByRoleId(Long roleId);
 }

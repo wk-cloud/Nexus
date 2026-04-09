@@ -53,7 +53,10 @@ public class SysPermissionServiceImpl implements SysPermissionService, Permissio
             return new HashSet<>();
         }
         LambdaQueryWrapper<SysRole> roleLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        roleLambdaQueryWrapper.select(SysRole::getLabel).in(SysRole::getId, roleIds).eq(SysRole::getState, PermissionStateEnum.NORMAL.getCode());
+        roleLambdaQueryWrapper.select(SysRole::getLabel)
+                .isNotNull(SysRole::getLabel)
+                .in(SysRole::getId, roleIds)
+                .eq(SysRole::getState, PermissionStateEnum.NORMAL.getCode());
         return sysRoleService.list(roleLambdaQueryWrapper).stream().map(SysRole::getLabel).filter(StringUtils::isNotBlank).collect(Collectors.toSet());
     }
 
@@ -67,7 +70,9 @@ public class SysPermissionServiceImpl implements SysPermissionService, Permissio
     public Set<String> getMenuPermission(Long userId) {
         if(LoginHelper.isSuperAdmin()) {
             LambdaQueryWrapper<SysMenu> menuLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            menuLambdaQueryWrapper.select(SysMenu::getPerms).eq(SysMenu::getState, PermissionStateEnum.NORMAL.getCode());;
+            menuLambdaQueryWrapper.select(SysMenu::getPerms)
+                    .isNotNull(SysMenu::getPerms)
+                    .eq(SysMenu::getState, PermissionStateEnum.NORMAL.getCode());;
             return sysMenuService.list(menuLambdaQueryWrapper).stream().map(SysMenu::getPerms).filter(StringUtils::isNotBlank).collect(Collectors.toSet());
         }
         Set<Long> roleIds = getRoleIds(userId);
@@ -82,7 +87,10 @@ public class SysPermissionServiceImpl implements SysPermissionService, Permissio
         }
         Set<Long> menuIds = roleMenuList.stream().map(SysRoleMenu::getMenuId).collect(Collectors.toSet());
         LambdaQueryWrapper<SysMenu> menuLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        menuLambdaQueryWrapper.select(SysMenu::getPerms).in(SysMenu::getId, menuIds).eq(SysMenu::getState, PermissionStateEnum.NORMAL.getCode());
+        menuLambdaQueryWrapper.select(SysMenu::getPerms)
+                .isNotNull(SysMenu::getPerms)
+                .in(SysMenu::getId, menuIds)
+                .eq(SysMenu::getState, PermissionStateEnum.NORMAL.getCode());
         return sysMenuService.list(menuLambdaQueryWrapper).stream().map(SysMenu::getPerms).filter(StringUtils::isNotBlank).collect(Collectors.toSet());
     }
 

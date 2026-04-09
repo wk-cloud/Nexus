@@ -1,8 +1,6 @@
 package com.nexus.common.websocket.domain;
-import com.nexus.common.core.base.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
@@ -15,11 +13,10 @@ import java.time.LocalDateTime;
  * @author wk
  * @date 2023/1/24
  */
-@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Message extends BaseEntity implements Serializable {
+public class Message implements Serializable {
 
     /**
      * 发送人id

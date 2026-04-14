@@ -8,8 +8,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum LoginTypeEnum {
-    EMAIL(1,"邮箱"),
-    QQ(2,"QQ");
+    PASSWORD(1,"密码登录"),
+    QQ(2,"QQ登录"),
+    PASSWORD_FREE(3,"免密登录");
 
     private final Integer code;
     private final String info;

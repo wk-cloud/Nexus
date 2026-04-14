@@ -25,7 +25,7 @@ public class TokenUtils {
     /**
      * 签名
      */
-    private static String signature = "@wk-blog";
+    private static String signature = "@wk-nexus@";
 
     /**
      * 过期时间
@@ -38,7 +38,7 @@ public class TokenUtils {
         if (StringUtils.isNotBlank(customSignature)) {
             signature = customSignature;
         }
-        String customExpirationTime = SpringUtils.getProperty("token.expiration-time");
+        String customExpirationTime = SpringUtils.getProperty("token.expiration");
         if (StringUtils.isNotBlank(customExpirationTime)) {
             expirationTime = SpELUtils.evaluateInt(customExpirationTime);
         }

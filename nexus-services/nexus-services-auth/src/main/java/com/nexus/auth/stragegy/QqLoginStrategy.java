@@ -115,7 +115,7 @@ public class QqLoginStrategy extends AbstractLoginStrategy{
             Integer loginType = getLoginType();
             sysUser.setLoginType(loginType);
             // 4. 生成用户名
-            String userName = UserNameUtils.generate(loginType);
+            String userName = UserNameUtils.generate(loginType, 10);
             sysUser.setUsername(userName);
             // 5. openId
             sysUser.setOpenid((String) userInfoMap.get("openId"));

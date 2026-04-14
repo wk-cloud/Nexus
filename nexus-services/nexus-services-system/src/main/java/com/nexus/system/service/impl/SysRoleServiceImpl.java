@@ -200,12 +200,18 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         LambdaQueryWrapper<SysRole> roleLambdaQueryWrapper = this.buildLambdaQueryWrapper(sysRoleDto);
         Page<SysRoleVo> roleBackVoPage = baseMapper.queryVoPage(queryParams.build(), roleLambdaQueryWrapper);
         PagingData<SysRoleVo> pagingData = PagingData.build(roleBackVoPage);
-        List<SysRoleVo> sysRoleVoList = pagingData.getDataList();
-        if (CollectionUtils.isNotEmpty(sysRoleVoList)) {
-            List<SysRoleMenu> roleMenuList = roleMenuService.list();
+        List<SysRoleVo> roleList = pagingData.getDataList();
+        if (CollectionUtils.isNotEmpty(roleList)) {
+            Set<Long> roleIds = roleList.stream().map(SysRoleVo::getId).collect(Collectors.toSet());
+            // 1. 获取角色和菜单关联列表
+            LambdaQueryWrapper<SysRoleMenu> roleMenuLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            roleMenuLambdaQueryWrapper.in(SysRoleMenu::getRoleId, roleIds);
+            List<SysRoleMenu> roleMenuList = roleMenuService.list(roleMenuLambdaQueryWrapper);
+
+            // 2. 获取菜单列表
             List<SysMenuVo> menuList = sysMenuService.queryVoList();
 
-            // 1. 角色和菜单关系分组
+            // 3. 角色和菜单关系分组
             Map<Long, List<Long>> roleIdToMenuIdsMap = roleMenuList.stream()
                     .filter(rp -> rp.getRoleId() != null && rp.getMenuId() != null)
                     .collect(Collectors.groupingBy(
@@ -213,15 +219,15 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
                             Collectors.mapping(SysRoleMenu::getMenuId, Collectors.toList())
                     ));
 
-            // 2. 菜单id和菜单映射
+            // 4. 菜单id和菜单映射
             Map<Long, SysMenuVo> menuIdToVoMap = menuList.stream()
                     .collect(Collectors.toMap(SysMenuVo::getId, Function.identity()));
 
-            // 3. 管理员标签
+            // 5. 管理员标签
             String adminLabel = RoleEnum.ADMIN.getRoleLabel();
 
-            // 4. 组装角色和菜单
-            for (SysRoleVo item : sysRoleVoList) {
+            // 6. 组装角色和菜单
+            for (SysRoleVo item : roleList) {
                 if (adminLabel.equals(item.getLabel())) {
                     item.setMenuList(menuList);
                     continue;

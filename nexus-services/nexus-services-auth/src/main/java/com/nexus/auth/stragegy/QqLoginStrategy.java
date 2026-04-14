@@ -57,28 +57,29 @@ public class QqLoginStrategy extends AbstractLoginStrategy{
      */
     @Override
     protected LoginVo loginProcessor(LoginDto loginDto) {
-        SysUser user = this.qqLogin(loginDto, LoginHelper.getRequest());
+        SysUser sysUser = this.qqLogin(loginDto, LoginHelper.getRequest());
         // 生成token
         HashMap<String, String> payLoad = new HashMap<>(CollectionUtils.initialCapacity(2));
-        payLoad.put("userId", Long.toString(user.getId()));
+        payLoad.put("userId", Long.toString(sysUser.getId()));
         String token = TokenUtils.createTokenForRedisSet(payLoad);
         // 保存在线信息
         SysOnlineUser onlineUser = new SysOnlineUser();
-        onlineUser.setUserId(user.getId());
+        onlineUser.setUserId(sysUser.getId());
         onlineUser.setLoginPlatform(loginDto.getLoginPlatform());
         onlineUser.setLoginToken(token);
         onlineUser.setLoginTime(LocalDateTime.now());
+        onlineUser.setLoginType(getLoginType());
         super.saveOnlineUser(onlineUser);
         // 暂存用户信息
-        LoginUser loginUser = BeanUtils.toBean(user, LoginUser.class);
+        LoginUser loginUser = BeanUtils.toBean(sysUser, LoginUser.class);
         loginUser.setToken(token);
-        loginUser.setUserId(user.getId());
+        loginUser.setUserId(sysUser.getId());
         LoginHelper.setLoginUser(loginUser);
         // 返回结果
         LoginVo loginVo = new LoginVo();
         loginVo.setToken(token);
         loginVo.setLoginFlag(true);
-        loginVo.setLoginType(LoginTypeEnum.QQ.getCode());
+        loginVo.setLoginType(getLoginType());
         return loginVo;
     }
 
@@ -101,52 +102,51 @@ public class QqLoginStrategy extends AbstractLoginStrategy{
         if (StringUtils.isBlank(openId)) {
             throw new ServiceException("登录失败，QQ账户信息获取失败");
         }
-        SysUser user = super.queryUserInfoByOpenId(openId);
-        if (ObjectUtils.isNull(user)) {
-            user = new SysUser();
+        SysUser sysUser = super.queryUserInfoByOpenId(openId);
+        if (ObjectUtils.isNull(sysUser)) {
+            sysUser = new SysUser();
             // 如果成功获取到用户信息，则允许登录并保存信息
             // 1. 登录ip
             String ipAddress = IpUtils.getIpAddress(request);
-            user.setLoginIp(ipAddress);
+            sysUser.setLoginIp(ipAddress);
             // 2. 登录时间
-            user.setLoginTime(LocalDateTime.now());
+            sysUser.setLoginTime(LocalDateTime.now());
             // 3. 登录方式
-            Integer loginType = LoginTypeEnum.QQ.getCode();
-            user.setLoginType(loginType);
+            Integer loginType = getLoginType();
+            sysUser.setLoginType(loginType);
             // 4. 生成用户名
             String userName = UserNameUtils.generate(loginType);
-            user.setUsername(userName);
+            sysUser.setUsername(userName);
             // 5. openId
-            user.setOpenid((String) userInfoMap.get("openId"));
+            sysUser.setOpenid((String) userInfoMap.get("openId"));
             // 6. 昵称
-            user.setNickName((String) userInfoMap.get("nickname"));
+            sysUser.setNickName((String) userInfoMap.get("nickname"));
             // 7. 头像
-            user.setAvatar((String) userInfoMap.get("figureurl_qq"));
-            sysUserMapper.insert(user);
+            sysUser.setAvatar((String) userInfoMap.get("figureurl_qq"));
+            sysUserMapper.insert(sysUser);
             // 设置用户角色信息为user
             Long roleId = super.queryRoleIdByRoleLabel(RoleEnum.USER.getRoleLabel());
-            SysUserRole userRole = new SysUserRole();
-            userRole.setUserId(user.getId());
-            userRole.setRoleId(roleId);
-            sysUserRoleMapper.insert(userRole);
+            SysUserRole sysUserRole = new SysUserRole();
+            sysUserRole.setUserId(sysUser.getId());
+            sysUserRole.setRoleId(roleId);
+            sysUserRoleMapper.insert(sysUserRole);
         } else {
-            if (user.getDisabled()) {
+            if (sysUser.getDisabled()) {
                 throw new ServiceException("登录失败，当前账号已被禁止登录，请联系管理员进行账号解封");
             }
             // 1. 登录ip
             String ipAddress = IpUtils.getIpAddress(request);
-            user.setLoginIp(ipAddress);
+            sysUser.setLoginIp(ipAddress);
             // 2. 登录时间
-            user.setLoginTime(LocalDateTime.now());
+            sysUser.setLoginTime(LocalDateTime.now());
             // 3. 登录方式
-            Integer loginType = LoginTypeEnum.QQ.getCode();
-            user.setLoginType(loginType);
+            sysUser.setLoginType(getLoginType());
             // 4. 昵称
-            user.setNickName((String) userInfoMap.get("nickname"));
+            sysUser.setNickName((String) userInfoMap.get("nickname"));
             // 5. 头像
-            user.setAvatar((String) userInfoMap.get("figureurl_qq"));
-            sysUserMapper.updateById(user);
+            sysUser.setAvatar((String) userInfoMap.get("figureurl_qq"));
+            sysUserMapper.updateById(sysUser);
         }
-        return user;
+        return sysUser;
     }
 }

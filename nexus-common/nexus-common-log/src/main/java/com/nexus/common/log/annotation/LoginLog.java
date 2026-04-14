@@ -29,6 +29,6 @@ public @interface LoginLog {
      *
      * @return {@link LoginTypeEnum}
      */
-    LoginTypeEnum loginType() default LoginTypeEnum.EMAIL;
+    LoginTypeEnum loginType() default LoginTypeEnum.PASSWORD;
 
 }

@@ -30,6 +30,11 @@ public class SysOnlineUser extends BaseEntity implements Serializable {
     private Long userId;
 
     /**
+     * 登录类型
+     */
+    private Integer loginType;
+
+    /**
      * 登录平台
      */
     private Integer loginPlatform;

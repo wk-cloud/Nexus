@@ -37,20 +37,4 @@ public class VerificationUtils {
     public static boolean isQQ(String qq){
         return qq.matches(QQ_REG);
     }
-
-    /**
-     * 获取登录类型
-     *
-     * @param accountNumber 账号
-     * @return {@link Integer}
-     */
-    public static Integer getLoginType(String accountNumber){
-        Integer loginType = null;
-        if(isEmail(accountNumber)){
-            loginType = LoginTypeEnum.EMAIL.getCode();
-        }else if(isQQ(accountNumber)){
-            loginType = LoginTypeEnum.QQ.getCode();
-        }
-        return loginType;
-    }
 }

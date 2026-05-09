@@ -56,6 +56,7 @@
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <lombok.version>1.18.38</lombok.version>
         <junit.version>4.13.2</junit.version>
+        <redisson.version>3.52.0</redisson.version>
         <netty.version>4.2.6.Final</netty.version>
         <mybatis-plus.version>3.5.14</mybatis-plus.version>
         <mysql-connector.version>9.4.0</mysql-connector.version>
@@ -110,6 +111,13 @@
                 <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!-- Redisson -->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson.version}</version>
             </dependency>
 
             <!-- Netty -->

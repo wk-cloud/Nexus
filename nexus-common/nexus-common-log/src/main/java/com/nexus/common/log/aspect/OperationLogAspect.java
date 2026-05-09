@@ -1,6 +1,7 @@
 package com.nexus.common.log.aspect;
 
 import com.nexus.common.core.domain.event.OperationLogEvent;
+import com.nexus.common.core.domain.view.Result;
 import com.nexus.common.core.service.UserService;
 import com.nexus.common.core.utils.ObjectUtils;
 import com.nexus.common.core.utils.SpringUtils;
@@ -114,7 +115,11 @@ public class OperationLogAspect {
         operationLogEvent.setRequestUrl(baseUrl + url);
         operationLogEvent.setRequestMethod(method.toString());
         operationLogEvent.setRequestParams(Arrays.asList(proceedingJoinPoint.getArgs()).toString());
-        operationLogEvent.setRequestResult(result.toString());
+        if (ObjectUtils.isNotNull(result)) {
+            operationLogEvent.setRequestResult(result.toString());
+        }else {
+            operationLogEvent.setRequestResult(Result.success().toString());
+        }
         // 发送操作日志事件
         SpringUtils.context().publishEvent(operationLogEvent);
         return result;

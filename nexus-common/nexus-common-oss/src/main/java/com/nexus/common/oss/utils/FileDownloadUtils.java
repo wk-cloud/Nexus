@@ -7,17 +7,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 
+
 import java.io.*;
 import java.net.URI;
-import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -47,10 +47,7 @@ public class FileDownloadUtils {
             return;
         }
         String fileName = String.format("%s.zip", DateUtils.formatDate(new Date()));
-        // 设置响应头
-        response.setContentType("application/zip");
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-        try (ZipOutputStream zos = new ZipOutputStream(response.getOutputStream())) {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(bos)) {
 
             // 并发下载所有文件并返回临时路径的 CompletableFuture 列表
             List<CompletableFuture<Path>> downloadFutures = fileUrls.stream()
@@ -77,7 +74,7 @@ public class FileDownloadUtils {
                             // 删除临时文件
                             Files.deleteIfExists(tempFile);
                         } catch (IOException e) {
-                            log.error("删除临时文件出错", e);
+                            log.error("删除临时文件时出错", e);
                         }
                     }
                 }
@@ -86,8 +83,12 @@ public class FileDownloadUtils {
                 return null;
             }).get(); // 等待 zip 完成
 
+            // 设置响应头
+            createResponse(response, fileName, bos.size());
+            // 下载 zip
+            response.getOutputStream().write(bos.toByteArray());
         } catch (Exception e) {
-            throw new IOException("下载或压缩文件时出错: ", e);
+            throw new RuntimeException("下载或压缩文件时出错: ", e);
         }
     }
 
@@ -100,7 +101,6 @@ public class FileDownloadUtils {
     private static Path downloadFileToTemp(String fileUrl) {
         try {
             Path tempFile = Files.createTempFile("download-", ".tmp");
-
             try (InputStream in = URI.create(fileUrl).toURL().openStream();
                  OutputStream out = Files.newOutputStream(tempFile)) {
 
@@ -142,7 +142,7 @@ public class FileDownloadUtils {
     }
 
     /**
-     * 下载
+     * 下载文件
      *
      * @param path     路径
      * @param response 响应
@@ -170,7 +170,7 @@ public class FileDownloadUtils {
             if (ObjectUtils.isNull(file)) {
                 throw new RuntimeException("文件下载失败，文件资源不存在");
             }
-            response = createResponse(response, file);
+            createResponse(response, file);
             byte[] bytes = FileUtils.readBytes(file);
             outputStream = response.getOutputStream();
             outputStream.write(bytes);
@@ -193,7 +193,7 @@ public class FileDownloadUtils {
             if (ArrayUtils.isEmpty(bytes)) {
                 throw new RuntimeException("文件下载失败，文件资源不存在");
             }
-            response = createResponse(response, fileName);
+            createResponse(response, fileName, bytes.length);
             outputStream = response.getOutputStream();
             outputStream.write(bytes);
         } catch (IOException e) {
@@ -203,7 +203,7 @@ public class FileDownloadUtils {
                 try {
                     outputStream.close();
                 } catch (IOException e) {
-                    log.error("关闭流失败", e);
+                    log.error("关闭输出流时出错", e);
                 }
             }
         }
@@ -215,22 +215,20 @@ public class FileDownloadUtils {
      *
      * @param response 响应
      * @param fileName 文件名称
-     * @return {@link HttpServletResponse}
      * @throws UnsupportedEncodingException 不支持编码异常
      */
-    private static HttpServletResponse createResponse(HttpServletResponse response, String fileName) throws UnsupportedEncodingException {
+    private static void createResponse(HttpServletResponse response, String fileName, int fileSize) throws UnsupportedEncodingException {
         if (StringUtils.isBlank(fileName)) {
             throw new RuntimeException("创建下载响应失败，文件名称不能为空");
         }
         response.setContentType("application/octet-stream");
         response.setCharacterEncoding("utf-8");
-        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
-        response.setHeader("Content-Transfer-Encoding", "binary");
-        response.setHeader("Connection", "keep-alive");
-        response.setHeader("Cache-Control", "no-cache");
-        response.setHeader("Pragma", "no-cache");
-        response.setDateHeader("Expires", 0);
-        return response;
+        response.setContentLength(fileSize);
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8));
+        response.setHeader(HttpHeaders.CONNECTION, "keep-alive");
+        response.setHeader(HttpHeaders.CACHE_CONTROL, "no-cache");
+        response.setHeader(HttpHeaders.PRAGMA, "no-cache");
+        response.setDateHeader(HttpHeaders.EXPIRES, 0);
     }
 
     /**
@@ -238,22 +236,19 @@ public class FileDownloadUtils {
      *
      * @param response 响应
      * @param file     文件
-     * @return {@link HttpServletResponse}
      * @throws UnsupportedEncodingException 不支持编码异常
      */
-    private static HttpServletResponse createResponse(HttpServletResponse response, File file) throws UnsupportedEncodingException {
+    private static void createResponse(HttpServletResponse response, File file) throws UnsupportedEncodingException {
         if (ObjectUtils.isNull(file)) {
             throw new RuntimeException("创建下载响应失败，文件资源不存在");
         }
         response.setContentType("application/octet-stream");
         response.setCharacterEncoding("utf-8");
-        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
         response.setContentLength((int) file.length());
-        response.setHeader("Content-Transfer-Encoding", "binary");
-        response.setHeader("Connection", "keep-alive");
-        response.setHeader("Cache-Control", "no-cache");
-        response.setHeader("Pragma", "no-cache");
-        response.setDateHeader("Expires", 0);
-        return response;
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLEncoder.encode(file.getName(), StandardCharsets.UTF_8));
+        response.setHeader(HttpHeaders.CONNECTION, "keep-alive");
+        response.setHeader(HttpHeaders.CACHE_CONTROL, "no-cache");
+        response.setHeader(HttpHeaders.PRAGMA, "no-cache");
+        response.setDateHeader(HttpHeaders.EXPIRES, 0);
     }
 }

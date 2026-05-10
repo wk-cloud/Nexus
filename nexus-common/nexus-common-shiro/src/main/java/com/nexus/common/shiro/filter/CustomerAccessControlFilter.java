@@ -225,7 +225,7 @@ public class CustomerAccessControlFilter extends BasicHttpAuthenticationFilter {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             try {
-                response.getWriter().write(JSONUtil.toJsonStr(Result.fail(HttpCodeEnum.NO_PERMISSION.getCode(),"权限不足")));
+                response.getWriter().write(JSONUtil.toJsonStr(Result.fail(HttpCodeEnum.NO_PERMISSION.getCode(), HttpCodeEnum.NO_PERMISSION.getInfo())));
             } catch (IOException e) {
                log.error("onAccessDenied error", e);
             }

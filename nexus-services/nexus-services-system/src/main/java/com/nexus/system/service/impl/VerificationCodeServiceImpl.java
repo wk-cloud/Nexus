@@ -9,13 +9,14 @@ import cloud.tianai.captcha.validator.common.model.dto.ImageCaptchaTrack;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.CircleCaptcha;
 import com.alibaba.fastjson2.JSONObject;
-import com.nexus.common.core.domain.dto.VerificationCodeDto;
+import com.nexus.common.verificationcode.domain.dto.VerificationCodeDto;
 import com.nexus.common.core.enums.EmailTemplateEnum;
 import com.nexus.common.core.enums.VerificationCodeTypeEnum;
 import com.nexus.common.core.exception.ServiceException;
 import com.nexus.common.core.utils.*;
 import com.nexus.common.mail.utils.MailUtils;
 import com.nexus.common.redis.utils.RedisUtils;
+import com.nexus.common.verificationcode.utils.VerificationCodeUtils;
 import com.nexus.system.service.VerificationCodeService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -45,21 +46,33 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
      */
     @Override
     public void sendEmailVerificationCode(VerificationCodeDto verificationCodeDto) {
-        String email = verificationCodeDto.getEmail().trim();
-        if (!VerificationUtils.isEmail(email)) {
+        String email = verificationCodeDto.getEmail();
+        if (StringUtils.isBlank(email) || !VerificationUtils.isEmail(email)) {
             throw new ServiceException("验证码发送失败，邮箱格式不合法");
         }
+
+        email = email.trim();
+
+        // 签名验证（包含防重放机制）
         boolean verification = VerificationCodeUtils.signatureVerification(verificationCodeDto);
         if(!verification){
-            throw new ServiceException("验证码发送失败，签名校验失败");
+            throw new ServiceException("验证码发送失败，签名校验失败或签名已失效");
         }
+
         String verificationCodeKey = VerificationCodeTypeEnum.getKey(verificationCodeDto.getVerificationCodeType()) + email;
-        String verificationCode = VerificationCodeUtils.create(8);
+
+        // 检查是否已经发送过验证码（频率限制）
         if (RedisUtils.hasKey(verificationCodeKey)) {
             throw new ServiceException("验证码已经发送，请耐心等待");
         }
+
+        // 生成并存储验证码
+        String verificationCode = VerificationCodeUtils.create(8);
         RedisUtils.setEx(verificationCodeKey, verificationCode, 1, TimeUnit.MINUTES);
-        mailUtils.sendSimpleMail(email, EmailTemplateEnum.VERIFICATION_CODE.getSubject(), String.format(EmailTemplateEnum.VERIFICATION_CODE.getText(), verificationCode));
+
+        // 发送邮件
+        mailUtils.sendSimpleMail(email, EmailTemplateEnum.VERIFICATION_CODE.getSubject(),
+                String.format(EmailTemplateEnum.VERIFICATION_CODE.getText(), verificationCode));
     }
 
     /**

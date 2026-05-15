@@ -3,7 +3,7 @@ package com.nexus.system.service;
 import cloud.tianai.captcha.application.vo.CaptchaResponse;
 import cloud.tianai.captcha.application.vo.ImageCaptchaVO;
 import com.alibaba.fastjson2.JSONObject;
-import com.nexus.common.core.domain.dto.VerificationCodeDto;
+import com.nexus.common.verificationcode.domain.dto.VerificationCodeDto;
 
 /**
  * 验证码服务

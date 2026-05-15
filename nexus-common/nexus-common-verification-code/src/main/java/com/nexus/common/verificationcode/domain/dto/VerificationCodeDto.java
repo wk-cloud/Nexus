@@ -1,5 +1,4 @@
-package com.nexus.common.core.domain.dto;
-
+package com.nexus.common.verificationcode.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

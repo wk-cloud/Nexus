@@ -5,7 +5,7 @@ import cloud.tianai.captcha.application.vo.CaptchaResponse;
 import cloud.tianai.captcha.application.vo.ImageCaptchaVO;
 import com.alibaba.fastjson2.JSONObject;
 import com.nexus.common.core.annotation.Pass;
-import com.nexus.common.core.domain.dto.VerificationCodeDto;
+import com.nexus.common.verificationcode.domain.dto.VerificationCodeDto;
 import com.nexus.common.core.domain.view.Result;
 import com.nexus.common.core.enums.LimitTypeEnum;
 import com.nexus.common.redis.annotation.Limit;

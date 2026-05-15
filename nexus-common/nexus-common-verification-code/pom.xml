@@ -1,0 +1,28 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.nexus</groupId>
+        <artifactId>nexus-common</artifactId>
+        <version>${nexus-version}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>nexus-common-verification-code</artifactId>
+    <description>nexus-common-verification-code 验证码通用依赖项</description>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <!-- redis通用依赖-->
+        <dependency>
+            <groupId>com.nexus</groupId>
+            <artifactId>nexus-common-redis</artifactId>
+        </dependency>
+
+        <!-- 图形验证码 -->
+        <dependency>
+            <groupId>cloud.tianai.captcha</groupId>
+            <artifactId>tianai-captcha-springboot-starter</artifactId>
+        </dependency>
+    </dependencies>
+</project>

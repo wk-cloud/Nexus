@@ -17,17 +17,18 @@
         <module>nexus-common-core</module>
         <module>nexus-common-doc</module>
         <module>nexus-common-easy-rules</module>
+        <module>nexus-common-excel</module>
         <module>nexus-common-log</module>
         <module>nexus-common-mail</module>
         <module>nexus-common-mybatis-plus</module>
+        <module>nexus-common-netty</module>
+        <module>nexus-common-oss</module>
         <module>nexus-common-redis</module>
         <module>nexus-common-sensitive-word</module>
         <module>nexus-common-shiro</module>
         <module>nexus-common-token</module>
+        <module>nexus-common-verification-code</module>
         <module>nexus-common-websocket</module>
-        <module>nexus-common-excel</module>
-        <module>nexus-common-oss</module>
-        <module>nexus-common-netty</module>
     </modules>
 
 </project>

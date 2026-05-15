@@ -92,6 +92,12 @@
                 <artifactId>nexus-common-token</artifactId>
                 <version>${nexus-version}</version>
             </dependency>
+            <!-- nexus-common-verification-code 通用验证码依赖 -->
+            <dependency>
+                <groupId>com.nexus</groupId>
+                <artifactId>nexus-common-verification-code</artifactId>
+                <version>${nexus-version}</version>
+            </dependency>
             <!-- nexus-common-websocket 通用websocket依赖 -->
             <dependency>
                 <groupId>com.nexus</groupId>

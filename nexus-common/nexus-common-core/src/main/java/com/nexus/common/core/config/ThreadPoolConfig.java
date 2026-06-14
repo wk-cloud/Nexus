@@ -18,7 +18,7 @@ public class ThreadPoolConfig {
     //参数初始化
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     //核心线程数量大小
-    private static final int corePoolSize = Math.max(2, Math.min(CPU_COUNT-1,4));
+    private static final int corePoolSize = Math.clamp(CPU_COUNT - 1, 2, 4);
     //线程池最大容纳线程数
     private static final int maxPoolSize = CPU_COUNT * 2 + 1;
     //阻塞队列

@@ -23,7 +23,7 @@ import java.util.List;
 public class ExcelUtils extends ExcelUtil {
 
     /**
-     * 导出 Excel
+     * 导出 Excel (.xlsx格式)
      *
      * @param response  HttpServletResponse
      * @param dataList  数据列表
@@ -41,7 +41,8 @@ public class ExcelUtils extends ExcelUtil {
             EasyExcel.write(outputStream, clazz)
                     .autoCloseStream(Boolean.FALSE)
                     .excelType(ExcelTypeEnum.XLSX)
-                    .sheet(sheetName).doWrite(dataList);
+                    .sheet(sheetName)
+                    .doWrite(dataList);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

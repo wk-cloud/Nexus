@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.nexus.common.core.utils.*;
 import com.nexus.common.redis.utils.RedisUtils;
+import com.nexus.common.token.config.properties.TokenProperties;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,8 +20,9 @@ import java.util.*;
  * @date 2023/04/12
  */
 @Slf4j
-@Component
 public class TokenUtils {
+
+    private static final TokenProperties tokenProperties = SpringUtils.getBean(TokenProperties.class);
 
     /**
      * 签名
@@ -32,15 +34,17 @@ public class TokenUtils {
      */
     private static Integer expirationTime = 60 * 60 * 24;
 
-    @PostConstruct
-    public void init(){
-        String customSignature = SpringUtils.getProperty("token.signature");
+    static {
+        String customSignature = tokenProperties.getSignature();
         if (StringUtils.isNotBlank(customSignature)) {
             signature = customSignature;
         }
-        String customExpirationTime = SpringUtils.getProperty("token.expiration");
+        String customExpirationTime = tokenProperties.getExpiration();
         if (StringUtils.isNotBlank(customExpirationTime)) {
             expirationTime = SpELUtils.evaluateInt(customExpirationTime);
+            if(expirationTime < 0) {
+                expirationTime = Integer.MAX_VALUE;
+            }
         }
     }
 

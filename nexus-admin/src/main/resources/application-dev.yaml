@@ -39,9 +39,9 @@ spring:
           socketFactoryClass: javax.net.ssl.SSLSocketFactory  # 配置 SSL 加密工厂
 
 # 邮件发送方信息配置
-email:
+mail:
   from: * # 替换成自己的邮箱地址
-  fromNickName: Nexus
+  fromName: Nexus
 
 # Swagger 配置
 springdoc:
@@ -59,7 +59,7 @@ springdoc:
 # token 配置
 token:
   signature: * # 替换成自己设置的签名，默认使用内置签名
-  expiration: 60 * 60 * 24 # 令牌过期时间，单位秒, 默认1天
+  expiration: 60 * 60 * 24 # 令牌过期时间，单位秒, 默认1天, 设置为 -1 表示永不过期
 
 # 文件上传 配置
 upload:
@@ -67,20 +67,11 @@ upload:
   base-path: * # 替换成自定义文件保存路径，如果 prod为false，该配置无效
   base-url: http://127.0.0.1 # 替换成自定义服务器地址
 
-# 敏感词配置
-sensitive:
-  path: * # 替换成自定义敏感词库路径,默认使用内置词库
-
 # qq登录配置
 qq:
-  fmt: json
-  client-id: # 申请的appid
-  redirect-uri:  # 回调地址
-  grant-type:  # 授权类型
-  client-secret: # 申请的 client-secret
-
-# 和风天气配置
-weather:
-  key: * # 替换成和风天气的key
-  geo-url: https://geoapi.qweather.com/v2/city/lookup
-  now-url: https://devapi.qweather.com/v7/weather/now
+  login:
+    fmt: json
+    client-id: # 申请的appid
+    redirect-uri:  # 回调地址
+    grant-type:  # 授权类型
+    client-secret: # 申请的 client-secret

@@ -1,17 +1,14 @@
 package com.nexus.common.mail.utils;
 
+import com.nexus.common.core.utils.SpringUtils;
 import com.nexus.common.core.utils.StringUtils;
-import jakarta.annotation.Resource;
+import com.nexus.common.mail.config.properties.MailProperties;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.Date;
@@ -23,47 +20,38 @@ import java.util.Date;
  * @author wk
  * @date 2025/09/14
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Component
-@ConfigurationProperties(prefix = "email")
+@Slf4j
 public class MailUtils {
 
-    @Resource
-    private JavaMailSender javaMailSender;
+    private static final JavaMailSender javaMailSender = SpringUtils.getBean(JavaMailSender.class);
 
-    /**
-     * 邮件发送人
-     */
-    private String from;
-    /**
-     * 邮件发送人昵称
-     */
-    private String fromNickName;
+    private static final MailProperties mailProperties = SpringUtils.getBean(MailProperties.class);
 
-    /**
-     * 文件路径
-     */
-    private String filePath;
+    private static final String from;
+    private static final String fromName;
+    private static final String filePath;
 
-    /**
-     * 文件名称
-     */
-    private String fileName;
+    static {
+        from = mailProperties.getFrom();
+        fromName = mailProperties.getFromName();
+        filePath = mailProperties.getFilePath();
+    }
+
+    private MailUtils() {
+    }
 
     /**
      * 发送简单邮件
      *
-     * @param to      来
-     * @param subject 主题
+     * @param to      接收方邮箱
+     * @param subject 邮件标题
      * @param text    邮件内容
      */
-    public void sendSimpleMail(String to, String subject, String text) {
+    public static void sendSimpleMail(String to, String subject, String text) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        if (StringUtils.isNotBlank(fromNickName)) {
+        if (StringUtils.isNotBlank(fromName)) {
             // 如果存在发件人昵称，则设置发件人昵称
-            simpleMailMessage.setFrom(fromNickName + '<' + from + '>');
+            simpleMailMessage.setFrom(fromName + '<' + from + '>');
         } else {
             // 如果没有则直接显示发件人邮箱号
             simpleMailMessage.setFrom(from);
@@ -85,11 +73,11 @@ public class MailUtils {
      * @param subject 邮件标题
      * @param text    邮件内容
      */
-    public void sendWebEmail(String to, String subject, String text) throws MessagingException, jakarta.mail.MessagingException {
+    public static void sendWebEmail(String to, String subject, String text) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        if (StringUtils.isNotBlank(fromNickName)) {
-            helper.setFrom(fromNickName + '<' + from + '>');
+        if (StringUtils.isNotBlank(fromName)) {
+            helper.setFrom(fromName + '<' + from + '>');
         } else {
             helper.setFrom(from);
         }
@@ -108,12 +96,12 @@ public class MailUtils {
      * @param subject 邮件标题
      * @param text    邮件内容
      */
-    public void sendEnclosureEmail(String to, String subject, String text) throws MessagingException, jakarta.mail.MessagingException {
+    public static void sendEnclosureEmail(String to, String subject, String text) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         // 设置支持附件
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        if (StringUtils.isNotBlank(fromNickName)) {
-            helper.setFrom(fromNickName + '<' + from + '>');
+        if (StringUtils.isNotBlank(fromName)) {
+            helper.setFrom(fromName + '<' + from + '>');
         } else {
             helper.setFrom(from);
         }
@@ -122,10 +110,7 @@ public class MailUtils {
         helper.setText(text);
         // 添加附件
         File file = new File(filePath);
-        if (StringUtils.isBlank(fileName)) {
-            fileName = file.getName();
-        }
-        helper.addAttachment(fileName, file);
+        helper.addAttachment(file.getName(), file);
         javaMailSender.send(message);
     }
 
@@ -136,12 +121,12 @@ public class MailUtils {
      * @param subject 邮件标题
      * @param text    邮件内容
      */
-    public void sendWebAndEnclosureEmail(String to, String subject, String text) throws MessagingException, jakarta.mail.MessagingException {
+    public static void sendWebAndEnclosureEmail(String to, String subject, String text) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         // 设置支持附件
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        if (StringUtils.isNotBlank(fromNickName)) {
-            helper.setFrom(fromNickName + '<' + from + '>');
+        if (StringUtils.isNotBlank(fromName)) {
+            helper.setFrom(fromName + '<' + from + '>');
         } else {
             helper.setFrom(from);
         }
@@ -150,10 +135,7 @@ public class MailUtils {
         helper.setText(text, true);
         // 添加附件
         File file = new File(filePath);
-        if (StringUtils.isBlank(fileName)) {
-            fileName = file.getName();
-        }
-        helper.addAttachment(fileName, file);
+        helper.addAttachment(file.getName(), file);
         javaMailSender.send(message);
     }
 }

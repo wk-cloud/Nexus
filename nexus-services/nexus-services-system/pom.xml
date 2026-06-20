@@ -72,5 +72,11 @@
             <groupId>com.nexus</groupId>
             <artifactId>nexus-common-verification-code</artifactId>
         </dependency>
+
+        <!-- nexus-common-oss 文件上传通用依赖  -->
+        <dependency>
+            <groupId>com.nexus</groupId>
+            <artifactId>nexus-common-oss</artifactId>
+        </dependency>
     </dependencies>
 </project>

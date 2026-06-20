@@ -94,7 +94,7 @@ public class QqLoginStrategy extends AbstractLoginStrategy{
         // 登录凭证
         String code = loginDto.getCode();
         // 获取qq用户信息
-        Map<String, Object> userInfoMap = qqLoginConfig.getUserInfoMap(code);
+        Map<String, Object> userInfoMap = qqLoginConfig.getUserInfo(code);
         if (CollectionUtils.isEmpty(userInfoMap)) {
             throw new ServiceException("登录失败，QQ账户信息获取失败");
         }

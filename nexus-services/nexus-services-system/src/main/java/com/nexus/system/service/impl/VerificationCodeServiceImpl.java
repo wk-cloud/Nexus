@@ -10,7 +10,7 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.CircleCaptcha;
 import com.alibaba.fastjson2.JSONObject;
 import com.nexus.common.verificationcode.domain.dto.VerificationCodeDto;
-import com.nexus.common.core.enums.EmailTemplateEnum;
+import com.nexus.common.core.enums.MailTemplateEnum;
 import com.nexus.common.core.enums.VerificationCodeTypeEnum;
 import com.nexus.common.core.exception.ServiceException;
 import com.nexus.common.core.utils.*;
@@ -34,8 +34,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 public class VerificationCodeServiceImpl implements VerificationCodeService {
-    @Resource
-    private MailUtils mailUtils;
+
     @Resource
     private ImageCaptchaApplication application;
 
@@ -71,8 +70,8 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
         RedisUtils.setEx(verificationCodeKey, verificationCode, 1, TimeUnit.MINUTES);
 
         // 发送邮件
-        mailUtils.sendSimpleMail(email, EmailTemplateEnum.VERIFICATION_CODE.getSubject(),
-                String.format(EmailTemplateEnum.VERIFICATION_CODE.getText(), verificationCode));
+        MailUtils.sendSimpleMail(email, MailTemplateEnum.VERIFICATION_CODE.getSubject(),
+                String.format(MailTemplateEnum.VERIFICATION_CODE.getText(), verificationCode));
     }
 
     /**

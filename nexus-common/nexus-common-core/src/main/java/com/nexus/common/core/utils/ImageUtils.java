@@ -1,113 +1,126 @@
 package com.nexus.common.core.utils;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.nexus.common.core.config.properties.ImageUtilsProperties;
+import com.nexus.common.core.utils.ObjectUtils;
+import com.nexus.common.core.utils.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Base64;
 
 
 /**
- * 图片工具类
- *
+ *  图片工具类
  * @author wk
  * @date 2023/2/6
  */
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
 @Slf4j
-@Component
-@ConfigurationProperties(prefix = "image")
 public class ImageUtils {
+
+    private static final ImageUtilsProperties imageUtilsProperties = SpringUtils.getBean(ImageUtilsProperties.class);
+
+    /**
+     * 常数0
+     */
+    private static final Integer CONST_ZERO = 0;
+
+    /**
+     * 常数1024
+     */
+    private static final Integer CONST_ONE_ZERO_TWO_FOUR = 1024;
 
     /**
      * 水印内容
      */
-    private String waterMarkContent = "@Nexus";
+    private static final String WATER_MARK_CONTENT;
 
     /**
      * 水印 X 坐标
-     */
-    private int waterMarkX = 20;
+     * */
+    private static final Integer WATER_MARK_X;
 
     /**
      * 水印 Y 坐标
      */
-    private int waterMarkY = 20;
+    private static final Integer WATER_MARK_Y;
 
     /**
      * 水印字体名称
      */
-    private String waterMarkFontName = "微软雅黑";
+    private static final String WATER_MARK_FONT_NAME;
 
     /**
      * 水印字体大小
      */
-    private int waterMarkFontSize = 20;
-
-    /**
-     * 零
-     */
-    private Integer zero = 0;
-
-    /**
-     * 一千零二十四
-     */
-    private Integer oneZeroTwoFour = 1024;
+    private static final Integer WATER_MARK_FONT_SIZE;
 
     /**
      * 最小尺寸
      */
-    private Integer minSize = 900;
+    private static final Integer MIN_SIZE;
 
     /**
      * 中等尺寸
      */
-    private Integer mediumSize = 2047;
+    private static final Integer MEDIUM_SIZE;
 
     /**
      * 大尺寸
      */
-    private Integer largeSize = 3275;
+    private static final Integer LARGE_SIZE;
 
     /**
      * 大精度
      */
-    private Double largeAccuracy = 0.85;
+    private static final Double LARGE_ACCURACY;
 
     /**
      * 中等精度
      */
-    private Double mediumAccuracy = 0.6;
+    private static final Double MEDIUM_ACCURACY;
 
     /**
      * 小精度
      */
-    private Double minAccuracy = 0.44;
+    private static final Double MIN_ACCURACY;
 
     /**
      * 默认精度
      */
-    private Double defaultAccuracy = 0.4;
+    private static final Double DEFAULT_ACCURACY;
 
     /**
      * 图片压缩后的大小
      */
-    private int compressSize = 200;
+    private static final Integer COMPRESS_SIZE;
 
     /**
      * 开启图片压缩
      */
-    private boolean openCompress = false;
+    private static final Boolean OPEN_COMPRESS;
+
+    static {
+        WATER_MARK_CONTENT = imageUtilsProperties.getWaterMarkContent();
+        WATER_MARK_X = imageUtilsProperties.getWaterMarkX();
+        WATER_MARK_Y = imageUtilsProperties.getWaterMarkY();
+        WATER_MARK_FONT_NAME = imageUtilsProperties.getWaterMarkFontName();
+        WATER_MARK_FONT_SIZE = imageUtilsProperties.getWaterMarkFontSize();
+        MIN_SIZE = imageUtilsProperties.getMinSize();
+        MEDIUM_SIZE = imageUtilsProperties.getMediumSize();
+        LARGE_SIZE = imageUtilsProperties.getLargeSize();
+        LARGE_ACCURACY = imageUtilsProperties.getLargeAccuracy();
+        MEDIUM_ACCURACY = imageUtilsProperties.getMediumAccuracy();
+        MIN_ACCURACY = imageUtilsProperties.getMinAccuracy();
+        DEFAULT_ACCURACY = imageUtilsProperties.getDefaultAccuracy();
+        COMPRESS_SIZE = imageUtilsProperties.getCompressSize();
+        OPEN_COMPRESS = imageUtilsProperties.getOpenCompress();
+    }
 
 
     /**
@@ -140,14 +153,14 @@ public class ImageUtils {
      * @return {@link byte[]}
      */
     public byte[] compress(byte[] imageBytes, long destFileSize) throws IOException {
-        if (ArrayUtils.isEmpty(imageBytes) || imageBytes.length <= zero || imageBytes.length < destFileSize * oneZeroTwoFour) {
+        if (ArrayUtils.isEmpty(imageBytes) || imageBytes.length <= CONST_ZERO || imageBytes.length < destFileSize * CONST_ONE_ZERO_TWO_FOUR) {
             return imageBytes;
         }
         long srcSize = imageBytes.length;
-        double accuracy = getAccuracy(srcSize / oneZeroTwoFour);
+        double accuracy = getAccuracy(srcSize / CONST_ONE_ZERO_TWO_FOUR);
         ByteArrayInputStream bis = null;
         ByteArrayOutputStream bos = null;
-        while (imageBytes.length > destFileSize * oneZeroTwoFour) {
+        while (imageBytes.length > destFileSize * CONST_ONE_ZERO_TWO_FOUR) {
             bis = new ByteArrayInputStream(imageBytes);
             bos = new ByteArrayOutputStream(imageBytes.length);
             Thumbnails.of(bis)
@@ -163,8 +176,8 @@ public class ImageUtils {
         if (ObjectUtils.isNotNull(bos)) {
             bos.close();
         }
-        log.info("图片原始大小：{}", srcSize / oneZeroTwoFour);
-        log.info("压缩后的大小：{}", imageBytes.length / oneZeroTwoFour);
+        log.info("图片原始大小：{}", srcSize / CONST_ONE_ZERO_TWO_FOUR);
+        log.info("压缩后的大小：{}", imageBytes.length / CONST_ONE_ZERO_TWO_FOUR);
         return imageBytes;
     }
 
@@ -177,19 +190,19 @@ public class ImageUtils {
      * @throws IOException ioexception
      */
     public void compress(byte[] imageBytes, String destPath, long destFileSize) throws IOException {
-        if (ArrayUtils.isEmpty(imageBytes) || imageBytes.length <= zero) {
+        if (ArrayUtils.isEmpty(imageBytes) || imageBytes.length <= CONST_ZERO) {
             throw new RuntimeException("源文件不存在");
         }
-        BufferedOutputStream bs = new BufferedOutputStream(new FileOutputStream(destPath));
-        if (imageBytes.length < destFileSize * oneZeroTwoFour) {
+        BufferedOutputStream bs = new BufferedOutputStream(Files.newOutputStream(Paths.get(destPath)));
+        if(imageBytes.length < destFileSize * CONST_ONE_ZERO_TWO_FOUR){
             bs.write(imageBytes);
             bs.flush();
-        } else {
+        }else {
             long srcSize = imageBytes.length;
-            double accuracy = getAccuracy(srcSize / oneZeroTwoFour);
+            double accuracy = getAccuracy(srcSize / CONST_ONE_ZERO_TWO_FOUR);
             ByteArrayInputStream bis = null;
             ByteArrayOutputStream bos = null;
-            while (imageBytes.length > destFileSize * oneZeroTwoFour) {
+            while (imageBytes.length > destFileSize * CONST_ONE_ZERO_TWO_FOUR) {
                 bis = new ByteArrayInputStream(imageBytes);
                 bos = new ByteArrayOutputStream(imageBytes.length);
                 Thumbnails.of(bis)
@@ -201,8 +214,8 @@ public class ImageUtils {
             }
             bs.write(imageBytes);
             bs.flush();
-            log.info("图片原始大小：{}", srcSize / oneZeroTwoFour);
-            log.info("压缩后的大小：{}", imageBytes.length / oneZeroTwoFour);
+            log.info("图片原始大小：{}", srcSize / CONST_ONE_ZERO_TWO_FOUR);
+            log.info("压缩后的大小：{}", imageBytes.length / CONST_ONE_ZERO_TWO_FOUR);
             if (ObjectUtils.isNotNull(bis)) {
                 bis.close();
             }
@@ -223,14 +236,14 @@ public class ImageUtils {
      */
     private double getAccuracy(long size) {
         double accuracy;
-        if (size < minSize) {
-            accuracy = largeAccuracy;
-        } else if (size < mediumSize) {
-            accuracy = mediumAccuracy;
-        } else if (size < largeSize) {
-            accuracy = minAccuracy;
+        if (size < MIN_SIZE) {
+            accuracy = LARGE_ACCURACY;
+        } else if (size < MEDIUM_SIZE) {
+            accuracy = MEDIUM_ACCURACY;
+        } else if (size < LARGE_SIZE) {
+            accuracy = MIN_ACCURACY;
         } else {
-            accuracy = defaultAccuracy;
+            accuracy = DEFAULT_ACCURACY;
         }
         return accuracy;
     }
@@ -263,14 +276,14 @@ public class ImageUtils {
                 try {
                     bs.close();
                 } catch (IOException e) {
-                    log.error("====> 关闭流失败", e);
+                    log.error("关闭流失败", e);
                 }
             }
             if (ObjectUtils.isNotNull(imageStream)) {
                 try {
                     imageStream.close();
                 } catch (IOException e) {
-                    log.error("====> 关闭流失败", e);
+                    log.error("关闭流失败", e);
                 }
             }
 
@@ -287,9 +300,9 @@ public class ImageUtils {
      */
     public void watermark(InputStream imageStream, String outPath, String formatName) {
         try {
-            if (openCompress) {
+            if (OPEN_COMPRESS) {
                 // 1. 图片压缩
-                byte[] compress = compress(imageStream, compressSize);
+                byte[] compress = compress(imageStream, COMPRESS_SIZE);
                 imageStream = new ByteArrayInputStream(compress);
             }
             // 2. 获取图片对象
@@ -306,12 +319,12 @@ public class ImageUtils {
             // 根据图片的背景设置水印颜色
             graphics.setColor(new Color(255, 255, 255, 128));
             // 设置字体，画笔字体样式为微软雅黑，加粗，文字大小为 60pt
-            graphics.setFont(new Font(waterMarkFontName, Font.BOLD, waterMarkFontSize));
+            graphics.setFont(new Font(WATER_MARK_FONT_NAME, Font.BOLD, WATER_MARK_FONT_SIZE));
             // 设置水印的坐标
-            int x = width - getWaterMarkLength(waterMarkContent, graphics) - waterMarkX;
-            int y = height - waterMarkY;
+            int x = width - getWaterMarkLength(WATER_MARK_CONTENT, graphics) - WATER_MARK_X;
+            int y = height - WATER_MARK_Y;
             // 画出水印，第一个参数为水印内容，第二个参数是x轴坐标，第三个参数是y轴坐标
-            graphics.drawString(waterMarkContent, x, y);
+            graphics.drawString(WATER_MARK_CONTENT, x, y);
             graphics.dispose();
             // 输出图片
             FileOutputStream fos = new FileOutputStream(outPath);
@@ -319,7 +332,7 @@ public class ImageUtils {
             fos.flush();
             fos.close();
         } catch (IOException e) {
-            log.error("添加水印失败", e);
+            log.error("水印添加失败", e);
         }
     }
 

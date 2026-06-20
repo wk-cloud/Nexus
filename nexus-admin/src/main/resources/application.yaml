@@ -23,8 +23,8 @@ mybatis-plus:
     cache-enabled: true
     map-underscore-to-camel-case: true
   type-aliases-package: com.nexus.**.domain
-  type-enums-package: com.nexus.**.enums   # 扫描通用枚举的包(别名)
   mapper-locations: classpath:mapper/*.xml
+  mapper-package: com.nexus.**.mapper
 
 # 滑块验证码配置， 详细请看 cloud.tianai.captcha.autoconfiguration.ImageCaptchaProperties 类
 captcha:

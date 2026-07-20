@@ -7,9 +7,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.nexus.common.core.utils.*;
 import com.nexus.common.redis.utils.RedisUtils;
 import com.nexus.common.token.config.properties.TokenProperties;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -30,7 +28,7 @@ public class TokenUtils {
     private static String signature = "@wk-nexus@";
 
     /**
-     * 过期时间
+     * 过期时间(s)
      */
     private static Integer expirationTime = 60 * 60 * 24;
 
@@ -51,12 +49,7 @@ public class TokenUtils {
     /**
      * 登录jwt令牌密钥集
      */
-    public static final String LOGIN_JWT_TOKEN_KEY_SET = "login:token:set:";
-
-    /**
-     * 登录jwt令牌密钥哈希
-     */
-    public static final String LOGIN_JWT_TOKEN_KEY_HASH = "login:token:hash:";
+    public static final String LOGIN_JWT_TOKEN_KEY_SET = "login:token:set";
 
     private TokenUtils() {
     }
@@ -76,15 +69,15 @@ public class TokenUtils {
     /**
      * 创建令牌
      *
-     * @param map token的有效负载（存放用户的相关信息）
+     * @param payload token的有效负载（存放用户的相关信息）
      * @return {@link String}
      */
-    public static String createToken(Map<String, String> map) {
+    public static String createToken(Map<String, String> payload) {
         // 创建 builder（没有设置 header，则使用默认的 header ）
         JWTCreator.Builder builder = JWT.create();
 
         // 设置 payload
-        map.forEach(builder::withClaim);
+        payload.forEach(builder::withClaim);
 
         // 指定令牌过期时间
         return builder
@@ -95,25 +88,12 @@ public class TokenUtils {
     /**
      * 创建令牌，并将令牌放入 redis 的 set 中
      *
-     * @param map token的有效负载（存放用户的相关信息）
+     * @param payload token的有效负载（存放用户的相关信息）
      * @return {@link String}
      */
-    public static String createTokenForRedisSet(Map<String, String> map) {
-        String token = createToken(map);
+    public static String createTokenForRedisSet(Map<String, String> payload) {
+        String token = createToken(payload);
         RedisUtils.sAdd(LOGIN_JWT_TOKEN_KEY_SET, token);
-        return token;
-    }
-
-    /**
-     * 创建令牌，并将令牌放入 redis 的 hash 中
-     *
-     * @param tokenId 令牌id
-     * @param map     token的有效负载（存放用户的相关信息）
-     * @return {@link String}
-     */
-    public static String createTokenForRedisHash(String tokenId, Map<String, String> map) {
-        String token = createToken(map);
-        RedisUtils.hPut(LOGIN_JWT_TOKEN_KEY_HASH, tokenId, token);
         return token;
     }
 
@@ -135,16 +115,6 @@ public class TokenUtils {
         RedisUtils.sRemove(LOGIN_JWT_TOKEN_KEY_SET, tokens.toArray());
     }
 
-
-    /**
-     * 从 redis 的 hash 中删除令牌
-     *
-     * @param tokenId 令牌 ID
-     */
-    public static void removeTokenFromRedisHash(String tokenId) {
-        RedisUtils.hDelete(LOGIN_JWT_TOKEN_KEY_HASH, tokenId);
-    }
-
     /**
      * 从 redis 的 set 中获取令牌集合
      *
@@ -152,16 +122,6 @@ public class TokenUtils {
      */
     public static Set<String> getTokensFromRedisSet() {
         return ObjectUtils.toSet(RedisUtils.sMembers(LOGIN_JWT_TOKEN_KEY_SET), String.class);
-    }
-
-    /**
-     * 从 redis 的 hash 中获取令牌集合
-     *
-     * @return {@link List}<{@link String}>
-     */
-    public static List<String> getTokensFromRedisHash() {
-        // 从 RedisUtils 中获取 LOGIN_JWT_TOKEN_KEY_HASH 的值
-        return ObjectUtils.toList(RedisUtils.hValues(LOGIN_JWT_TOKEN_KEY_HASH), String.class);
     }
 
     /**
@@ -173,19 +133,6 @@ public class TokenUtils {
     public static boolean isExistOfRedisSet(String token) {
         return RedisUtils.sIsMember(LOGIN_JWT_TOKEN_KEY_SET, token);
     }
-
-    /**
-     * 判断token是否存在
-     *
-     * @param tokenId 令牌 ID
-     * @param token   令 牌
-     * @return boolean
-     */
-    public static boolean isExistOfRedisHash(String tokenId, String token) {
-        String o = (String) RedisUtils.hGet(LOGIN_JWT_TOKEN_KEY_HASH, tokenId);
-        return token.equals(o);
-    }
-
 
     /**
      * 检查令牌

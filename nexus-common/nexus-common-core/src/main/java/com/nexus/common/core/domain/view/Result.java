@@ -3,6 +3,8 @@ package com.nexus.common.core.domain.view;
 import com.nexus.common.core.enums.HttpCodeEnum;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 返回给前端结果的实体类
  *
@@ -10,7 +12,7 @@ import lombok.Data;
  * @date 2022/07/20
  */
 @Data
-public class Result<T> {
+public class Result<T> implements Serializable {
 
     /**
      * 响应状态码

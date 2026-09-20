@@ -8,15 +8,15 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>nexus-admin</artifactId>
-    <description>admin服务模块</description>
+    <artifactId>nexus-test</artifactId>
     <packaging>jar</packaging>
+    <description>Nexus 测试模块</description>
+
 
     <dependencies>
-        <!-- 系统认证模块 -->
         <dependency>
             <groupId>com.nexus</groupId>
-            <artifactId>nexus-services-auth</artifactId>
+            <artifactId>nexus-admin</artifactId>
         </dependency>
     </dependencies>
 
@@ -91,6 +91,4 @@
             </resource>
         </resources>
     </build>
-
-
 </project>

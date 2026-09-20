@@ -52,8 +52,6 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>com.nexus.NexusApplication</mainClass>
-                    <skip>false</skip>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

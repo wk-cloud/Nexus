@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.nexus</groupId>
         <artifactId>nexus-services</artifactId>
-        <version>${nexus-version}</version>
+        <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 

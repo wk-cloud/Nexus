@@ -1,6 +1,7 @@
 package com.nexus.common.redis.aspect;
 
 import cn.hutool.crypto.digest.MD5;
+import com.nexus.common.core.utils.ObjectUtils;
 import com.nexus.common.redis.annotation.Limit;
 import com.nexus.common.core.enums.LimitTypeEnum;
 import com.nexus.common.core.exception.LimitAccessException;
@@ -48,7 +49,7 @@ public class LimitAspect {
         String key = switch (limitType) {
             case CUSTOM -> limit.key();
             case IP -> {
-                HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+                HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
                 yield getDefaultKey(method, pjp) + ":" + IpUtils.getIpAddress(request);
             }
             default -> getDefaultKey(method, pjp);
@@ -71,7 +72,7 @@ public class LimitAspect {
         String luaScript = buildLuaScript();
         RedisScript<Long> redisScript = new DefaultRedisScript<>(luaScript, Long.class);
         Long count = RedisUtils.execute(redisScript, keyList, limitCount, limitPeriod);
-        if (count.intValue() > limitCount) {
+        if (ObjectUtils.isNull(count) || count.intValue() > limitCount) {
             throw new LimitAccessException("访问频繁，已限制访问");
         }
     }
@@ -89,7 +90,7 @@ public class LimitAspect {
         lua.append("\nc = redis.call('get',KEYS[1])");
         // 调用不超过最大值，则直接返回
         lua.append("\nif c and tonumber(c) > tonumber(ARGV[1]) then");
-        lua.append("\nreturn c;");
+        lua.append("\nreturn tonumber(c);");   // 关键修改：返回数字
         lua.append("\nend");
         // 执行计算器自加
         lua.append("\nc = redis.call('incr',KEYS[1])");

@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -326,10 +327,113 @@ public class RedisUtils {
      * @param script  脚本
      * @param keyList 密钥列表
      * @param args    可选参数列表
-     * @return {@link Long } 脚本执行结果
+     * @return {@link T } 脚本执行结果
      */
-    public static Long execute(RedisScript<Long> script, List<String> keyList, Object... args) {
-        return staticRedisTemplate.execute(script, keyList, args);
+    @SuppressWarnings("unchecked")
+    public static <T> T execute(RedisScript<T> script, List<String> keyList, Object... args) {
+        Object result = staticRedisTemplate.execute(script, keyList, args);
+        if (ObjectUtils.isNull(result)) {
+            return null;
+        }
+
+        // 获取脚本结果类型, 后续根据结果类型进行转换，防止脚本执行结果类型与目标类型不一致
+        Class<T> resultType = script.getResultType();
+
+        // 脚本未声明结果类型，或结果已经是目标类型，直接返回
+        if (resultType == null || resultType.isInstance(result)) {
+            return (T) result;
+        }
+
+        // 统一处理 byte[]，后续按字符串解析
+        if (result instanceof byte[]) {
+            result = new String((byte[]) result, StandardCharsets.UTF_8);
+        }
+
+        // ---------- Long / long ----------
+        if (resultType == Long.class || resultType == long.class) {
+            if (result instanceof Number) {
+                return (T) Long.valueOf(((Number) result).longValue());
+            }
+            return (T) Long.valueOf(result.toString());
+        }
+
+        // ---------- Integer / int ----------
+        if (resultType == Integer.class || resultType == int.class) {
+            long value;
+            if (result instanceof Number) {
+                value = ((Number) result).longValue();
+            } else {
+                value = Long.parseLong(result.toString());
+            }
+            // 防止 Long 转 Integer 时静默溢出
+            if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
+                throw new ArithmeticException(
+                        "Lua script result " + value + " overflows Integer range");
+            }
+            return (T) Integer.valueOf((int) value);
+        }
+
+        // ---------- String ----------
+        if (resultType == String.class) {
+            return (T) result.toString();
+        }
+
+        // ---------- Boolean / boolean ----------
+        if (resultType == Boolean.class || resultType == boolean.class) {
+            if (result instanceof Boolean) {
+                return (T) result;
+            }
+            return (T) Boolean.valueOf(result.toString());
+        }
+
+        // ---------- Double / double ----------
+        if (resultType == Double.class || resultType == double.class) {
+            if (result instanceof Number) {
+                return (T) Double.valueOf(((Number) result).doubleValue());
+            }
+            return (T) Double.valueOf(result.toString());
+        }
+
+        // ---------- Float / float ----------
+        if (resultType == Float.class || resultType == float.class) {
+            if (result instanceof Number) {
+                return (T) Float.valueOf(((Number) result).floatValue());
+            }
+            return (T) Float.valueOf(result.toString());
+        }
+
+        // ---------- Short / short ----------
+        if (resultType == Short.class || resultType == short.class) {
+            long value;
+            if (result instanceof Number) {
+                value = ((Number) result).longValue();
+            } else {
+                value = Long.parseLong(result.toString());
+            }
+            if (value < Short.MIN_VALUE || value > Short.MAX_VALUE) {
+                throw new ArithmeticException(
+                        "Lua script result " + value + " overflows Short range");
+            }
+            return (T) Short.valueOf((short) value);
+        }
+
+        // ---------- Byte / byte ----------
+        if (resultType == Byte.class || resultType == byte.class) {
+            long value;
+            if (result instanceof Number) {
+                value = ((Number) result).longValue();
+            } else {
+                value = Long.parseLong(result.toString());
+            }
+            if (value < Byte.MIN_VALUE || value > Byte.MAX_VALUE) {
+                throw new ArithmeticException(
+                        "Lua script result " + value + " overflows Byte range");
+            }
+            return (T) Byte.valueOf((byte) value);
+        }
+
+        // 其他未覆盖类型，直接强转（可能仍抛 ClassCastException）
+        return (T) result;
     }
 
     // --------------------------- HyperLogLog ---------------------------

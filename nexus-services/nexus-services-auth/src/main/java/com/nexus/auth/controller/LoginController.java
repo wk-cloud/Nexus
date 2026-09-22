@@ -1,4 +1,4 @@
-package com.nexus.web.system;
+package com.nexus.auth.controller;
 
 import com.nexus.auth.service.LoginService;
 import com.nexus.common.core.annotation.Pass;
@@ -27,8 +27,8 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "系统登录模块")
 @CrossOrigin
 @RestController
-@RequestMapping("/system/login")
-public class SysLoginController {
+@RequestMapping("/auth/login")
+public class LoginController {
     @Resource
     private LoginService loginService;
 

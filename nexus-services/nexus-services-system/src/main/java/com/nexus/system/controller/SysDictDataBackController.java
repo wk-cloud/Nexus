@@ -1,4 +1,4 @@
-package com.nexus.web.system;
+package com.nexus.system.controller;
 
 import com.nexus.common.core.domain.view.Result;
 import com.nexus.common.core.enums.OperationTypeEnum;
@@ -16,7 +16,6 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 /**

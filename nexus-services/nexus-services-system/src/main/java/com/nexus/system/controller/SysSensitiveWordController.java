@@ -1,4 +1,4 @@
-package com.nexus.web.system;
+package com.nexus.system.controller;
 
 
 import com.nexus.common.core.annotation.Pass;
@@ -9,10 +9,8 @@ import com.nexus.common.redis.annotation.Limit;
 import com.nexus.common.sensitive.helper.SensitiveWordHelper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.tags.Tags;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.Set;
 
 /**

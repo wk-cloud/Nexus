@@ -1,4 +1,4 @@
-package com.nexus.web.system;
+package com.nexus.system.controller;
 
 
 import com.nexus.common.core.domain.view.Result;

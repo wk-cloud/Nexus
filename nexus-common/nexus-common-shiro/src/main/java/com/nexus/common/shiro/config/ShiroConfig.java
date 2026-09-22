@@ -7,16 +7,16 @@ import com.nexus.common.shiro.filter.CustomerAccessControlFilter;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import jakarta.servlet.Filter;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
-import org.apache.shiro.spring.config.web.autoconfigure.ShiroWebFilterConfiguration;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
@@ -35,7 +35,6 @@ import java.util.Set;
  */
 @Slf4j
 @Configuration
-@EnableAutoConfiguration(exclude = {ShiroWebFilterConfiguration.class})
 public class ShiroConfig {
 
     @Resource
@@ -46,6 +45,7 @@ public class ShiroConfig {
     /**
      * 请求路径的处理方式map
      */
+    @Getter
     private final LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
 
     /**
@@ -58,7 +58,6 @@ public class ShiroConfig {
      *
      * @return {@link CustomerRealm}
      */
-    //@Bean
     @PostConstruct
     public CustomerRealm getRealm() {
         // 设置自定义认证方式
@@ -86,6 +85,7 @@ public class ShiroConfig {
      * @param customerRealm 自定义Realm
      * @return {@link DefaultWebSecurityManager}
      */
+    @ConditionalOnMissingBean(name = "defaultWebSecurityManager")
     @Bean
     public DefaultWebSecurityManager defaultWebSecurityManager(CustomerRealm customerRealm) {
         DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
@@ -106,6 +106,7 @@ public class ShiroConfig {
      * @param defaultWebSecurityManager 默认web安全管理器
      * @return {@link ShiroFilterFactoryBean}
      */
+    @ConditionalOnMissingBean(name = "shiroFilterFactoryBean")
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(DefaultWebSecurityManager defaultWebSecurityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
@@ -138,21 +139,10 @@ public class ShiroConfig {
     }
 
     /**
-     * 获取过滤器链定义映射
-     *
-     * @return {@link LinkedHashMap}<{@link String},{@link String}>
-     */
-    @Bean
-    public LinkedHashMap<String, String> getFilterChainDefinitionMap() {
-        return this.filterChainDefinitionMap;
-    }
-
-    /**
      * 获取允许放行的url列表
      *
      * @return {@link List}<{@link String}>
      */
-    @Bean
     public List<String> getIsAccessAllowedUrlList() {
         LinkedHashMap<String, String> filterChainDefinitionMap = this.getFilterChainDefinitionMap();
         Set<String> keySet = filterChainDefinitionMap.keySet();
@@ -166,11 +156,13 @@ public class ShiroConfig {
      *
      * @return {@link LifecycleBeanPostProcessor}
      */
+    @ConditionalOnMissingBean(name = "lifecycleBeanPostProcessor")
     @Bean
     public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
         return new LifecycleBeanPostProcessor();
     }
 
+    @ConditionalOnMissingBean(name = "defaultAdvisorAutoProxyCreator")
     @Bean
     @DependsOn("lifecycleBeanPostProcessor")
     public static DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
@@ -186,6 +178,7 @@ public class ShiroConfig {
      * @param securityManager 安全管理器
      * @return {@link AuthorizationAttributeSourceAdvisor}
      */
+    @ConditionalOnMissingBean(name = "authorizationAttributeSourceAdvisor")
     @Bean
     public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(DefaultWebSecurityManager securityManager) {
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();

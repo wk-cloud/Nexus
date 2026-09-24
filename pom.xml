@@ -420,6 +420,8 @@
                     <include>application*</include>
                     <include>bootstrap*</include>
                     <include>logback*</include>
+                    <!-- 替换banner文件中的占位符 -->
+                    <include>banner*</include>
                 </includes>
                 <!-- 启用过滤 即该资源中的变量将会被过滤器中的值替换 -->
                 <filtering>true</filtering>

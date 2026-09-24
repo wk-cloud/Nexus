@@ -1,0 +1,10 @@
+  _   _
+ | \ | | _____  ___   _ ___
+ |  \| |/ _ \ \/ / | | / __|
+ | |\  |  __/>  <| |_| \__ \
+ |_| \_|\___/_/\_\\__,_|___/
+
+ ${AnsiColor.GREEN}:: Nexus ::${AnsiColor.DEFAULT}                     (v${revision})
+ ${AnsiColor.GREEN}:: Spring Boot ::${AnsiColor.DEFAULT}               (v${spring-boot.version})
+ ${AnsiColor.GREEN}:: Spring Application Name ::${AnsiColor.DEFAULT}   (${spring.application.name})
+ ${AnsiColor.GREEN}:: profile active ::${AnsiColor.DEFAULT}            (${spring.profiles.active})

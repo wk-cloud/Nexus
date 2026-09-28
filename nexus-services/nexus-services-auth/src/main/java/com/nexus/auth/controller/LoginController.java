@@ -54,10 +54,10 @@ public class LoginController {
     @Operation(summary = "用户登录接口")
     @Limit(limitType = LimitTypeEnum.IP)
     @Pass
-    @LoginLog(loginPlatform = LoginPlatformEnum.FRONT)
+    @LoginLog(loginPlatform = LoginPlatformEnum.FRONT_DESK)
     @PostMapping
     public Result<LoginVo> login(@RequestBody @Validated(ValidGroup.Select.class) LoginDto loginDto) {
-        loginDto.setLoginPlatform(LoginPlatformEnum.FRONT.getCode());
+        loginDto.setLoginPlatform(LoginPlatformEnum.FRONT_DESK.getCode());
         return Result.success(loginService.login(loginDto));
     }
 

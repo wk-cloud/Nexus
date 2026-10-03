@@ -68,7 +68,7 @@ public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLo
         try {
             String fileName = "loginLog" + DateUtils.getYearMonthDay(new Date()) + ".xlsx";
             String sheetName = "登录日志";
-            ExcelUtils.export(response, this.queryLoginLogList(idList), SysLoginLogVo.class, fileName, sheetName);
+            ExcelUtils.export(response, this.getLoginLogList(idList), SysLoginLogVo.class, fileName, sheetName);
         } catch (Exception e) {
             throw new ServiceException("日志导出失败,失败原因：" + e.getMessage());
         }
@@ -84,19 +84,19 @@ public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLo
         try {
             String fileName = "loginLog" + DateUtils.getYearMonthDay(new Date()) + ".xlsx";
             String sheetName = "登录日志";
-            ExcelUtils.export(response, this.queryLoginLogListAll(), SysLoginLogVo.class, fileName, sheetName);
+            ExcelUtils.export(response, this.getLoginLogListAll(), SysLoginLogVo.class, fileName, sheetName);
         } catch (Exception e) {
             throw new ServiceException("日志导出失败,失败原因：" + e.getMessage());
         }
     }
 
     /**
-     * 查询登录日志列表
+     * 获取登录日志列表
      *
      * @param ids 身份证件
      * @return {@link List}<{@link SysLoginLogVo}>
      */
-    private List<SysLoginLogVo> queryLoginLogList(List<Long> ids) {
+    private List<SysLoginLogVo> getLoginLogList(List<Long> ids) {
         LambdaQueryWrapper<SysLoginLog> loginLogLambdaQueryWrapper = new LambdaQueryWrapper<>();
         loginLogLambdaQueryWrapper.in(SysLoginLog::getId, ids);
         List<SysLoginLogVo> sysLoginLogVoList = baseMapper.queryVoList(loginLogLambdaQueryWrapper);
@@ -121,7 +121,7 @@ public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLo
      *
      * @return {@link List}<{@link SysLoginLogVo}>
      */
-    private List<SysLoginLogVo> queryLoginLogListAll() {
+    private List<SysLoginLogVo> getLoginLogListAll() {
         List<SysLoginLogVo> loginLogBackVoList = baseMapper.queryVoList(new LambdaQueryWrapper<>());
         if (CollectionUtils.isEmpty(loginLogBackVoList)) {
             return Collections.emptyList();

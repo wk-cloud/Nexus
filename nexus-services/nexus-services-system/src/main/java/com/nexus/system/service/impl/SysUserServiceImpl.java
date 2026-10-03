@@ -112,7 +112,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return {@link String}
      */
     @Override
-    public String queryEmailByUserId(Long userId) {
+    public String getEmailByUserId(Long userId) {
         LambdaQueryWrapper<SysUser> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
         userLambdaQueryWrapper.select(SysUser::getId, SysUser::getEmail).eq(SysUser::getId, userId);
         SysUser user = baseMapper.selectOne(userLambdaQueryWrapper);
@@ -183,7 +183,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return {@link SysUserVo}
      */
     @Override
-    public SysUserVo queryUserById(Long userId) {
+    public SysUserVo getUserById(Long userId) {
         LambdaQueryWrapper<SysUser> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
         userLambdaQueryWrapper
                 .select(SysUser::getUsername, SysUser::getLoginIp, SysUser::getLoginType,
@@ -278,12 +278,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return {@link SysUserVo }
      */
     @Override
-    public SysUserVo queryUserInfoByToken(String token) {
+    public SysUserVo getUserInfoByToken(String token) {
         if (StringUtils.isBlank(token)) {
             throw new ServiceException("用户信息获取失败，令牌为空");
         }
         Map<String, String> userId = TokenUtils.getValueFromToken(token, Collections.singletonList("userId"));
-        return this.queryUserById(Long.parseLong(userId.get("userId")));
+        return this.getUserById(Long.parseLong(userId.get("userId")));
     }
 
     /**

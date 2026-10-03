@@ -81,7 +81,7 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
     @Override
     public void addRoleForUser(Long userId, Set<String> roleLabels) {
         // 1.获取一下用户信息，判断是否是超级管理员
-        String email = sysUserService.queryEmailByUserId(userId);
+        String email = sysUserService.getEmailByUserId(userId);
         if (AdminEnum.SUPER_ADMIN.getEmail().equals(email)) {
             throw new ServiceException("该用户是超级管理员，您的权限不足");
         }

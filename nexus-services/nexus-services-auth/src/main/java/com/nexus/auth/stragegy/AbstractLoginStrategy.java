@@ -66,7 +66,7 @@ public abstract class AbstractLoginStrategy implements LoginStrategy {
      * @param openid openid
      * @return {@link SysUser }
      */
-    protected SysUser queryUserInfoByOpenId(String openid) {
+    protected SysUser getUserInfoByOpenId(String openid) {
         LambdaQueryWrapper<SysUser> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
         userLambdaQueryWrapper.eq(SysUser::getOpenid, openid).last("limit 1");
         return sysUserMapper.selectOne(userLambdaQueryWrapper);
@@ -78,9 +78,9 @@ public abstract class AbstractLoginStrategy implements LoginStrategy {
      * @param roleLabel 角色标签
      * @return {@link Long }
      */
-    protected Long queryRoleIdByRoleLabel(String roleLabel) {
+    protected Long getRoleIdByRoleLabel(String roleLabel) {
         LambdaQueryWrapper<SysRole> roleLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        roleLambdaQueryWrapper.select(SysRole::getId).eq(SysRole::getLabel, roleLabel).last("limit 1");
+        roleLambdaQueryWrapper.select(SysRole::getId).eq(SysRole::getRoleLabel, roleLabel).last("limit 1");
         SysRole role = sysRoleMapper.selectOne(roleLambdaQueryWrapper);
         return ObjectUtils.isNotNull(role) ? role.getId() : null;
     }

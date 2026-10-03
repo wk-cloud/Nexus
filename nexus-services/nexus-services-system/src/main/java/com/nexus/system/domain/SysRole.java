@@ -1,5 +1,6 @@
 package com.nexus.system.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.nexus.common.mybatisplus.core.domain.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -26,20 +27,21 @@ public class SysRole extends BaseEntity implements Serializable {
     /**
      * 角色名称
      */
-    private String name;
+    private String roleName;
 
     /**
      * 角色标签
      */
-    private String label;
+    private String roleLabel;
 
     /**
      * 角色状态
      */
-    private Integer state;
+    private Integer status;
 
     /**
      * 菜单权限父子是否关联
      */
+    @TableField("is_menu_check_strictly")
     private Boolean menuCheckStrictly;
 }

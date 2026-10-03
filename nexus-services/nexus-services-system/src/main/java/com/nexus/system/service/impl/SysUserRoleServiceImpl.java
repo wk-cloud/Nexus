@@ -3,11 +3,10 @@ package com.nexus.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.nexus.common.core.enums.AdminEnum;
-import com.nexus.common.core.enums.PermissionStateEnum;
+import com.nexus.common.core.enums.PermissionStatusEnum;
 import com.nexus.common.core.exception.ServiceException;
 import com.nexus.common.core.utils.CollectionUtils;
 import com.nexus.system.domain.SysRole;
-import com.nexus.system.domain.SysUser;
 import com.nexus.system.domain.SysUserRole;
 import com.nexus.system.domain.vo.SysRoleVo;
 import com.nexus.system.mapper.SysUserRoleMapper;
@@ -95,9 +94,9 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
         }
         // 4. 保存用户和角色关系
         LambdaQueryWrapper<SysRole> roleLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        roleLambdaQueryWrapper.select(SysRole::getId, SysRole::getLabel);
+        roleLambdaQueryWrapper.select(SysRole::getId, SysRole::getRoleLabel);
         List<SysRole> roleList = sysRoleService.list(roleLambdaQueryWrapper);
-        roleList = roleList.stream().filter(role -> roleLabels.contains(role.getLabel())).toList();
+        roleList = roleList.stream().filter(role -> roleLabels.contains(role.getRoleLabel())).toList();
         if (CollectionUtils.isEmpty(roleList)) {
             return;
         }
@@ -117,7 +116,7 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
      * @return {@link List}<{@link SysRoleVo}>
      */
     @Override
-    public List<SysRoleVo> queryRoleListByUserId(Long UserId) {
+    public List<SysRoleVo> getRoleListByUserId(Long UserId) {
         LambdaQueryWrapper<SysUserRole> userRoleLambdaQueryWrapper = new LambdaQueryWrapper<>();
         userRoleLambdaQueryWrapper.eq(SysUserRole::getUserId, UserId);
         List<SysUserRole> userRoleList = baseMapper.selectList(userRoleLambdaQueryWrapper);
@@ -126,7 +125,7 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
         }
         Set<Long> roleIds = userRoleList.stream().map(SysUserRole::getRoleId).collect(Collectors.toSet());
         LambdaQueryWrapper<SysRole> roleLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        roleLambdaQueryWrapper.in(SysRole::getId,roleIds).eq(SysRole::getState, PermissionStateEnum.NORMAL.getCode());
+        roleLambdaQueryWrapper.in(SysRole::getId,roleIds).eq(SysRole::getStatus, PermissionStatusEnum.NORMAL.getCode());
         return sysRoleService.queryVoList(roleLambdaQueryWrapper);
     }
 }

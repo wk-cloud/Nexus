@@ -102,7 +102,7 @@ public class QqLoginStrategy extends AbstractLoginStrategy{
         if (StringUtils.isBlank(openId)) {
             throw new ServiceException("登录失败，QQ账户信息获取失败");
         }
-        SysUser sysUser = super.queryUserInfoByOpenId(openId);
+        SysUser sysUser = super.getUserInfoByOpenId(openId);
         if (ObjectUtils.isNull(sysUser)) {
             sysUser = new SysUser();
             // 如果成功获取到用户信息，则允许登录并保存信息
@@ -125,7 +125,7 @@ public class QqLoginStrategy extends AbstractLoginStrategy{
             sysUser.setAvatar((String) userInfoMap.get("figureurl_qq"));
             sysUserMapper.insert(sysUser);
             // 设置用户角色信息为user
-            Long roleId = super.queryRoleIdByRoleLabel(RoleEnum.USER.getRoleLabel());
+            Long roleId = super.getRoleIdByRoleLabel(RoleEnum.USER.getRoleLabel());
             SysUserRole sysUserRole = new SysUserRole();
             sysUserRole.setUserId(sysUser.getId());
             sysUserRole.setRoleId(roleId);

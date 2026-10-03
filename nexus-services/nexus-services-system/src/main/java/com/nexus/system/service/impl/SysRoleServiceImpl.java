@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.nexus.common.core.enums.AdminEnum;
-import com.nexus.common.core.enums.PermissionStateEnum;
+import com.nexus.common.core.enums.PermissionStatusEnum;
 import com.nexus.common.core.enums.RoleEnum;
 import com.nexus.common.core.exception.ServiceException;
 import com.nexus.common.core.utils.*;
@@ -13,7 +13,6 @@ import com.nexus.common.mybatisplus.core.query.QueryParams;
 import com.nexus.system.domain.SysMenu;
 import com.nexus.system.domain.SysRole;
 import com.nexus.system.domain.SysRoleMenu;
-import com.nexus.system.domain.SysUserRole;
 import com.nexus.system.domain.dto.SysRoleDto;
 import com.nexus.system.domain.vo.SysMenuVo;
 import com.nexus.system.domain.vo.SysRoleVo;
@@ -60,9 +59,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @return {@link List}<{@link SysRoleVo}>
      */
     @Override
-    public List<SysRoleVo> queryRoleListAll() {
+    public List<SysRoleVo> getRoleListAll() {
         LambdaQueryWrapper<SysRole> roleLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        roleLambdaQueryWrapper.select(SysRole::getId, SysRole::getLabel, SysRole::getLabel);
+        roleLambdaQueryWrapper.select(SysRole::getId, SysRole::getRoleLabel, SysRole::getRoleLabel);
         return baseMapper.queryVoList(roleLambdaQueryWrapper, SysRoleVo.class);
     }
 
@@ -91,11 +90,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @return {@link String}
      */
     @Override
-    public String queryRoleLabelById(Long roleId) {
+    public String getRoleLabelById(Long roleId) {
         LambdaQueryWrapper<SysRole> roleLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        roleLambdaQueryWrapper.eq(SysRole::getId, roleId).select(SysRole::getLabel);
+        roleLambdaQueryWrapper.eq(SysRole::getId, roleId).select(SysRole::getRoleLabel);
         SysRole role = baseMapper.selectOne(roleLambdaQueryWrapper);
-        return ObjectUtils.isNotNull(role) ? role.getLabel() : null;
+        return ObjectUtils.isNotNull(role) ? role.getRoleLabel() : null;
     }
 
     /**
@@ -105,12 +104,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @return {@link SysRoleVo}
      */
     @Override
-    public SysRoleVo queryRoleById(Long roleId) {
+    public SysRoleVo getRoleById(Long roleId) {
         SysRoleVo roleVo = baseMapper.queryVoById(roleId, SysRoleVo.class);
         if(ObjectUtils.isNull(roleVo)) {
             return null;
         }
-        if (AdminEnum.SUPER_ADMIN.getLabel().equals(roleVo.getLabel())) {
+        if (AdminEnum.SUPER_ADMIN.getLabel().equals(roleVo.getRoleLabel())) {
             roleVo.setMenuTreeList(TreeUtils.createTree(sysMenuService.queryVoList()));
             return roleVo;
         }
@@ -123,7 +122,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         Set<Long> menuIds = roleMenuList.stream().map(SysRoleMenu::getMenuId).collect(Collectors.toSet());
         // 查询菜单列表
         LambdaQueryWrapper<SysMenu> menuLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        menuLambdaQueryWrapper.in(SysMenu::getId, menuIds).eq(SysMenu::getState, PermissionStateEnum.NORMAL.getCode());
+        menuLambdaQueryWrapper.in(SysMenu::getId, menuIds).eq(SysMenu::getState, PermissionStatusEnum.NORMAL.getCode());
         List<SysMenu> menuList = sysMenuService.list(menuLambdaQueryWrapper);
         if(CollectionUtils.isEmpty(menuList)){
             return roleVo;
@@ -142,7 +141,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     public Boolean updateRole(SysRoleDto sysRoleDto) {
         if (!this.checkRoleLabelUnique(sysRoleDto)) {
-            throw new ServiceException("角色更新失败，角色【 " + sysRoleDto.getLabel() + " 】已经存在");
+            throw new ServiceException("角色更新失败，角色【 " + sysRoleDto.getRoleLabel() + " 】已经存在");
         }
         SysRole role = BeanUtils.toBean(sysRoleDto, SysRole.class);
         List<Long> menuIdList = sysRoleDto.getMenuIdList();
@@ -163,7 +162,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     public Boolean addRole(SysRoleDto sysRoleDto) {
         if (!this.checkRoleLabelUnique(sysRoleDto)) {
-            throw new ServiceException("角色添加失败，角色【 " + sysRoleDto.getLabel() + " 】已经存在");
+            throw new ServiceException("角色添加失败，角色【 " + sysRoleDto.getRoleLabel() + " 】已经存在");
         }
         SysRole role = BeanUtils.toBean(sysRoleDto, SysRole.class);
         // 保存角色
@@ -183,7 +182,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     public Boolean checkRoleLabelUnique(SysRoleDto sysRoleDto) {
         LambdaQueryWrapper<SysRole> roleLambdaQueryWrapper = new LambdaQueryWrapper<>();
         roleLambdaQueryWrapper
-                .eq(SysRole::getLabel, sysRoleDto.getLabel())
+                .eq(SysRole::getRoleLabel, sysRoleDto.getRoleLabel())
                 .ne(ObjectUtils.isNotNull(sysRoleDto.getId()), SysRole::getId, sysRoleDto.getId());
         return !baseMapper.exists(roleLambdaQueryWrapper);
     }
@@ -228,7 +227,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
             // 6. 组装角色和菜单
             for (SysRoleVo item : roleList) {
-                if (adminLabel.equals(item.getLabel())) {
+                if (adminLabel.equals(item.getRoleLabel())) {
                     item.setMenuList(menuList);
                     continue;
                 }
@@ -254,9 +253,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         LambdaQueryWrapper<SysRole> roleLambdaQueryWrapper = new LambdaQueryWrapper<>();
         if (ObjectUtils.isNotNull(sysRoleDto)) {
             roleLambdaQueryWrapper.eq(ObjectUtils.isNotNull(sysRoleDto.getId()), SysRole::getId, sysRoleDto.getId());
-            roleLambdaQueryWrapper.like(StringUtils.isNotBlank(sysRoleDto.getName()), SysRole::getName, sysRoleDto.getName());
-            roleLambdaQueryWrapper.like(StringUtils.isNotBlank(sysRoleDto.getLabel()), SysRole::getLabel, sysRoleDto.getLabel());
-            roleLambdaQueryWrapper.eq(ObjectUtils.isNotNull(sysRoleDto.getState()), SysRole::getState, sysRoleDto.getState());
+            roleLambdaQueryWrapper.like(StringUtils.isNotBlank(sysRoleDto.getRoleName()), SysRole::getRoleName, sysRoleDto.getRoleName());
+            roleLambdaQueryWrapper.like(StringUtils.isNotBlank(sysRoleDto.getRoleLabel()), SysRole::getRoleLabel, sysRoleDto.getRoleLabel());
+            roleLambdaQueryWrapper.eq(ObjectUtils.isNotNull(sysRoleDto.getStatus()), SysRole::getStatus, sysRoleDto.getStatus());
         }
         return roleLambdaQueryWrapper;
     }

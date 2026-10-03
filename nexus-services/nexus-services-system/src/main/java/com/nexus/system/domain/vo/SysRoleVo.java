@@ -1,6 +1,5 @@
 package com.nexus.system.domain.vo;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,17 +28,17 @@ public class SysRoleVo implements Serializable {
     /**
      * 角色名称
      */
-    private String name;
+    private String roleName;
 
     /**
      * 角色标签
      */
-    private String label;
+    private String roleLabel;
 
     /**
      * 角色状态
      */
-    private Integer state;
+    private Integer status;
 
     /**
      * 菜单菜单父子是否关联

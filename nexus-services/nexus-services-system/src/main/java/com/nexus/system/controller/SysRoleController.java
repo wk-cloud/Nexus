@@ -42,7 +42,7 @@ public class SysRoleController {
     @Operation(summary = "获取所有角色列表接口")
     @GetMapping("/list/all")
     public Result<List<SysRoleVo>> getRoleListAll() {
-        return Result.success(sysRoleService.queryRoleListAll());
+        return Result.success(sysRoleService.getRoleListAll());
     }
 
     /**
@@ -72,7 +72,7 @@ public class SysRoleController {
     @Operation(summary = "获取角色接口")
     @GetMapping("/{roleId}")
     public Result<SysRoleVo> getRole(@PathVariable("roleId") Long roleId) {
-        return Result.success(sysRoleService.queryRoleById(roleId));
+        return Result.success(sysRoleService.getRoleById(roleId));
     }
 
     /**

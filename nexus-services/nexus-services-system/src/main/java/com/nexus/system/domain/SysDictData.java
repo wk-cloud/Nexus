@@ -46,7 +46,7 @@ public class SysDictData extends BaseEntity implements Serializable {
     /**
      * 字典状态
      */
-    private Integer state;
+    private Integer status;
 
     /**
      * 回显样式

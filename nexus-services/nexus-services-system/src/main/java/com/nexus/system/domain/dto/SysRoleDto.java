@@ -31,13 +31,13 @@ public class SysRoleDto implements Serializable {
     @NotBlank(message = "角色名称不能为空", groups = {ValidGroup.Insert.class, ValidGroup.Update.class})
     @Size(message = "角色名称长度不能超过20", max = 20, groups = {ValidGroup.Insert.class, ValidGroup.Update.class})
     @Schema(name = "角色名称")
-    private String name;
+    private String roleName;
 
     @Schema(name = "角色标签")
-    private String label;
+    private String roleLabel;
 
     @Schema(name = "角色状态")
-    private Integer state;
+    private Integer status;
 
     @Schema(name = "菜单权限父子是否关联")
     private Boolean menuCheckStrictly;

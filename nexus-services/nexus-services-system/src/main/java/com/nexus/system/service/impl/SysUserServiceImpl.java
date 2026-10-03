@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.nexus.common.core.enums.AdminEnum;
-import com.nexus.common.core.enums.PermissionStateEnum;
+import com.nexus.common.core.enums.PermissionStatusEnum;
 import com.nexus.common.core.exception.ServiceException;
 import com.nexus.common.core.domain.ip.IpHome;
 import com.nexus.common.core.service.UserService;
@@ -96,7 +96,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                     Set<Long> currentRoleIds = userRoleIdMap.getOrDefault(sysUserVo.getId(), new HashSet<>());
                     Set<String> rolePermissionList = roleList.stream()
                             .filter(item -> currentRoleIds.contains(item.getId()))
-                            .map(SysRoleVo::getLabel)
+                            .map(SysRoleVo::getRoleLabel)
                             .collect(Collectors.toSet());
                     sysUserVo.setRolePermissions(rolePermissionList);
                 }
@@ -112,7 +112,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return {@link String}
      */
     @Override
-    public String queryEmailByUserId(Long userId) {
+    public String getEmailByUserId(Long userId) {
         LambdaQueryWrapper<SysUser> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
         userLambdaQueryWrapper.select(SysUser::getId, SysUser::getEmail).eq(SysUser::getId, userId);
         SysUser user = baseMapper.selectOne(userLambdaQueryWrapper);
@@ -183,7 +183,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return {@link SysUserVo}
      */
     @Override
-    public SysUserVo queryUserById(Long userId) {
+    public SysUserVo getUserById(Long userId) {
         LambdaQueryWrapper<SysUser> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
         userLambdaQueryWrapper
                 .select(SysUser::getUsername, SysUser::getLoginIp, SysUser::getLoginType,
@@ -196,7 +196,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (ObjectUtils.isNotNull(sysUserVo)) {
             sysUserVo.setLoginIpHome(IpUtils.completeIpHome(sysUserVo.getLoginIp()));
             // 2. 查询用户角色信息列表
-            List<SysRoleVo> roleList = sysUserRoleService.queryRoleListByUserId(userId);
+            List<SysRoleVo> roleList = sysUserRoleService.getRoleListByUserId(userId);
             // 3. 封装角色菜单信息
             if (CollectionUtils.isNotEmpty(roleList)) {
                 // 3.1. 查询角色和菜单关联数据分组
@@ -207,11 +207,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                         .stream().collect(Collectors.groupingBy(SysRoleMenu::getRoleId, Collectors.mapping(SysRoleMenu::getMenuId, Collectors.toSet())));
                 // 3.2. 查询状态是正常的菜单列表
                 LambdaQueryWrapper<SysMenu> menuLambdaQueryWrapper = new LambdaQueryWrapper<>();
-                menuLambdaQueryWrapper.eq(SysMenu::getState, PermissionStateEnum.NORMAL.getCode());
+                menuLambdaQueryWrapper.eq(SysMenu::getStatus, PermissionStatusEnum.NORMAL.getCode());
                 List<SysMenu> menuList = sysMenuService.list(menuLambdaQueryWrapper);
                 // 3.3. 给角色封装对应关联的菜单信息
                 roleList.forEach(role -> {
-                    if (AdminEnum.SUPER_ADMIN.getLabel().equals(role.getLabel())) {
+                    if (AdminEnum.SUPER_ADMIN.getLabel().equals(role.getRoleLabel())) {
                         List<SysMenuVo> menuVoList = BeanUtils.copyToList(menuList, SysMenuVo.class);
                         role.setMenuList(menuVoList);
                     } else {
@@ -233,7 +233,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                         );
                 distinctMenuList.sort(Comparator.comparing(SysMenuVo::getCreateTime));
                 sysUserVo.setMenuList(TreeUtils.createTree(distinctMenuList));
-                Set<String> rolePermissions = roleList.stream().map(SysRoleVo::getLabel).filter(StringUtils::isNotBlank)
+                Set<String> rolePermissions = roleList.stream().map(SysRoleVo::getRoleLabel).filter(StringUtils::isNotBlank)
                         .collect(Collectors.toSet());
                 Set<String> menuPermissions = distinctMenuList.stream().map(SysMenuVo::getPerms).filter(StringUtils::isNotBlank)
                         .collect(Collectors.toSet());
@@ -278,12 +278,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return {@link SysUserVo }
      */
     @Override
-    public SysUserVo queryUserInfoByToken(String token) {
+    public SysUserVo getUserInfoByToken(String token) {
         if (StringUtils.isBlank(token)) {
             throw new ServiceException("用户信息获取失败，令牌为空");
         }
         Map<String, String> userId = TokenUtils.getValueFromToken(token, Collections.singletonList("userId"));
-        return this.queryUserById(Long.parseLong(userId.get("userId")));
+        return this.getUserById(Long.parseLong(userId.get("userId")));
     }
 
     /**

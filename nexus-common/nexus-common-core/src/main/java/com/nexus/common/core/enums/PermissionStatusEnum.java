@@ -11,7 +11,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum PermissionStateEnum {
+public enum PermissionStatusEnum {
 
     NORMAL(1, "正常"),
     DISABLE(0, "禁用");

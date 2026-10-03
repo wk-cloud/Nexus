@@ -38,7 +38,7 @@ public class SysDictTypeDto implements Serializable {
     private String dictType;
 
     @Schema(name = "字典类型状态")
-    private Integer state;
+    private Integer status;
 
     @Schema(name = "备注")
     @Size(max = 250, message = "备注长度不能超过250个字符", groups = {ValidGroup.Insert.class, ValidGroup.Update.class})

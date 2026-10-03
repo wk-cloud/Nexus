@@ -46,6 +46,6 @@ public interface SysUserRoleService extends IServicePlus<SysUserRole,SysUserRole
      * @param UserId 用户基本id
      * @return {@link List}<{@link SysRoleVo}>
      */
-    List<SysRoleVo> queryRoleListByUserId(Long UserId);
+    List<SysRoleVo> getRoleListByUserId(Long UserId);
 
 }

@@ -105,7 +105,7 @@ public class SysMenuVo extends TreeEntity<SysMenuVo> implements Serializable {
     /**
      * 菜单状态
      */
-    private Integer state;
+    private Integer status;
 
     /**
      * 层级，1：一级菜单，2：二级菜单

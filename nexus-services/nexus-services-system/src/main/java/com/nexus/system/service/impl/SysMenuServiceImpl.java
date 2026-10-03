@@ -128,7 +128,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             menuLambdaQueryWrapper.eq(ObjectUtils.isNotNull(sysMenuDto.getId()), SysMenu::getId, sysMenuDto.getId());
             menuLambdaQueryWrapper.like(StringUtils.isNotBlank(sysMenuDto.getName()), SysMenu::getName, sysMenuDto.getName());
             menuLambdaQueryWrapper.like(StringUtils.isNotBlank(sysMenuDto.getTitle()), SysMenu::getTitle, sysMenuDto.getTitle());
-            menuLambdaQueryWrapper.eq(ObjectUtils.isNotNull(sysMenuDto.getState()), SysMenu::getState, sysMenuDto.getState());
+            menuLambdaQueryWrapper.eq(ObjectUtils.isNotNull(sysMenuDto.getStatus()), SysMenu::getStatus, sysMenuDto.getStatus());
         }
         return menuLambdaQueryWrapper;
     }

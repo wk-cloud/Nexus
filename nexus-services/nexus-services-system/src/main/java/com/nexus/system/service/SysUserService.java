@@ -7,8 +7,6 @@ import com.nexus.system.domain.SysUser;
 import com.nexus.system.domain.dto.SysUserDto;
 import com.nexus.system.domain.vo.SysUserVo;
 
-import java.util.Map;
-
 /**
  * 用户基本信息服务
  *
@@ -32,7 +30,7 @@ public interface SysUserService extends IServicePlus<SysUser, SysUserVo> {
      * @param userId 用户id
      * @return {@link String}
      */
-    String queryEmailByUserId(Long userId);
+    String getEmailByUserId(Long userId);
 
     /**
      * 修改用户信息
@@ -66,7 +64,7 @@ public interface SysUserService extends IServicePlus<SysUser, SysUserVo> {
      * @param userId 用户id
      * @return {@link SysUserVo}
      */
-    SysUserVo queryUserById(Long userId);
+    SysUserVo getUserById(Long userId);
 
     /**
      * 验证电子邮件和密码
@@ -78,12 +76,12 @@ public interface SysUserService extends IServicePlus<SysUser, SysUserVo> {
     SysUser verificationEmailAndPassword(String email, String password);
 
     /**
-     * 按令牌查询用户信息
+     * 按令牌获取用户信息
      *
      * @param token 令 牌
      * @return {@link SysUserVo }
      */
-    SysUserVo queryUserInfoByToken(String token);
+    SysUserVo getUserInfoByToken(String token);
 
     /**
      * 检查邮箱唯一性

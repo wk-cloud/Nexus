@@ -1,5 +1,6 @@
 package com.nexus.system.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.nexus.common.mybatisplus.core.domain.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -29,13 +30,16 @@ public class SysMenu extends BaseEntity implements Serializable {
     private Long parentId;
 
     /**
-     * 组件名称
+     * 路由名称
      */
+    @TableField("router_name")
     private String name;
 
     /**
      * 设置该路由在侧边栏和面包屑中展示的名字
+     * 菜单名称
      */
+    @TableField("menu_name")
     private String title;
 
     /**
@@ -107,7 +111,7 @@ public class SysMenu extends BaseEntity implements Serializable {
     /**
      * 菜单状态
      */
-    private Integer state;
+    private Integer status;
 
     /**
      * 删除标志

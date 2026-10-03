@@ -9,7 +9,6 @@ import com.nexus.system.domain.vo.SysRoleVo;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 角色服务
@@ -24,7 +23,7 @@ public interface SysRoleService extends IServicePlus<SysRole, SysRoleVo> {
      *
      * @return {@link List}<{@link SysRoleVo}>
      */
-    List<SysRoleVo> queryRoleListAll();
+    List<SysRoleVo> getRoleListAll();
 
     /**
      * 删除角色
@@ -48,7 +47,7 @@ public interface SysRoleService extends IServicePlus<SysRole, SysRoleVo> {
      * @param roleId 角色id
      * @return {@link String}
      */
-    String queryRoleLabelById(Long roleId);
+    String getRoleLabelById(Long roleId);
 
     /**
      * 通过id获取角色
@@ -56,7 +55,7 @@ public interface SysRoleService extends IServicePlus<SysRole, SysRoleVo> {
      * @param roleId 角色id
      * @return {@link SysRoleVo}
      */
-    SysRoleVo queryRoleById(Long roleId);
+    SysRoleVo getRoleById(Long roleId);
 
     /**
      * 保存角色

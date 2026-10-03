@@ -46,7 +46,7 @@ public class SysDictDataVo implements Serializable {
     /**
      * 字典状态
      */
-    private Integer state;
+    private Integer status;
 
     /**
      * 回显样式

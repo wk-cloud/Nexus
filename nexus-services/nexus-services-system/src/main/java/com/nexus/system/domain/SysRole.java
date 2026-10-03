@@ -26,17 +26,17 @@ public class SysRole extends BaseEntity implements Serializable {
     /**
      * 角色名称
      */
-    private String name;
+    private String roleName;
 
     /**
      * 角色标签
      */
-    private String label;
+    private String roleLabel;
 
     /**
      * 角色状态
      */
-    private Integer state;
+    private Integer status;
 
     /**
      * 菜单权限父子是否关联

@@ -3,14 +3,12 @@ package com.nexus.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.nexus.common.core.domain.event.LoginLogEvent;
 import com.nexus.common.core.domain.event.OperationLogEvent;
 import com.nexus.common.core.exception.ServiceException;
 import com.nexus.common.core.utils.*;
 import com.nexus.common.excel.utils.ExcelUtils;
 import com.nexus.common.mybatisplus.core.page.PagingData;
 import com.nexus.common.mybatisplus.core.query.QueryParams;
-import com.nexus.system.domain.SysLoginLog;
 import com.nexus.system.domain.SysOperationLog;
 import com.nexus.system.domain.vo.SysOperationLogVo;
 import com.nexus.system.mapper.SysOperationLogMapper;
@@ -63,7 +61,7 @@ public class SysOperationLogServiceImpl extends ServiceImpl<SysOperationLogMappe
         try {
             String fileName = "blogLog" + DateUtils.getYearMonthDay(new Date()) + ".xlsx";
             String sheetName = "操作日志";
-            ExcelUtils.export(response, this.queryExportBlogLogList(blogLogIdList), SysOperationLogVo.class, fileName, sheetName);
+            ExcelUtils.export(response, this.getExportBlogLogList(blogLogIdList), SysOperationLogVo.class, fileName, sheetName);
         } catch (Exception e) {
             throw new ServiceException("日志导出失败,失败原因：" + e.getMessage());
         }
@@ -77,7 +75,7 @@ public class SysOperationLogServiceImpl extends ServiceImpl<SysOperationLogMappe
         try {
             String fileName = "blogLog" + DateUtils.getYearMonthDay(new Date()) + ".xlsx";
             String sheetName = "操作日志";
-            ExcelUtils.export(response, this.queryAllExportBlogLog(), SysOperationLogVo.class, fileName, sheetName);
+            ExcelUtils.export(response, this.getAllExportBlogLog(), SysOperationLogVo.class, fileName, sheetName);
         } catch (Exception e) {
             throw new ServiceException("日志导出失败,失败原因：" + e.getMessage());
         }
@@ -89,7 +87,7 @@ public class SysOperationLogServiceImpl extends ServiceImpl<SysOperationLogMappe
      * @param blogLogIdList 博客日志id列表
      * @return {@link List}<{@link SysOperationLogVo}>
      */
-    private List<SysOperationLogVo> queryExportBlogLogList(List<Long> blogLogIdList) {
+    private List<SysOperationLogVo> getExportBlogLogList(List<Long> blogLogIdList) {
         LambdaQueryWrapper<SysOperationLog> blogLogLambdaQueryWrapper = new LambdaQueryWrapper<>();
         blogLogLambdaQueryWrapper.in(SysOperationLog::getId,blogLogIdList);
         return baseMapper.queryVoList(blogLogLambdaQueryWrapper, SysOperationLogVo.class);
@@ -100,7 +98,7 @@ public class SysOperationLogServiceImpl extends ServiceImpl<SysOperationLogMappe
      *
      * @return {@link List}<{@link SysOperationLogVo}>
      */
-    private List<SysOperationLogVo> queryAllExportBlogLog() {
+    private List<SysOperationLogVo> getAllExportBlogLog() {
         return baseMapper.queryVoList(new LambdaQueryWrapper<>(), SysOperationLogVo.class);
     }
 

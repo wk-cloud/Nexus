@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(FileSizeLimitExceededException.class)
     public Result<Void> fileSizeLimitExceededExceptionHandle(Exception e) {
         log.error("====> 上传文件大小超过限制", e);
-        return Result.fail("上传失败，失败原因：单次上传不能超过100MB");
+        return Result.fail("文件上传失败，失败原因：上传文件大小超过限制");
     }
 
     /**

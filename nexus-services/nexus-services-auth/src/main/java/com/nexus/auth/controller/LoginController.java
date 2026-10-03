@@ -42,7 +42,7 @@ public class LoginController {
     @PostMapping("/logout")
     public Result<Void> logout() {
         loginService.loginOut();
-        return Result.success(HttpCodeEnum.LOGOUT.getCode(), HttpCodeEnum.LOGOUT.getInfo());
+        return Result.success();
     }
 
     /**
@@ -73,7 +73,7 @@ public class LoginController {
     public Result<Void> checkLoginExpired() {
         Boolean expired = loginService.checkLoginExpired();
         if (expired) {
-            return Result.fail(HttpCodeEnum.TOKEN_EXPIRED.getCode(), HttpCodeEnum.TOKEN_EXPIRED.getInfo());
+            return Result.fail(HttpCodeEnum.UNAUTHORIZED.getCode(), HttpCodeEnum.UNAUTHORIZED.getInfo());
         }
         return Result.success();
     }

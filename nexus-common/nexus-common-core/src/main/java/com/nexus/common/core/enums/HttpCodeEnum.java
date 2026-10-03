@@ -18,12 +18,10 @@ public enum HttpCodeEnum {
     SUCCESS(200,"success"),
     // 响应失败状态码
     FAIL(300,"fail"),
-    // 权限不足状态码
+    // 没有访问权限状态码
     NO_PERMISSION(50010,"没有访问权限"),
-    // token失效状态码
-    TOKEN_EXPIRED(50011,"登录令牌过期"),
-    // 退出登录状态码
-    LOGOUT(50012,"退出登录");
+    // 登录状态已失效状态码
+    UNAUTHORIZED(50011,"登录状态已失效，请重新登录");
 
     private final Integer code;
     private final String info;

@@ -39,7 +39,7 @@ public class SysDictTypeVo implements Serializable {
     /**
      * 字典类型状态
      */
-    private Integer state;
+    private Integer status;
 
     /**
      * 备注

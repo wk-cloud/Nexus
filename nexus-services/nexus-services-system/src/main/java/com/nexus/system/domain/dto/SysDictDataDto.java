@@ -47,7 +47,7 @@ public class SysDictDataDto implements Serializable {
 
     @Schema(name = "字典状态")
     @NotNull(message = "字典状态不能为空", groups = {ValidGroup.Insert.class, ValidGroup.Update.class})
-    private Integer state;
+    private Integer status;
 
     @Schema(name = "回显样式")
     private String listClass;

@@ -47,13 +47,13 @@ public class SysDictTypeBackServiceImpl extends ServiceImpl<SysDictTypeMapper, S
     private SysDictDataBackService sysDictDataBackService;
 
     /**
-     * 查询字典类型
+     * 获取字典类型
      *
      * @param dictType 字典类型
      * @return {@link SysDictTypeVo}
      */
     @Override
-    public SysDictTypeVo queryDictType(String dictType) {
+    public SysDictTypeVo getDictType(String dictType) {
         LambdaQueryWrapper<SysDictType> sysDictTypeLambdaQueryWrapper = new LambdaQueryWrapper<>();
         sysDictTypeLambdaQueryWrapper.eq(SysDictType::getDictType,dictType);
         SysDictTypeVo sysDictTypeVo = baseMapper.queryVoOne(sysDictTypeLambdaQueryWrapper, SysDictTypeVo.class);
@@ -68,13 +68,13 @@ public class SysDictTypeBackServiceImpl extends ServiceImpl<SysDictTypeMapper, S
     }
 
     /**
-     * 查询字典类型
+     * 获取字典类型
      *
      * @param id 主键id
      * @return {@link SysDictTypeVo}
      */
     @Override
-    public SysDictTypeVo queryDictType(Long id) {
+    public SysDictTypeVo getDictType(Long id) {
         return baseMapper.queryVoById(id, SysDictTypeVo.class);
     }
 
@@ -142,14 +142,14 @@ public class SysDictTypeBackServiceImpl extends ServiceImpl<SysDictTypeMapper, S
     }
 
     /**
-     * 查询系统字典类型列表
+     * 获取系统字典类型列表
      *
      * @param sysDictTypeDto 系统字典类型dto
      * @param queryParams        查询参数
      * @return {@link PagingData}<{@link SysDictTypeVo}>
      */
     @Override
-    public PagingData<SysDictTypeVo> querySysDictTypeList(SysDictTypeDto sysDictTypeDto, QueryParams queryParams) {
+    public PagingData<SysDictTypeVo> getSysDictTypeList(SysDictTypeDto sysDictTypeDto, QueryParams queryParams) {
         LambdaQueryWrapper<SysDictType> sysDictTypeLambdaQueryWrapper = this.buildLambdaQueryWrapper(sysDictTypeDto);
         Page<SysDictTypeVo> sysDictTypeBackVoPage = baseMapper.queryVoPage(queryParams.build(), sysDictTypeLambdaQueryWrapper, SysDictTypeVo.class);
         return PagingData.build(sysDictTypeBackVoPage);
@@ -182,7 +182,7 @@ public class SysDictTypeBackServiceImpl extends ServiceImpl<SysDictTypeMapper, S
             sysDictTypeLambdaQueryWrapper.eq(ObjectUtils.isNotNull(sysDictTypeDto.getId()), SysDictType::getId, sysDictTypeDto.getId());
             sysDictTypeLambdaQueryWrapper.like(StringUtils.isNotBlank(sysDictTypeDto.getDictName()), SysDictType::getDictName, sysDictTypeDto.getDictName());
             sysDictTypeLambdaQueryWrapper.like(StringUtils.isNotBlank(sysDictTypeDto.getDictType()), SysDictType::getDictType, sysDictTypeDto.getDictType());
-            sysDictTypeLambdaQueryWrapper.eq(ObjectUtils.isNotNull(sysDictTypeDto.getState()), SysDictType::getState, sysDictTypeDto.getState());
+            sysDictTypeLambdaQueryWrapper.eq(ObjectUtils.isNotNull(sysDictTypeDto.getStatus()), SysDictType::getStatus, sysDictTypeDto.getStatus());
         }
         return sysDictTypeLambdaQueryWrapper;
     }

@@ -55,7 +55,7 @@ public class SysDictTypeBackController {
     @Operation(summary = "获取系统字典数据接口")
     @GetMapping("/dictData/{dictType}")
     public Result<SysDictTypeVo> getSysDictData(@PathVariable("dictType") String dictType){
-        return Result.success(sysDictTypeBackService.queryDictType(dictType));
+        return Result.success(sysDictTypeBackService.getDictType(dictType));
     }
 
     /**
@@ -67,7 +67,7 @@ public class SysDictTypeBackController {
     @Operation(summary = "获取系统字典类型接口")
     @GetMapping("/{id}")
     public Result<SysDictTypeVo> getSysDictType(@PathVariable("id") Long id){
-        return Result.success(sysDictTypeBackService.queryDictType(id));
+        return Result.success(sysDictTypeBackService.getDictType(id));
     }
 
     /**
@@ -80,7 +80,7 @@ public class SysDictTypeBackController {
     @Operation(summary = "获取系统字典类型分页列表接口")
     @GetMapping("/list")
     public Result<PagingData<SysDictTypeVo>> listSysDictType(SysDictTypeDto sysDictTypeDto, QueryParams queryParams) {
-        return Result.success(sysDictTypeBackService.querySysDictTypeList(sysDictTypeDto, queryParams));
+        return Result.success(sysDictTypeBackService.getSysDictTypeList(sysDictTypeDto, queryParams));
     }
 
     /**

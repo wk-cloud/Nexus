@@ -121,7 +121,7 @@ public class SysDictDataBackServiceImpl extends ServiceImpl<SysDictDataMapper, S
             sysDictDataLambdaQueryWrapper.like(StringUtils.isNotBlank(sysDictDataDto.getDictLabel()),SysDictData::getDictLabel,sysDictDataDto.getDictLabel());
             sysDictDataLambdaQueryWrapper.like(StringUtils.isNotBlank(sysDictDataDto.getDictValue()),SysDictData::getDictValue,sysDictDataDto.getDictValue());
             sysDictDataLambdaQueryWrapper.eq(StringUtils.isNotBlank(sysDictDataDto.getDictType()),SysDictData::getDictType,sysDictDataDto.getDictType());
-            sysDictDataLambdaQueryWrapper.eq(ObjectUtils.isNotNull(sysDictDataDto.getState()),SysDictData::getState,sysDictDataDto.getState());
+            sysDictDataLambdaQueryWrapper.eq(ObjectUtils.isNotNull(sysDictDataDto.getStatus()),SysDictData::getStatus,sysDictDataDto.getStatus());
         }
         return sysDictDataLambdaQueryWrapper;
     }

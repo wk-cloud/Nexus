@@ -27,7 +27,7 @@ public class Result<T> implements Serializable {
     /**
      * 返回给客户端的数据，T 类型
      */
-    private T result;
+    private T data;
 
     /**
      * 私有化构造器
@@ -96,7 +96,7 @@ public class Result<T> implements Serializable {
         Result<T> result = new Result<>();
         result.setCode(HttpCodeEnum.SUCCESS.getCode());
         result.setMessage(HttpCodeEnum.SUCCESS.getInfo());
-        result.setResult(data);
+        result.setData(data);
         return result;
     }
 
@@ -112,7 +112,7 @@ public class Result<T> implements Serializable {
         Result<T> result = new Result<>();
         result.setCode(code);
         result.setMessage(HttpCodeEnum.SUCCESS.getInfo());
-        result.setResult(data);
+        result.setData(data);
         return result;
     }
 
@@ -127,7 +127,7 @@ public class Result<T> implements Serializable {
         Result<T> result = new Result<>();
         result.setCode(HttpCodeEnum.SUCCESS.getCode());
         result.setMessage(message);
-        result.setResult(data);
+        result.setData(data);
         return result;
     }
 
@@ -143,7 +143,7 @@ public class Result<T> implements Serializable {
         Result<T> result = new Result<>();
         result.setCode(code);
         result.setMessage(message);
-        result.setResult(data);
+        result.setData(data);
         return result;
     }
 
@@ -206,7 +206,7 @@ public class Result<T> implements Serializable {
      * @example Result<T> result = Result.<T>success().add(value);
      */
     public Result<T> add(T value) {
-        this.result = value;
+        this.data = value;
         return this;
     }
 }

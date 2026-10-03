@@ -14,7 +14,7 @@ import lombok.Getter;
 public enum LoginPlatformEnum {
 
     BACK_DESK(1, "后台管理"),
-    FRONT(2, "前台门户");
+    FRONT_DESK(2, "前台门户");
 
     private final Integer code;
     private final String info;

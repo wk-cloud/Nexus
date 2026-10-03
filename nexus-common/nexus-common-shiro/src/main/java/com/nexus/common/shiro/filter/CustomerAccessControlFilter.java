@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
@@ -183,12 +184,12 @@ public class CustomerAccessControlFilter extends BasicHttpAuthenticationFilter {
         // 需要进行登录认证的请求
         try {
             return executeLogin(servletRequest, servletResponse);
-        } catch (Exception e) {
+        } catch (AuthenticationException e) {
             HttpServletResponse response = (HttpServletResponse) servletResponse;
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             try {
-                response.getWriter().write(JSON.toJSONString(Result.fail(HttpCodeEnum.TOKEN_EXPIRED.getCode(),"登录信息失效，请重新登录")));
+                response.getWriter().write(JSON.toJSONString(Result.fail(HttpCodeEnum.UNAUTHORIZED.getCode(), HttpCodeEnum.UNAUTHORIZED.getInfo())));
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }

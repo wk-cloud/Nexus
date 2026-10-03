@@ -32,20 +32,20 @@ public class ShiroExceptionHandler {
      */
     @ExceptionHandler({SignatureVerificationException.class, AlgorithmMismatchException.class, TokenExpiredException.class, JWTDecodeException.class})
     public Result<Void> verificationOrAlgorithmMismatchExceptionHandle(Exception e) {
-        log.error("====> token 异常", e);
-        return Result.fail(HttpCodeEnum.TOKEN_EXPIRED.getCode(), "登录信息已经失效，请重新登录");
+        log.error("====> Token 异常", e);
+        return Result.fail(HttpCodeEnum.UNAUTHORIZED.getCode(), HttpCodeEnum.UNAUTHORIZED.getInfo());
     }
 
 
     /**
-     * 处理shiro异常
+     * 处理 shiro 授权异常
      *
      * @param e e
      * @return {@link Result}
      */
     @ExceptionHandler({UnauthorizedException.class, AuthorizationException.class})
     public Result<Void> unAuthorizedExceptionHandle(Exception e) {
-        log.error("====> Shiro 异常", e);
-        return Result.fail("权限不足");
+        log.error("====> Shiro 授权异常", e);
+        return Result.fail(HttpCodeEnum.NO_PERMISSION.getCode(), HttpCodeEnum.NO_PERMISSION.getInfo());
     }
 }

@@ -3,6 +3,7 @@ package com.nexus.common.token.utils;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.nexus.common.core.utils.*;
 import com.nexus.common.redis.utils.RedisUtils;
@@ -135,13 +136,28 @@ public class TokenUtils {
     }
 
     /**
-     * 检查令牌
+     * 解码令牌
      *
      * @param token 令牌
      * @return {@link DecodedJWT}
      */
-    public static DecodedJWT checkToken(String token) {
+    public static DecodedJWT decodedToken(String token) {
         return JWT.require(Algorithm.HMAC256(signature)).build().verify(token);
+    }
+
+    /**
+     * 验证令牌
+     *
+     * @param token 令牌
+     * @return boolean
+     */
+    public static boolean verifyToken(String token) {
+        try {
+            decodedToken(token);
+            return true;
+        } catch (JWTVerificationException e) {
+            return false;
+        }
     }
 
 
@@ -153,7 +169,7 @@ public class TokenUtils {
      */
     public static boolean isExpired(String token) {
         try {
-            return checkToken(token).getExpiresAt().getTime() < System.currentTimeMillis();
+            return decodedToken(token).getExpiresAt().getTime() < System.currentTimeMillis();
         } catch (Exception e) {
             return true;
         }
@@ -168,7 +184,7 @@ public class TokenUtils {
      * @return {@link String}
      */
     public static String getValueFromToken(String token, String key) {
-        return checkToken(token).getClaim(key).asString();
+        return decodedToken(token).getClaim(key).asString();
     }
 
 
@@ -184,7 +200,7 @@ public class TokenUtils {
             HashMap<String, String> resultMap =
                     new HashMap<>(CollectionUtils.initialCapacity(keyList.size()));
             keyList.forEach(key -> {
-                resultMap.put(key, checkToken(token).getClaim(key).asString());
+                resultMap.put(key, decodedToken(token).getClaim(key).asString());
             });
             return resultMap;
         }

@@ -35,7 +35,7 @@ public class LoginLogAspect {
         if (!HttpCodeEnum.SUCCESS.getCode().equals(proceed.getCode())) {
             return proceed;
         }
-        LoginVo loginVo = (LoginVo) proceed.getResult();
+        LoginVo loginVo = (LoginVo) proceed.getData();
         // 获取token
         String token = loginVo.getToken();
         // 获取request

@@ -42,7 +42,7 @@ public class LoginController {
     @PostMapping("/logout")
     public Result<Void> logout() {
         loginService.loginOut();
-        return Result.success(HttpCodeEnum.LOGOUT.getCode(), HttpCodeEnum.LOGOUT.getInfo());
+        return Result.success();
     }
 
     /**
@@ -54,10 +54,10 @@ public class LoginController {
     @Operation(summary = "用户登录接口")
     @Limit(limitType = LimitTypeEnum.IP)
     @Pass
-    @LoginLog(loginPlatform = LoginPlatformEnum.FRONT)
+    @LoginLog(loginPlatform = LoginPlatformEnum.FRONT_DESK)
     @PostMapping
     public Result<LoginVo> login(@RequestBody @Validated(ValidGroup.Select.class) LoginDto loginDto) {
-        loginDto.setLoginPlatform(LoginPlatformEnum.FRONT.getCode());
+        loginDto.setLoginPlatform(LoginPlatformEnum.FRONT_DESK.getCode());
         return Result.success(loginService.login(loginDto));
     }
 
@@ -73,7 +73,7 @@ public class LoginController {
     public Result<Void> checkLoginExpired() {
         Boolean expired = loginService.checkLoginExpired();
         if (expired) {
-            return Result.fail(HttpCodeEnum.TOKEN_EXPIRED.getCode(), HttpCodeEnum.TOKEN_EXPIRED.getInfo());
+            return Result.fail(HttpCodeEnum.UNAUTHORIZED.getCode(), HttpCodeEnum.UNAUTHORIZED.getInfo());
         }
         return Result.success();
     }

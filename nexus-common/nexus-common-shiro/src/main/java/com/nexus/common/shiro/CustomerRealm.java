@@ -54,7 +54,7 @@ public class CustomerRealm extends AuthorizingRealm {
         String token = (String) principals.getPrimaryPrincipal();
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         try {
-            if (ObjectUtils.isNotNull(TokenUtils.checkToken(token))) {
+            if (TokenUtils.verifyToken(token)) {
                 log.info("====> 开始进行授权");
                 Long userId = Long.parseLong(TokenUtils.getValueFromToken(token, "userId"));
                 // 1. 设置角色信息

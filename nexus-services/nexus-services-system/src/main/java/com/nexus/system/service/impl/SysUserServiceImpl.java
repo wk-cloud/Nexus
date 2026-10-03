@@ -207,7 +207,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                         .stream().collect(Collectors.groupingBy(SysRoleMenu::getRoleId, Collectors.mapping(SysRoleMenu::getMenuId, Collectors.toSet())));
                 // 3.2. 查询状态是正常的菜单列表
                 LambdaQueryWrapper<SysMenu> menuLambdaQueryWrapper = new LambdaQueryWrapper<>();
-                menuLambdaQueryWrapper.eq(SysMenu::getState, PermissionStatusEnum.NORMAL.getCode());
+                menuLambdaQueryWrapper.eq(SysMenu::getStatus, PermissionStatusEnum.NORMAL.getCode());
                 List<SysMenu> menuList = sysMenuService.list(menuLambdaQueryWrapper);
                 // 3.3. 给角色封装对应关联的菜单信息
                 roleList.forEach(role -> {

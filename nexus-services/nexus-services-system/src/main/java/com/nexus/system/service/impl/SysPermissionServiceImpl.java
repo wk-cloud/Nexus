@@ -72,7 +72,7 @@ public class SysPermissionServiceImpl implements SysPermissionService, Permissio
             LambdaQueryWrapper<SysMenu> menuLambdaQueryWrapper = new LambdaQueryWrapper<>();
             menuLambdaQueryWrapper.select(SysMenu::getPerms)
                     .isNotNull(SysMenu::getPerms)
-                    .eq(SysMenu::getState, PermissionStatusEnum.NORMAL.getCode());;
+                    .eq(SysMenu::getStatus, PermissionStatusEnum.NORMAL.getCode());;
             return sysMenuService.list(menuLambdaQueryWrapper).stream().map(SysMenu::getPerms).filter(StringUtils::isNotBlank).collect(Collectors.toSet());
         }
         Set<Long> roleIds = getRoleIds(userId);
@@ -90,7 +90,7 @@ public class SysPermissionServiceImpl implements SysPermissionService, Permissio
         menuLambdaQueryWrapper.select(SysMenu::getPerms)
                 .isNotNull(SysMenu::getPerms)
                 .in(SysMenu::getId, menuIds)
-                .eq(SysMenu::getState, PermissionStatusEnum.NORMAL.getCode());
+                .eq(SysMenu::getStatus, PermissionStatusEnum.NORMAL.getCode());
         return sysMenuService.list(menuLambdaQueryWrapper).stream().map(SysMenu::getPerms).filter(StringUtils::isNotBlank).collect(Collectors.toSet());
     }
 

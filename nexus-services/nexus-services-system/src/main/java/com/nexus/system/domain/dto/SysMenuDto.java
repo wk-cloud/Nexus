@@ -83,5 +83,5 @@ public class SysMenuDto implements Serializable {
     private Integer type;
 
     @Schema(name = "菜单状态")
-    private Integer state;
+    private Integer status;
 }

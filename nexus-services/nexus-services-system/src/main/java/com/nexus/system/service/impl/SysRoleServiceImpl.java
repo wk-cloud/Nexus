@@ -122,7 +122,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         Set<Long> menuIds = roleMenuList.stream().map(SysRoleMenu::getMenuId).collect(Collectors.toSet());
         // 查询菜单列表
         LambdaQueryWrapper<SysMenu> menuLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        menuLambdaQueryWrapper.in(SysMenu::getId, menuIds).eq(SysMenu::getState, PermissionStatusEnum.NORMAL.getCode());
+        menuLambdaQueryWrapper.in(SysMenu::getId, menuIds).eq(SysMenu::getStatus, PermissionStatusEnum.NORMAL.getCode());
         List<SysMenu> menuList = sysMenuService.list(menuLambdaQueryWrapper);
         if(CollectionUtils.isEmpty(menuList)){
             return roleVo;

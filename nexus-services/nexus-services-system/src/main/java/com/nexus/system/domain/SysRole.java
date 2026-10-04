@@ -42,4 +42,9 @@ public class SysRole extends BaseEntity implements Serializable {
      * 菜单权限父子是否关联
      */
     private Boolean menuCheckStrictly;
+
+    /**
+     * 删除标识
+     */
+    private Integer deleted;
 }

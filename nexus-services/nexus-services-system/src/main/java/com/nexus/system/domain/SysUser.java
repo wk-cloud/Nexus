@@ -1,6 +1,5 @@
 package com.nexus.system.domain;
 
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.nexus.common.mybatisplus.core.domain.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -94,10 +93,4 @@ public class SysUser extends BaseEntity implements Serializable {
      * 是否禁用
      */
     private Boolean disabled;
-
-    /**
-     * 逻辑删除标识
-     */
-    @TableLogic
-    private Integer deleted;
 }

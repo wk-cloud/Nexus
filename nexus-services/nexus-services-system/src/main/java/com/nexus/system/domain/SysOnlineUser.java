@@ -50,7 +50,7 @@ public class SysOnlineUser extends BaseEntity implements Serializable {
     private LocalDateTime loginTime;
 
     /**
-     * 删除
+     * 删除标识
      */
     private Integer deleted;
 

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "token")
+@ConfigurationProperties(prefix = "nexus.token")
 public class TokenProperties {
 
     /**

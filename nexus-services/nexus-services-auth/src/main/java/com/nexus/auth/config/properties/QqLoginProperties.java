@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "qq.login")
+@ConfigurationProperties(prefix = "nexus.login.qq")
 public class QqLoginProperties {
 
     /**

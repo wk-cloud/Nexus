@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "upload")
+@ConfigurationProperties(prefix = "nexus.upload")
 public class FileUploadProperties {
 
     /**

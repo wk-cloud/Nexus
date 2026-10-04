@@ -38,10 +38,25 @@ spring:
             enable: true    # 加密通讯
           socketFactoryClass: javax.net.ssl.SSLSocketFactory  # 配置 SSL 加密工厂
 
-# 邮件发送方信息配置
-mail:
-  from: * # 替换成自己的邮箱地址
-  fromName: Nexus
+# nexus 配置
+nexus:
+  mail: # 邮件发送方信息配置
+    from: * # 替换成自己的邮箱地址
+    fromName: Nexus
+  token: # token 配置
+    signature: * # 替换成自己设置的签名，默认使用内置签名
+    expiration: 60 * 60 * 24 # 令牌过期时间，单位秒, 默认1天, 设置为 -1 表示永不过期
+  upload: # 文件上传配置
+    prod: false # false: 使用内置文件保存路径，true: 使用自定义文件保存路径
+    base-path: * # 替换成自定义文件保存路径，如果 prod为false，该配置无效
+    base-url: http://127.0.0.1 # 替换成自定义服务器地址
+  login:
+    qq:
+      fmt: json
+      client-id:  # 申请的appid
+      redirect-uri:  # 回调地址
+      grant-type:  # 授权类型
+      client-secret:  # 申请的 client-secret
 
 # Swagger 配置
 springdoc:
@@ -55,23 +70,3 @@ springdoc:
     display-request-duration: true # 显示请求持续时间
   packages-to-scan:
     - com.nexus # 扫描的包路径
-
-# token 配置
-token:
-  signature: * # 替换成自己设置的签名，默认使用内置签名
-  expiration: 60 * 60 * 24 # 令牌过期时间，单位秒, 默认1天, 设置为 -1 表示永不过期
-
-# 文件上传 配置
-upload:
-  prod: false # false: 使用内置文件保存路径，true: 使用自定义文件保存路径
-  base-path: * # 替换成自定义文件保存路径，如果 prod为false，该配置无效
-  base-url: http://127.0.0.1 # 替换成自定义服务器地址
-
-# qq登录配置
-qq:
-  login:
-    fmt: json
-    client-id: # 申请的appid
-    redirect-uri:  # 回调地址
-    grant-type:  # 授权类型
-    client-secret: # 申请的 client-secret

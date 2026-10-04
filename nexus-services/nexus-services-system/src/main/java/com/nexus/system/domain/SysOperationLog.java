@@ -77,9 +77,4 @@ public class SysOperationLog extends BaseEntity implements Serializable {
      * 请求结果
      */
     private String requestResult;
-
-    /**
-     * 删除标识
-     */
-    private Integer deleted;
 }

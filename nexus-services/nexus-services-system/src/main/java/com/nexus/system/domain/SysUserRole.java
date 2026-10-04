@@ -33,4 +33,9 @@ public class SysUserRole extends BaseEntity implements Serializable {
      */
     private Long roleId;
 
+    /**
+     * 删除标识
+     */
+    private Integer deleted;
+
 }

@@ -1,5 +1,5 @@
 package com.nexus.common.netty;
-import com.nexus.common.netty.config.NettyConfig;
+import com.nexus.common.netty.config.properties.NettyProperties;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -18,16 +18,16 @@ import java.util.concurrent.CompletableFuture;
 public class ClientBootstrapWrapper {
     private final Bootstrap bootstrap;
     private final EventLoopGroup workerGroup;
-    private final NettyConfig config;
+    private final NettyProperties nettyProperties;
 
     /**
      * 客户端引导包装器
      *
-     * @param config netty配置
+     * @param nettyProperties Netty 属性配置
      */
-    public ClientBootstrapWrapper(NettyConfig config) {
-        this.config = config;
-        this.workerGroup = new NioEventLoopGroup(config.getWorkerThreads());
+    public ClientBootstrapWrapper(NettyProperties nettyProperties) {
+        this.nettyProperties = nettyProperties;
+        this.workerGroup = new NioEventLoopGroup(nettyProperties.getWorkerThreads());
         this.bootstrap = new Bootstrap();
     }
 
@@ -43,8 +43,8 @@ public class ClientBootstrapWrapper {
 
         bootstrap.group(workerGroup)
                 .channel(NioSocketChannel.class)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, config.getConnectTimeout())
-                .option(ChannelOption.SO_KEEPALIVE, config.isSoKeepalive())
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, nettyProperties.getConnectTimeout())
+                .option(ChannelOption.SO_KEEPALIVE, nettyProperties.isSoKeepalive())
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) {

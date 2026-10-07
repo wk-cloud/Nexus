@@ -1,8 +1,10 @@
 package com.nexus.common.core.config;
 
 
+import com.nexus.common.core.config.properties.IpSearcherProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.lionsoul.ip2region.xdb.Searcher;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -20,17 +22,23 @@ import java.io.InputStream;
 @Configuration
 @Slf4j
 public class IpSearcherConfig {
-    /**
-     * ip映射文件路径
-     */
-    private final String DB_PATH = "ip2region.xdb";
 
+    /**
+     * ip搜索器属性
+     */
+    private final IpSearcherProperties ipSearcherProperties;
+
+    public IpSearcherConfig(IpSearcherProperties ipSearcherProperties) {
+        this.ipSearcherProperties = ipSearcherProperties;
+    }
+
+    @ConditionalOnMissingBean
     @Bean("ipSearcher")
     public Searcher searcher() {
         InputStream inputStream = null;
         ByteArrayOutputStream baos = null;
         try {
-            ClassPathResource resource = new ClassPathResource(DB_PATH);
+            ClassPathResource resource = new ClassPathResource(ipSearcherProperties.getDbPath());
             inputStream = resource.getInputStream();
             baos = new ByteArrayOutputStream();
             // 将 ip2region.db 文件读取到字节数组输出流
@@ -41,7 +49,7 @@ public class IpSearcherConfig {
             }
             // 字节输出流转化为字节数组
             byte[] bytes = baos.toByteArray();
-            log.info("====> ip搜索器配置完成");
+            log.info("====> ip搜索器初始化完成");
             return Searcher.newWithBuffer(bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);

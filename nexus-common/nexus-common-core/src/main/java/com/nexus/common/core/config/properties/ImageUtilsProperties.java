@@ -5,14 +5,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * 图片工具配置
+ * 图片工具属性
  *
  * @author wk
  * @date 2026/6/19 16:00
  */
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "image")
+@ConfigurationProperties(prefix = "nexus.image-utils")
 public class ImageUtilsProperties {
 
     /**

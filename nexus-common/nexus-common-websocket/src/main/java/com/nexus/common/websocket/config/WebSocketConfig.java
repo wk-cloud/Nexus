@@ -25,7 +25,7 @@ public class WebSocketConfig {
      */
     @Bean
     public ServerEndpointExporter serverEndpointExporter(){
-        log.info("=====> 初始化 websocket");
+        log.info("====> WebSocket 初始化完成");
         return new ServerEndpointExporter();
     }
 }

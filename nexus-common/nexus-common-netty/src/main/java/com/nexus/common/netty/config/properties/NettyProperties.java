@@ -1,4 +1,4 @@
-package com.nexus.common.netty.config;
+package com.nexus.common.netty.config.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -10,10 +10,10 @@ import org.springframework.context.annotation.Configuration;
  * @author wk
  * @date 2025/10/12
  */
-@Configuration
-@ConfigurationProperties(prefix = "netty")
 @Data
-public class NettyConfig {
+@Configuration
+@ConfigurationProperties(prefix = "nexus.netty")
+public class NettyProperties {
     /**
      *  服务端监听端口号
      */

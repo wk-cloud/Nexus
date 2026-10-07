@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +33,7 @@ public class LocalDateTimeSerializerConfig {
      *
      * @return {@link LocalDateTimeSerializer}
      */
+    @ConditionalOnMissingBean(LocalDateTimeSerializer.class)
     @Bean
     public LocalDateTimeSerializer localDateTimeSerializer() {
         return new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DATE_TIME_PATTERN));
@@ -42,6 +44,7 @@ public class LocalDateTimeSerializerConfig {
      *
      * @return {@link LocalDateTimeDeserializer}
      */
+    @ConditionalOnMissingBean(LocalDateTimeDeserializer.class)
     @Bean
     public LocalDateTimeDeserializer localDateTimeDeserializer() {
         return new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DATE_TIME_PATTERN));
@@ -52,6 +55,7 @@ public class LocalDateTimeSerializerConfig {
      *
      * @return {@link LocalDateSerializer}
      */
+    @ConditionalOnMissingBean(LocalDateSerializer.class)
     @Bean
     public LocalDateSerializer localDateSerializer() {
         return new LocalDateSerializer(DateTimeFormatter.ofPattern(DATE_PATTERN));
@@ -62,6 +66,7 @@ public class LocalDateTimeSerializerConfig {
      *
      * @return {@link LocalDateDeserializer}
      */
+    @ConditionalOnMissingBean(LocalDateDeserializer.class)
     @Bean
     public LocalDateDeserializer localDateDeserializer() {
         return new LocalDateDeserializer(DateTimeFormatter.ofPattern(DATE_PATTERN));
@@ -72,6 +77,7 @@ public class LocalDateTimeSerializerConfig {
      *
      * @return {@link Jackson2ObjectMapperBuilderCustomizer}
      */
+    @ConditionalOnMissingBean(Jackson2ObjectMapperBuilderCustomizer.class)
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
         return builder -> {

@@ -16,11 +16,15 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "nexus.thread.pool")
 public class ThreadPoolProperties {
 
-
     /**
      * cpu核心数量
      */
     private int cpuCount = Runtime.getRuntime().availableProcessors();
+
+    /**
+     * 任务调度线程池大小
+     */
+    private int schedulerPoolSize = cpuCount * 2;
 
     /**
      * 核心线程数量大小

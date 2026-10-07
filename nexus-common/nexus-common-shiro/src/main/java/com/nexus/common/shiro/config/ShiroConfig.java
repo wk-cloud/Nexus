@@ -85,7 +85,7 @@ public class ShiroConfig {
      * @param customerRealm 自定义Realm
      * @return {@link DefaultWebSecurityManager}
      */
-    @ConditionalOnMissingBean(name = "defaultWebSecurityManager")
+    @ConditionalOnMissingBean(DefaultWebSecurityManager.class)
     @Bean
     public DefaultWebSecurityManager defaultWebSecurityManager(CustomerRealm customerRealm) {
         DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
@@ -106,7 +106,7 @@ public class ShiroConfig {
      * @param defaultWebSecurityManager 默认web安全管理器
      * @return {@link ShiroFilterFactoryBean}
      */
-    @ConditionalOnMissingBean(name = "shiroFilterFactoryBean")
+    @ConditionalOnMissingBean(ShiroFilterFactoryBean.class)
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(DefaultWebSecurityManager defaultWebSecurityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
@@ -156,13 +156,13 @@ public class ShiroConfig {
      *
      * @return {@link LifecycleBeanPostProcessor}
      */
-    @ConditionalOnMissingBean(name = "lifecycleBeanPostProcessor")
+    @ConditionalOnMissingBean(LifecycleBeanPostProcessor.class)
     @Bean
     public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
         return new LifecycleBeanPostProcessor();
     }
 
-    @ConditionalOnMissingBean(name = "defaultAdvisorAutoProxyCreator")
+    @ConditionalOnMissingBean(DefaultAdvisorAutoProxyCreator.class)
     @Bean
     @DependsOn("lifecycleBeanPostProcessor")
     public static DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
@@ -178,7 +178,7 @@ public class ShiroConfig {
      * @param securityManager 安全管理器
      * @return {@link AuthorizationAttributeSourceAdvisor}
      */
-    @ConditionalOnMissingBean(name = "authorizationAttributeSourceAdvisor")
+    @ConditionalOnMissingBean(AuthorizationAttributeSourceAdvisor.class)
     @Bean
     public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(DefaultWebSecurityManager securityManager) {
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();

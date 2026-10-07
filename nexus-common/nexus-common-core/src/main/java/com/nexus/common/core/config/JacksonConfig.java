@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -26,13 +26,15 @@ public class JacksonConfig {
      * 处理主键id精度缺失问题
      * true：生效
      * false：失效
-     * @param builder jackson2对象映射器构建器
+     *
+     * @param builder Jackson2 对象映射器构建器
      * @return {@link ObjectMapper}
      */
-    @Bean
     @ConditionalOnMissingBean(ObjectMapper.class)
-    @ConditionalOnExpression("false")
-    public ObjectMapper jacksonObjectMapper(Jackson2ObjectMapperBuilder builder){
+    @ConditionalOnProperty(prefix = "nexus.jack-son", name = "enabled",
+            havingValue = "true")
+    @Bean
+    public ObjectMapper jacksonObjectMapper(Jackson2ObjectMapperBuilder builder) {
         ObjectMapper objectMapper = builder.createXmlMapper(false).build();
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(Long.class, ToStringSerializer.instance);

@@ -7,7 +7,8 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
 import com.nexus.common.mybatisplus.CustomerIdGenerator;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
@@ -33,13 +34,20 @@ public class MyBatisPlusConfig {
      *
      * @return {@link IdentifierGenerator}
      */
+    @ConditionalOnProperty(prefix = "nexus.mybatis-plus.customer-id", name = "enabled",
+            havingValue = "true", matchIfMissing = true)
     @Bean
-    @ConditionalOnExpression("true")
     public IdentifierGenerator identifierGenerator() {
         return new CustomerIdGenerator();
     }
 
 
+    /**
+     * mybatis+拦截器
+     *
+     * @return {@link MybatisPlusInterceptor }
+     */
+    @ConditionalOnMissingBean(MybatisPlusInterceptor.class)
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         // MyBatisPlus 拦截器

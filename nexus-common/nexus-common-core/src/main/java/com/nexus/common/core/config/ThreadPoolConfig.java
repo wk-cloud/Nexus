@@ -5,7 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import java.util.concurrent.Executor;
 
@@ -16,6 +19,7 @@ import java.util.concurrent.Executor;
  * @date 2025/08/03
  */
 @Slf4j
+@EnableScheduling
 @Configuration
 public class ThreadPoolConfig {
 
@@ -48,5 +52,14 @@ public class ThreadPoolConfig {
 
         log.info("====> 线程池初始化完成");
         return threadPoolTaskExecutor;
+    }
+
+    @ConditionalOnMissingBean
+    @Bean("asyncTaskScheduler")
+    public TaskScheduler getAsyncScheduler() {
+        ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
+        threadPoolTaskScheduler.setPoolSize(threadPoolProperties.getSchedulerPoolSize());
+        log.info("====> 定时任务配置完成");
+        return threadPoolTaskScheduler;
     }
 }

@@ -21,7 +21,6 @@ public class IdGeneratorConfig {
     /**
      * 初始化 ID 生成器
      */
-    //@Bean
     @PostConstruct
     public void initIdGenerator(){
         IdGeneratorOptions idGeneratorOptions = new IdGeneratorOptions(IdUtils.workerId);

@@ -84,7 +84,7 @@ public class FileDownloadUtils {
             }).get(); // 等待 zip 完成
 
             // 设置响应头
-            createResponse(response, fileName, bos.size());
+            handleResponse(response, fileName, bos.size());
             // 下载 zip
             response.getOutputStream().write(bos.toByteArray());
         } catch (Exception e) {
@@ -170,7 +170,7 @@ public class FileDownloadUtils {
             if (ObjectUtils.isNull(file)) {
                 throw new RuntimeException("文件下载失败，文件资源不存在");
             }
-            createResponse(response, file);
+            handleResponse(response, file);
             byte[] bytes = FileUtils.readBytes(file);
             outputStream = response.getOutputStream();
             outputStream.write(bytes);
@@ -193,7 +193,7 @@ public class FileDownloadUtils {
             if (ArrayUtils.isEmpty(bytes)) {
                 throw new RuntimeException("文件下载失败，文件资源不存在");
             }
-            createResponse(response, fileName, bytes.length);
+            handleResponse(response, fileName, bytes.length);
             outputStream = response.getOutputStream();
             outputStream.write(bytes);
         } catch (IOException e) {
@@ -211,13 +211,14 @@ public class FileDownloadUtils {
     }
 
     /**
-     * 创建响应
+     * 处理响应
      *
      * @param response 响应
      * @param fileName 文件名称
+     * @param fileSize 文件大小
      * @throws UnsupportedEncodingException 不支持编码异常
      */
-    private static void createResponse(HttpServletResponse response, String fileName, int fileSize) throws UnsupportedEncodingException {
+    private static void handleResponse(HttpServletResponse response, String fileName, int fileSize) throws UnsupportedEncodingException {
         if (StringUtils.isBlank(fileName)) {
             throw new RuntimeException("创建下载响应失败，文件名称不能为空");
         }
@@ -232,13 +233,13 @@ public class FileDownloadUtils {
     }
 
     /**
-     * 创建响应
+     * 处理响应
      *
      * @param response 响应
      * @param file     文件
      * @throws UnsupportedEncodingException 不支持编码异常
      */
-    private static void createResponse(HttpServletResponse response, File file) throws UnsupportedEncodingException {
+    private static void handleResponse(HttpServletResponse response, File file) throws UnsupportedEncodingException {
         if (ObjectUtils.isNull(file)) {
             throw new RuntimeException("创建下载响应失败，文件资源不存在");
         }

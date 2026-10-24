@@ -33,7 +33,7 @@ public class ExcelUtils extends ExcelUtil {
      */
     public static <T> void export(HttpServletResponse response, List<T> dataList, Class<T> clazz, String fileName, String sheetName) {
         try {
-            createResponse(response, fileName);
+            handleResponse(response, fileName);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
@@ -49,13 +49,13 @@ public class ExcelUtils extends ExcelUtil {
     }
 
     /**
-     * 创建响应
+     * 处理响应
      *
      * @param response 响应
      * @param fileName 文件名
      * @throws UnsupportedEncodingException 不支持编码异常
      */
-    private static void createResponse(HttpServletResponse response, String fileName) throws UnsupportedEncodingException {
+    private static void handleResponse(HttpServletResponse response, String fileName) throws UnsupportedEncodingException {
         if (StringUtils.isBlank(fileName)) {
             fileName = FileUtils.randomFileName("*.xlsx");
         }

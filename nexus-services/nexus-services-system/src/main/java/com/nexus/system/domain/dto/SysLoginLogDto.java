@@ -20,25 +20,25 @@ import java.io.Serializable;
 @Schema(title = "登录日志DTO", description = "登录日志DTO")
 public class SysLoginLogDto implements Serializable {
 
-    @Schema(name = "主键id")
+    @Schema(description = "主键id")
     private Long id;
 
-    @Schema(name ="用户 ID")
+    @Schema(description ="用户id")
     private Long userId;
 
-    @Schema(name ="登录类型")
+    @Schema(description ="登录类型")
     private Integer loginType;
 
-    @Schema(name ="登录平台")
+    @Schema(description ="登录平台")
     private Integer loginPlatform;
 
-    @Schema(name ="登录 IP")
+    @Schema(description ="登录ip")
     private String loginIp;
 
-    @Schema(name ="浏览器名称")
+    @Schema(description ="浏览器名称")
     private String browserName;
 
-    @Schema(name ="操作系统名称")
+    @Schema(description ="操作系统名称")
     private String osName;
 
 }

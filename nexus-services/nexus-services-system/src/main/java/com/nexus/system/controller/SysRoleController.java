@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 角色管理后台控制器
+ * 系统角色控制器
  *
  * @author wk
  * @date 2022/10/11

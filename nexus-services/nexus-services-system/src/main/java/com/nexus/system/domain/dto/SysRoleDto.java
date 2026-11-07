@@ -24,27 +24,27 @@ import java.util.List;
 @Schema(title = "角色Dto", description = "角色Dto")
 public class SysRoleDto implements Serializable {
 
-    @Schema(name = "主键id")
+    @Schema(description = "主键id")
     @NotNull(message = "主键id不能为空", groups = {ValidGroup.Update.class})
     private Long id;
 
     @NotBlank(message = "角色名称不能为空", groups = {ValidGroup.Insert.class, ValidGroup.Update.class})
     @Size(message = "角色名称长度不能超过20", max = 20, groups = {ValidGroup.Insert.class, ValidGroup.Update.class})
-    @Schema(name = "角色名称")
+    @Schema(description = "角色名称")
     private String roleName;
 
-    @Schema(name = "角色标签")
+    @Schema(description = "角色标签")
     private String roleLabel;
 
-    @Schema(name = "角色状态")
+    @Schema(description = "角色状态")
     private Integer status;
 
-    @Schema(name = "菜单权限父子是否关联")
+    @Schema(description = "菜单权限父子是否关联")
     private Boolean menuCheckStrictly;
 
-    @Schema(name = "menuList", title = "菜单列表")
+    @Schema(description = "menuList", title = "菜单列表")
     private List<SysMenuDto> menuList;
 
-    @Schema(name = "菜单id列表")
+    @Schema(description = "菜单id列表")
     private List<Long> menuIdList;
 }

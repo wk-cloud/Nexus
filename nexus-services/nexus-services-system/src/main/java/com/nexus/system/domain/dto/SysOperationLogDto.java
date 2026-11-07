@@ -19,39 +19,39 @@ import java.io.Serializable;
 @Schema(title = "操作日志DTO", description = "操作日志DTO")
 public class SysOperationLogDto implements Serializable {
 
-    @Schema(name = "主键id")
+    @Schema(description = "主键id")
     private Long id;
 
-    @Schema(name = "操作模块")
+    @Schema(description = "操作模块")
     private String module;
 
-    @Schema(name = "操作类型")
+    @Schema(description = "操作类型")
     private String operationType;
 
-    @Schema(name = "操作描述")
+    @Schema(description = "操作描述")
     private String operationDesc;
 
-    @Schema(name = "请求类型")
+    @Schema(description = "请求类型")
     private String requestType;
 
-    @Schema(name = "操作人员名称")
+    @Schema(description = "操作人员名称")
     private String username;
 
-    @Schema(name = "操作人员id")
+    @Schema(description = "操作人员id")
     private Long userId;
 
-    @Schema(name = "操作人员ip")
+    @Schema(description = "操作人员ip")
     private String ip;
 
-    @Schema(name = "请求路径")
+    @Schema(description = "请求路径")
     private String requestUrl;
 
-    @Schema(name = "请求方法")
+    @Schema(description = "请求方法")
     private String requestMethod;
 
-    @Schema(name = "请求参数")
+    @Schema(description = "请求参数")
     private String requestParams;
 
-    @Schema(name = "请求结果")
+    @Schema(description = "请求结果")
     private String requestResult;
 }

@@ -27,7 +27,7 @@ import java.util.Map;
  * @author wk
  * @date 2024/03/28
  */
-@Tag(name = "系统字典类型后台模块")
+@Tag(name = "系统字典类型模块")
 @CrossOrigin
 @RestController
 @RequestMapping("/system/dict/type")

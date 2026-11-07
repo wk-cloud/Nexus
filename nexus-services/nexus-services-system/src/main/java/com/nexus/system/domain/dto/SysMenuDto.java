@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * 权限后台 DTO
+ * 系统菜单 DTO
  *
  * @author wk
  * @date 2024/05/19
@@ -21,67 +21,69 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Schema(title = "权限DTO", description = "权限DTO")
+@Schema(title = "系统菜单DTO", description = "用来传递系统菜单信息")
 public class SysMenuDto implements Serializable {
 
-    @Schema(name = "主键id")
+    @Schema(description = "主键id")
     @NotNull(message = "主键id不能为空", groups = {ValidGroup.Update.class})
     private Long id;
 
-    @Schema(name = "父id")
+    @Schema(description = "父id")
     private Long parentId;
 
-    @Schema(name = "组件名称")
+    @Schema(description = "组件名称")
     private String name;
 
     @NotBlank(message = "菜单名称不能为空", groups = {ValidGroup.Insert.class, ValidGroup.Update.class})
     @Size(message = "菜单名称长度不能超过50个字符", max = 50, groups = {ValidGroup.Insert.class, ValidGroup.Update.class})
-    @Schema(name = "设置该路由在侧边栏和面包屑中展示的名字")
+    @Schema(description = "设置该路由在侧边栏和面包屑中展示的名字")
     private String title;
 
     /**
      * 权限标识
      */
+    @Size(message = "权限标识长度不能超过50个字符", max = 50, groups = {ValidGroup.Insert.class, ValidGroup.Update.class})
+    @Schema(description = "权限标识")
     private String perms;
 
     @Size(message = "路由访问地址长度不能超过255个字符", max = 255, groups = {ValidGroup.Insert.class, ValidGroup.Update.class})
-    @Schema(name = "路由地址")
+    @Schema(description = "路由地址")
     private String path;
 
-    @Schema(name = "重定向")
+    @Schema(description = "重定向")
     private String redirect;
 
-    @Schema(name = "排序")
+    @Schema(description = "排序")
     private Integer sort;
 
     @Size(message = "组件路径长度不能超过255个字符", max = 255, groups = {ValidGroup.Insert.class, ValidGroup.Update.class})
-    @Schema(name = "组件路径")
+    @Schema(description = "组件路径")
     private String component;
 
-    @Schema(name = "图标")
+    @Schema(description = "图标")
     private String icon;
 
-    @Schema(name = "是否隐藏")
+    @Schema(description = "是否隐藏")
     private Boolean hidden;
 
-    @Schema(name = "侧边菜单是否固定在tags-view中")
+    @Schema(description = "侧边菜单是否固定在tags-view中")
     private Boolean affix;
 
-    @Schema(name = "一直显示根路由")
+    @Schema(description = "一直显示根路由")
     private Boolean alwaysShow;
 
-    @Schema(name = "组件缓存")
+    @Schema(description = "组件缓存")
     private Boolean noCache;
 
-    @Schema(name = "面包屑中是否显示")
+    @Schema(description = "面包屑中是否显示")
     private Boolean breadcrumb;
 
-    @Schema(name = "侧边栏高亮目标路由")
+    @Schema(description = "侧边栏高亮目标路由")
     private String activeMenu;
 
-    @Schema(name = "菜单类型")
+    @Schema(description = "菜单类型")
     private Integer type;
 
-    @Schema(name = "菜单状态")
+    @Schema(description = "菜单状态")
     private Integer status;
 }

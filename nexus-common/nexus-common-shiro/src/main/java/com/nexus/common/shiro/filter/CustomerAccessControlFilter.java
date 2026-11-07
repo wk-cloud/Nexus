@@ -52,14 +52,15 @@ public class CustomerAccessControlFilter extends BasicHttpAuthenticationFilter {
 
     /**
      * 得到过滤器链允许放行的 url 列表
+     *
      * @param request 请求
      * @return {@link List}<{@link String}>
      */
-    private List<String> getFilterChainIsAccessAllowedUrlList (ServletRequest request){
+    private List<String> getFilterChainIsAccessAllowedUrlList(ServletRequest request) {
         ServletContext servletContext = this.getServletContext(request);
         WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
         List<String> allowReleaseUrlList = new ArrayList<>();
-        if(ObjectUtils.isNotNull(webApplicationContext)){
+        if (ObjectUtils.isNotNull(webApplicationContext)) {
             ShiroConfig shiroConfig = (ShiroConfig) webApplicationContext.getBean("shiroConfig");
             allowReleaseUrlList = shiroConfig.getIsAccessAllowedUrlList();
         }
@@ -69,8 +70,9 @@ public class CustomerAccessControlFilter extends BasicHttpAuthenticationFilter {
 
     /**
      * 前置拦截
-     * @param request 请求
-     * @param response 响应
+     *
+     * @param request     请求
+     * @param response    响应
      * @param mappedValue 映射值
      * @return boolean
      */
@@ -87,16 +89,16 @@ public class CustomerAccessControlFilter extends BasicHttpAuthenticationFilter {
             return false;
         }
         // 判断是否添加放行注解
-        if(this.isPass(request)){
+        if (this.isPass(request)) {
             return true;
         }
         // 校验请求，如果允许访问则放行，否则进行拦截
         // 如果请求携带token，则进行登录验证
         if (isLoginAttempt(request, response)) {
-            if(this.isAccessAllowed(request,response,mappedValue)){
-                return super.onPreHandle(request,response,mappedValue);
+            if (this.isAccessAllowed(request, response, mappedValue)) {
+                return super.onPreHandle(request, response, mappedValue);
             }
-        }else {
+        } else {
             return this.onAccessDenied(request, response);
         }
         return false;
@@ -108,27 +110,27 @@ public class CustomerAccessControlFilter extends BasicHttpAuthenticationFilter {
      * @param request 请求
      * @return boolean
      */
-    private boolean isPass(ServletRequest request){
+    private boolean isPass(ServletRequest request) {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(request.getServletContext());
-        if(ObjectUtils.isNull(webApplicationContext)) {
+        if (ObjectUtils.isNull(webApplicationContext)) {
             return false;
         }
-        RequestMappingHandlerMapping mapping = webApplicationContext.getBean(RequestMappingHandlerMapping.class);
+        RequestMappingHandlerMapping mapping = webApplicationContext.getBean("requestMappingHandlerMapping", RequestMappingHandlerMapping.class);
         HandlerExecutionChain handler;
         try {
             handler = mapping.getHandler(httpServletRequest);
-            if(ObjectUtils.isNull(handler)){
+            if (ObjectUtils.isNull(handler)) {
                 return false;
             }
-            HandlerMethod handlerMethod = (HandlerMethod)handler.getHandler();
+            HandlerMethod handlerMethod = (HandlerMethod) handler.getHandler();
             Class<?> handlerMethodClass = handlerMethod.getBeanType();
             Pass classWithPassAnnotation = AnnotationUtils.findAnnotation(handlerMethodClass, Pass.class);
-            if(ObjectUtils.isNotNull(classWithPassAnnotation)){
+            if (ObjectUtils.isNotNull(classWithPassAnnotation)) {
                 return true;
             }
             Pass methodWithPassAnnotation = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), Pass.class);
-            if(ObjectUtils.isNotNull(methodWithPassAnnotation)){
+            if (ObjectUtils.isNotNull(methodWithPassAnnotation)) {
                 return true;
             }
         } catch (Exception e) {
@@ -174,6 +176,7 @@ public class CustomerAccessControlFilter extends BasicHttpAuthenticationFilter {
      * 是否允许访问
      * 是否允许访问，如果携带token，则进行token校验，否则直接放行
      * 用来处理携带token的请求
+     *
      * @param servletRequest  servlet 请求
      * @param servletResponse Servlet 响应
      * @param o               o
@@ -215,10 +218,10 @@ public class CustomerAccessControlFilter extends BasicHttpAuthenticationFilter {
         boolean isAccessAllowed = false;
         // 获取的允许放行的url地址
         List<String> filterChainAllowReleaseUrlList = this.getFilterChainIsAccessAllowedUrlList(servletRequest);
-        if(CollectionUtils.isEmpty(filterChainAllowReleaseUrlList)){
+        if (CollectionUtils.isEmpty(filterChainAllowReleaseUrlList)) {
             return false;
         }
-        if(filterChainAllowReleaseUrlList.contains(url)){
+        if (filterChainAllowReleaseUrlList.contains(url)) {
             isAccessAllowed = true;
         }
         if (!isAccessAllowed) {
@@ -228,7 +231,7 @@ public class CustomerAccessControlFilter extends BasicHttpAuthenticationFilter {
             try {
                 response.getWriter().write(JSONUtil.toJsonStr(Result.fail(HttpCodeEnum.NO_PERMISSION.getCode(), HttpCodeEnum.NO_PERMISSION.getInfo())));
             } catch (IOException e) {
-               log.error("onAccessDenied error", e);
+                log.error("onAccessDenied error", e);
             }
             return false;
         }

@@ -1,9 +1,6 @@
 server:
   port: 9999
 spring:
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher # 解决 Swagger3.0 与 Springboot6.0 版本以上不兼容
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8

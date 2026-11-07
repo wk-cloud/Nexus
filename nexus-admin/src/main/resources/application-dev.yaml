@@ -65,7 +65,7 @@ nexus:
       - "/favicon.ico"
       - "/webjars/**"
       - "/swagger-resources/**"
-      - "/v3/**"
+      - "/v3/api-docs/**"
       - "/swagger-ui/**"
       - "/swagger-ui.html"
       - "/ws/**"

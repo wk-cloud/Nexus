@@ -3,6 +3,7 @@ package com.nexus.common.shiro.config;
 
 import com.nexus.common.shiro.CustomerHashedCredentialsMatcher;
 import com.nexus.common.shiro.CustomerRealm;
+import com.nexus.common.shiro.config.properties.ShiroProperties;
 import com.nexus.common.shiro.filter.CustomerAccessControlFilter;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
@@ -41,6 +42,8 @@ public class ShiroConfig {
     private CustomerHashedCredentialsMatcher customerHashedCredentialsMatcher;
     @Resource
     private CustomerRealm customerRealm;
+    @Resource
+    private ShiroProperties shiroProperties;
 
     /**
      * 请求路径的处理方式map
@@ -115,23 +118,8 @@ public class ShiroConfig {
         linkedHashMap.put("customerAuthFilter", new CustomerAccessControlFilter());
         shiroFilterFactoryBean.setFilters(linkedHashMap);
         shiroFilterFactoryBean.setSecurityManager(defaultWebSecurityManager);
-
-        // 静态资源地址
-        filterChainDefinitionMap.put("/images/**", "anon");
-        filterChainDefinitionMap.put("/files/**", "anon");
-
-        // 接口文档地址
-        filterChainDefinitionMap.put("/doc.html", "anon");
-        filterChainDefinitionMap.put("/favicon.ico", "anon");
-        filterChainDefinitionMap.put("/webjars/**", "anon");
-        filterChainDefinitionMap.put("/swagger-resources/**", "anon");
-        filterChainDefinitionMap.put("/v3/**", "anon");
-        filterChainDefinitionMap.put("/swagger-ui/**", "anon");
-        filterChainDefinitionMap.put("/swagger-ui.html", "anon");
-
-        // websocket
-        filterChainDefinitionMap.put("/ws/**", "anon");
-
+        // 添加放行地址
+        shiroProperties.getAnonUrls().forEach(url -> filterChainDefinitionMap.put(url, "anon"));
         // 所有请求都要经过自定义的过滤器进行登录认证
         filterChainDefinitionMap.put("/**", "customerAuthFilter");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);

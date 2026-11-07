@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 用户信息后台 VO
+ * 系统用户信息 VO
  *
  * @author wk
  * @date 2023/12/16

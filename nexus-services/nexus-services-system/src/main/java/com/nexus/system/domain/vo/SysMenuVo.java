@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 权限后台 VO
+ * 系统菜单 VO
  *
  * @author wk
  * @date 2024/05/19

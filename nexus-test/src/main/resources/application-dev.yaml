@@ -57,6 +57,22 @@ nexus:
       redirect-uri:  # 回调地址
       grant-type:  # 授权类型
       client-secret:  # 申请的 client-secret
+  shiro:
+    anon-urls: # 配置不需要认证的 URL (静态资源 / Swagger 接口文档相关 / Websocket / Prometheus)
+      - "/images/**"
+      - "/files/**"
+      - "/doc.html"
+      - "/favicon.ico"
+      - "/webjars/**"
+      - "/swagger-resources/**"
+      - "/v3/api-docs/**"
+      - "/swagger-ui/**"
+      - "/swagger-ui.html"
+      - "/ws/**"
+      - "/actuator/prometheus"
+      - "/actuator/health"
+      - "/actuator/info"
+      - "/actuator/metrics"
 
 # Swagger 配置
 springdoc:

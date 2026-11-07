@@ -46,7 +46,7 @@ public interface SysDictTypeBackService extends IServicePlus<SysDictType, SysDic
     /**
      * 更新系统字典类型
      *
-     * @param sysDictTypeDto 系统字典类型后台 DTO
+     * @param sysDictTypeDto 系统字典类型 DTO
      * @return {@link Boolean}
      */
     Boolean updateDictType(SysDictTypeDto sysDictTypeDto);
@@ -54,7 +54,7 @@ public interface SysDictTypeBackService extends IServicePlus<SysDictType, SysDic
     /**
      * 新增系统字典类型
      *
-     * @param sysDictTypeDto 系统字典类型后台 DTO
+     * @param sysDictTypeDto 系统字典类型 DTO
      * @return {@link Boolean}
      */
     Boolean addDictType(SysDictTypeDto sysDictTypeDto);
@@ -62,7 +62,7 @@ public interface SysDictTypeBackService extends IServicePlus<SysDictType, SysDic
     /**
      * 判断字典类型是否唯一
      *
-     * @param sysDictTypeDto 系统字典类型dto
+     * @param sysDictTypeDto 系统字典类型 DTO
      * @return {@link Boolean}
      */
     Boolean checkDictTypeUnique(SysDictTypeDto sysDictTypeDto);
@@ -70,7 +70,7 @@ public interface SysDictTypeBackService extends IServicePlus<SysDictType, SysDic
     /**
      * 获取系统字典类型列表
      *
-     * @param sysDictTypeDto  系统字典类型dto
+     * @param sysDictTypeDto  系统字典类型 DTO
      * @param queryParams 查询参数
      * @return {@link PagingData}<{@link SysDictTypeVo}>
      */

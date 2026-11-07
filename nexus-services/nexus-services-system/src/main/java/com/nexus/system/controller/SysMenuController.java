@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 菜单管理后台控制器
+ * 系统菜单管理控制器
  * @author wk
  * @date 2022/9/27
  */

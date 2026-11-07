@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 角色后台 vo
+ * 系统角色 vo
  *
  * @author wk
  * @date 2024/05/19

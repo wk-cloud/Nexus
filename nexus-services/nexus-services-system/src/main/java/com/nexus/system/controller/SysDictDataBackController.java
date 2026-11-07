@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 
 /**
- * 系统字典数据后台控制器
+ * 系统字典数据控制器
  *
  * @author wk
  * @date 2024/03/28

@@ -20,31 +20,31 @@ import java.time.LocalDateTime;
 @Schema(title = "在线用户信息DTO", description = "在线用户信息DTO")
 public class SysOnlineUserDto implements Serializable {
 
-    @Schema(name = "主键id")
+    @Schema(description = "主键id")
     private Long id;
 
-    @Schema(name = "用户id")
+    @Schema(description = "用户id")
     private Long userId;
 
-    @Schema(name = "登录平台")
+    @Schema(description = "登录平台")
     private Integer loginPlatform;
 
-    @Schema(name = "用户名")
+    @Schema(description = "用户名")
     private String username;
 
-    @Schema(name = "昵称")
+    @Schema(description = "昵称")
     private String nickName;
 
-    @Schema(name = "头像")
+    @Schema(description = "头像")
     private String avatar;
 
-    @Schema(name = "登录时间")
+    @Schema(description = "登录时间")
     private LocalDateTime loginTime;
 
-    @Schema(name = "登录类型")
+    @Schema(description = "登录类型")
     private Integer loginType;
 
-    @Schema(name = "登录 IP")
+    @Schema(description = "登录 IP")
     private String loginIp;
 
 }

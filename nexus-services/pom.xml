@@ -15,6 +15,7 @@
     <modules>
         <module>nexus-services-system</module>
         <module>nexus-services-auth</module>
+        <module>nexus-services-monitor</module>
     </modules>
 
 </project>

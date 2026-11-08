@@ -18,6 +18,11 @@
             <groupId>com.nexus</groupId>
             <artifactId>nexus-services-auth</artifactId>
         </dependency>
+        <!-- 系统监控模块 -->
+        <dependency>
+            <groupId>com.nexus</groupId>
+            <artifactId>nexus-services-monitor</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

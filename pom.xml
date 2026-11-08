@@ -112,6 +112,12 @@
                 <artifactId>nexus-services-auth</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <!-- 系统监控模块 -->
+            <dependency>
+                <groupId>com.nexus</groupId>
+                <artifactId>nexus-services-monitor</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
 
             <!-- SpringBoot的依赖配置-->

@@ -45,9 +45,9 @@ public class FileUploadUtils {
     private static final String TEMP_RESOURCE_PATH;
 
     /**
-     * 默认代理路径
+     * 代理路径
      */
-    private static final String DEFAULT_PROXY_PATH;
+    private static final String PROXY_PATH;
 
     /**
      * 端口号
@@ -72,7 +72,7 @@ public class FileUploadUtils {
     static {
         RESOURCE_PATH = fileUploadProperties.getResourcePath();
         TEMP_RESOURCE_PATH = fileUploadProperties.getTempResourcePath();
-        DEFAULT_PROXY_PATH = fileUploadProperties.getDefaultProxyPath();
+        PROXY_PATH = fileUploadProperties.getProxyPath();
         PORT = fileUploadProperties.getPort();
         IS_PROD = fileUploadProperties.isProd();
         BASE_URL = fileUploadProperties.getBaseUrl();
@@ -133,7 +133,7 @@ public class FileUploadUtils {
         if (IS_PROD) {
             return FileUtils.removeLastFileSeparator(BASE_PATH);
         }
-        return FileUtils.getRootDirectoryPath(RESOURCE_PATH).concat(DEFAULT_PROXY_PATH);
+        return FileUtils.getRootDirectoryPath(RESOURCE_PATH).concat(PROXY_PATH);
     }
 
     /**
@@ -144,9 +144,9 @@ public class FileUploadUtils {
     public static String getProxyPath() {
         String proxyPath;
         if (IS_PROD) {
-            proxyPath = DEFAULT_PROXY_PATH;
+            proxyPath = PROXY_PATH;
         } else {
-            proxyPath = RESOURCE_PATH + DEFAULT_PROXY_PATH;
+            proxyPath = RESOURCE_PATH + PROXY_PATH;
         }
         return FileUtils.appendFirstFileSeparator(proxyPath);
     }
@@ -160,7 +160,7 @@ public class FileUploadUtils {
     public static String getFileChunkDirectoryPath(String fileHash) {
         if (IS_PROD) {
             return getBasePath()
-                    .concat(DEFAULT_PROXY_PATH)
+                    .concat(PROXY_PATH)
                     .concat(TEMP_RESOURCE_PATH)
                     .concat(FILE_SEPARATOR)
                     .concat(fileHash)
@@ -251,16 +251,16 @@ public class FileUploadUtils {
         // 文件url
         String url;
         if (IS_PROD) {
-            String filePath = FileUtils.createDateLevelDirectory(getBasePath() + proxyPath) + fileName;
+            String filePath = FileUtils.createDateLevelDirectory(getBasePath() + proxyPath) + FILE_SEPARATOR + fileName;
             multipartFile.transferTo(new File(filePath));
             url = getBaseUrl() + filePath.substring(getBasePath().length());
         } else {
             String directoryPath = FileUtils.getDateLevelDirectoryPath(proxyPath);
-            String filePath = FileUtils.createRootDirectory(directoryPath) + fileName;
+            String filePath = FileUtils.createRootDirectory(directoryPath) + FILE_SEPARATOR + fileName;
             multipartFile.transferTo(new File(filePath));
             url = getBaseUrl() + ":" + PORT
                     + directoryPath.replaceAll("\\\\", "/").replaceFirst(RESOURCE_PATH, "")
-                    + fileName;
+                    + FILE_SEPARATOR + fileName;
         }
         return url;
     }
@@ -280,16 +280,16 @@ public class FileUploadUtils {
         // 文件url
         String url;
         if (IS_PROD) {
-            String filePath = FileUtils.createDateLevelDirectory(getBasePath() + proxyPath) + fileName;
+            String filePath = FileUtils.createDateLevelDirectory(getBasePath() + proxyPath) + FILE_SEPARATOR + fileName;
             FileUtils.touch(new File(filePath));
             url = getBaseUrl() + filePath.substring(getBasePath().length());
         } else {
             String directoryPath = FileUtils.getDateLevelDirectoryPath(proxyPath);
-            String filePath = FileUtils.createRootDirectory(directoryPath) + fileName;
+            String filePath = FileUtils.createRootDirectory(directoryPath) + FILE_SEPARATOR + fileName;
             FileUtils.touch(new File(filePath));
             url = getBaseUrl() + ":" + PORT
                     + directoryPath.replaceAll("\\\\", "/").replaceFirst(RESOURCE_PATH, "")
-                    + fileName;
+                    + FILE_SEPARATOR + fileName;
         }
         return url;
     }
@@ -329,7 +329,7 @@ public class FileUploadUtils {
         String url;
         if (IS_PROD) {
             String filePath = getBasePath() + proxyPath;
-            filePath = FileUtils.createDateLevelDirectory(filePath) + fileName;
+            filePath = FileUtils.createDateLevelDirectory(filePath) + FILE_SEPARATOR + fileName;
             File distFile = new File(filePath);
             for (File chunkFile : chunkList) {
                 FileUtils.writeBytes(FileUtils.readBytes(chunkFile), distFile, 0, (int) chunkFile.length(), true);
@@ -337,14 +337,14 @@ public class FileUploadUtils {
             url = getBaseUrl() + filePath.substring(getBasePath().length());
         } else {
             String directoryPath = FileUtils.getDateLevelDirectoryPath(proxyPath);
-            String filePath = FileUtils.createRootDirectory(directoryPath) + fileName;
+            String filePath = FileUtils.createRootDirectory(directoryPath) + FILE_SEPARATOR + fileName;
             File distFile = new File(filePath);
             for (File chunkFile : chunkList) {
                 FileUtils.writeBytes(FileUtils.readBytes(chunkFile), distFile, 0, (int) chunkFile.length(), true);
             }
             url = getBaseUrl() + ":" + PORT
                     + directoryPath.replaceAll("\\\\", "/").replaceFirst(RESOURCE_PATH, "")
-                    + fileName;
+                    + FILE_SEPARATOR + fileName;
         }
         // 删除分片文件
         FileUtils.del(fileChunkDirectoryPath);

@@ -104,7 +104,7 @@ public class SensitiveWord {
             return readWord(FileUtils.getFilePathListDeep(CUSTOM_PATH));
         }else {
             try {
-                return readWordFromByte(FileUtils.getResourceFileBytes(DEFAULT_DIRECTORY, "txt"));
+                return readWordFromByte(FileUtils.getResourceFileBytes(DEFAULT_DIRECTORY, ".txt"));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

@@ -1,10 +1,6 @@
 package com.nexus.common.core.utils;
 
 import cn.hutool.core.io.FileUtil;
-import com.nexus.common.core.utils.DateUtils;
-import com.nexus.common.core.utils.FileStreamUtils;
-import com.nexus.common.core.utils.ObjectUtils;
-import com.nexus.common.core.utils.SystemUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
@@ -46,32 +42,33 @@ public class FileUtils extends FileUtil {
      */
     private static final String FILE_SEPARATOR = "/";
 
-    private FileUtils() {}
+    private FileUtils() {
+    }
 
     /**
      * 从 URL 中提取文件名
      *
-     * @param url 网址
-     * @return {@link String }
+     * @param url 文件 url 地址
+     * @return {@link String } 文件名，示例： xxx.txt
      */
     public static String extractFileNameFromUrl(@NotNull String url) {
-        if(url == null) {
+        if (url == null) {
             throw new RuntimeException("url 为 null");
         }
         return url.substring(url.lastIndexOf('/') + 1);
     }
 
     /**
-     * 获取 resources 目录下的指定文件后缀的所有文件名
-     * jar 包中可用
+     * 获取 resources 目录下的指定文件后缀的所有文件名 (jar 包中可用)
+     *
      * @param directoryPath 目录路径，示例：classpath*:/xxx 或者 /xxx(如果不加 classpath*: ，默认会自动拼接上 classpath*: )
-     * @param suffix        文件后缀
+     * @param suffix        文件后缀，示例：.txt
      * @return {@link List }<{@link File }>
      * @throws IOException 异常
      */
-    public static List<String> getResourceFileNames(@NotNull String directoryPath,@NotNull String suffix) throws IOException {
+    public static List<String> getResourceFileNames(@NotNull String directoryPath, @NotNull String suffix) throws IOException {
         // 递归匹配目录下所有指定后缀文件
-        String pattern = directoryPath + "/**/*." + suffix;
+        String pattern = directoryPath + "/**/*" + suffix;
         if (!pattern.startsWith("classpath*:")) {
             pattern = "classpath*:" + pattern;
         }
@@ -86,16 +83,16 @@ public class FileUtils extends FileUtil {
     }
 
     /**
-     * 获取 resources 目录下的指定文件后缀的所有文件字节数组
-     * jar 包中可用
+     * 获取 resources 目录下的指定文件后缀的所有文件字节数组 (jar 包中可用)
+     *
      * @param directoryPath 目录路径，示例：classpath*:/xxx 或者 /xxx(如果不加 classpath*: ，默认会自动拼接上 classpath*: )
-     * @param suffix        文件后缀
+     * @param suffix        文件后缀，示例：.txt
      * @return {@link List }<{@link byte[] }>
      * @throws IOException IOException
      */
     public static List<byte[]> getResourceFileBytes(String directoryPath, String suffix) throws IOException {
         // 递归匹配目录下所有指定后缀文件
-        String pattern = directoryPath + "/**/*." + suffix;
+        String pattern = directoryPath + "/**/*" + suffix;
         if (!pattern.startsWith("classpath*:")) {
             pattern = "classpath*:" + pattern;
         }
@@ -112,16 +109,16 @@ public class FileUtils extends FileUtil {
     }
 
     /**
-     * 获取 resources 目录下的指定文件后缀的所有文件输入流
-     * jar 包中可用
+     * 获取 resources 目录下的指定文件后缀的所有文件输入流 (jar 包中可用)
+     *
      * @param directoryPath 目录路径，示例：classpath*:/xxx 或者 /xxx(如果不加 classpath*: ，默认会自动拼接上 classpath*: )
-     * @param suffix        文件后缀
+     * @param suffix        文件后缀，示例：.txt
      * @return {@link List }<{@link InputStream }>
      * @throws IOException IOException
      */
     public static List<InputStream> getResourceFileInputStreams(String directoryPath, String suffix) throws IOException {
         // 递归匹配目录下所有指定后缀文件
-        String pattern = directoryPath + "/**/*." + suffix;
+        String pattern = directoryPath + "/**/*" + suffix;
         if (!pattern.startsWith("classpath*:")) {
             pattern = "classpath*:" + pattern;
         }
@@ -153,26 +150,23 @@ public class FileUtils extends FileUtil {
     }
 
     /**
-     * 获取 resources 目录下的文件名称
-     * 只能读取单个文件
-     * jar包中不可用
+     * 获取 resources 目录下的文件名称，只能读取单个文件，jar包中不可用
+     *
      * @param path 文件路径，示例：classpath:xxx.txt
      * @return {@link String}
      */
     public static String getResourceFileName(String path) throws IOException {
         ClassPathResource classPathResource = new ClassPathResource(path);
-        if(classPathResource.exists()){
+        if (classPathResource.exists()) {
             return classPathResource.getFilename();
         }
         return null;
     }
 
     /**
-     * 获取 resources 目录下的文件输入流
-     * 只能读取单个文件
-     * jar包中不可用
+     * 获取 resources 目录下的文件输入流，只能读取单个文件，jar包中不可用
      *
-     * @param path 文件路径，示例：xxx/xxx.txt
+     * @param path 文件路径，示例：classpath:xxx.txt
      * @return {@link InputStream}
      */
     public static InputStream getResourceFileInputStream(String path) throws IOException {
@@ -251,10 +245,13 @@ public class FileUtils extends FileUtil {
 
     /**
      * 创建日期层级目录 (返回以年月日命名的目录)
-     * 格式：2024/01/13
+     * @description
+     * basePath 为空，返回 /2024/01/13
+     * </br>
+     * basePath 为 /xxx，返回 /xxx/2024/01/13
      *
-     * @param basePath 基本路径
-     * @return {@link String}
+     * @param basePath 基本路径，示例：/xxx
+     * @return {@link String} 日期层级目录，示例：/2024/01/13
      */
     public static String createDateLevelDirectory(String basePath) {
         String directoryPath = getDateLevelDirectoryPath(basePath);
@@ -266,20 +263,17 @@ public class FileUtils extends FileUtil {
 
     /**
      * 获取日期层级目录路径
-     * 格式：2024/01/13
+     * @description
+     * basePath 为空，返回 /2024/01/13
+     * </br>
+     * basePath 为 /xxx，返回 /xxx/2024/01/13
      *
-     * @param basePath 基本路径
-     * @return {@link String}
+     * @param basePath 基本路径，示例：/xxx
+     * @return {@link String} 日期层级目录，示例：/2024/01/13
      */
     public static String getDateLevelDirectoryPath(String basePath) {
         if (StringUtils.isBlank(basePath)) {
-            if (SystemUtils.isWindows()) {
-                basePath = "C:\\";
-            } else if (SystemUtils.isLinux()) {
-                basePath = "/home/";
-            } else if (SystemUtils.isMacOs()) {
-                basePath = "/Users/";
-            }
+            basePath = "";
         }
 
         if (basePath.contains(FILE_SEPARATOR) && SystemUtils.isWindows()) {
@@ -304,15 +298,18 @@ public class FileUtils extends FileUtil {
 
         String day = format.substring(lastIndexOf + 1);
 
-        return basePath + year + File.separator + month + File.separator + day + File.separator;
+        return basePath + year + File.separator + month + File.separator + day;
     }
 
     /**
      * 创建日期目录
-     * 格式：/20240113
+     * @description
+     * basePath 为空，返回 /20240113
+     * </br>
+     * basePath 为 /xxx，返回 /xxx/20240113
      *
-     * @param basePath 基本路径
-     * @return {@link String}
+     * @param basePath 基本路径，示例：/xxx
+     * @return {@link String} 日期目录，示例：/20240113
      */
     public static String createDateDirectory(String basePath) {
         String directoryPath = getDateDirectoryPath(basePath);
@@ -324,20 +321,17 @@ public class FileUtils extends FileUtil {
 
     /**
      * 获取日期目录路径
-     * 格式：/20240113
+     * @description
+     * basePath 为空，返回 /20240113
+     * </br>
+     * basePath 为 /xxx，返回 /xxx/20240113
      *
-     * @param basePath 基本路径
-     * @return {@link String}
+     * @param basePath 基本路径，示例：/xxx
+     * @return {@link String} 日期目录，示例：/20240113
      */
     public static String getDateDirectoryPath(String basePath) {
         if (StringUtils.isBlank(basePath)) {
-            if (SystemUtils.isWindows()) {
-                basePath = "C:\\";
-            } else if (SystemUtils.isLinux()) {
-                basePath = "/home/";
-            } else if (SystemUtils.isMacOs()) {
-                basePath = "/Users/";
-            }
+            basePath = "";
         }
 
         if (basePath.contains(FILE_SEPARATOR) && SystemUtils.isWindows()) {
@@ -350,7 +344,7 @@ public class FileUtils extends FileUtil {
 
         String date = DateUtils.getYearMonthDay(new Date());
 
-        return basePath + date + File.separator;
+        return basePath + date;
     }
 
     /**
@@ -360,7 +354,7 @@ public class FileUtils extends FileUtil {
      * @return {@link String}
      */
     public static String randomFileName(MultipartFile file) {
-        if(file == null) {
+        if (file == null) {
             throw new RuntimeException("文件为 null");
         }
         String fileName = file.getOriginalFilename();
@@ -375,7 +369,7 @@ public class FileUtils extends FileUtil {
      * @return {@link String}
      */
     public static String randomFileName(String fileName) {
-        if(fileName == null) {
+        if (fileName == null) {
             throw new RuntimeException("文件名称为 null");
         }
         String suffix = getCompleteSuffix(fileName);
@@ -393,7 +387,7 @@ public class FileUtils extends FileUtil {
             throw new RuntimeException("文件为 null");
         }
         String fileName = file.getOriginalFilename();
-        if(fileName == null) {
+        if (fileName == null) {
             throw new RuntimeException("文件名称为 null");
         }
         return fileName.substring(fileName.lastIndexOf("."));
